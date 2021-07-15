@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Nexiate CMS - Edit Text Component</title>
+
+    <script defer src="/__/firebase/8.6.5/firebase-app.js"></script>
+    <script defer src="/__/firebase/8.6.5/firebase-auth.js"></script>
+    <script defer src="/__/firebase/8.6.5/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.css"  />
+
+    <script src="/components/index_ext.js" type="module"></script>
+    <link type="text/css" rel="stylesheet" href="styles.css"  />
+    
+    <script type="module">
+      import Utils from "./lib/Utils.js";
+      import De_Project from "./lib/De_Project.js";
+      import De_Component from "./lib/De_Component.js";
+      import De_Db_Firestore from "./lib/De_Db_Firestore.js";
+
+      window.onload = Main;
+      let db;
+      let component;
+
+      async function Main()
+      {
+        db = new De_Db_Firestore();
+
+        await Prepare_Fields(db);
+
+        // prepare object
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get('id');
+        const project_id = urlParams.get('project_id');
+        if (id) // edit form
+        {
+          component = await De_Component.Select_By_Id(db, id);
+        }
+        else // add form
+        {
+          component = new De_Component();
+          component.content_type = "text";
+          Utils.Hide("id_label");
+          Utils.Hide("id_value");
+        }
+        if (project_id)
+        {
+          component.project_id = project_id;
+          Utils.Disable("project_value");
+        }
+
+        // populate fields
+        Obj_To_Fields(component);
+
+        const ok_btn = document.getElementById("ok_btn");
+        ok_btn.addEventListener("click", On_Click_Save);
+
+        const cancel_btn = document.getElementById("cancel_btn");
+        cancel_btn.addEventListener("click", On_Click_Cancel);
+      }
+
+      async function Prepare_Fields(db)
+      {
+        const projects_elem = document.getElementById("project_value");
+        const projects = await De_Project.Select_All(db);
+        for (const project of projects)
+        {
+          const option_elem = document.createElement("option");
+          option_elem.value = project.id;
+          option_elem.innerText = project.title;
+          projects_elem.append(option_elem);
+        }
+      }
+
+      function Obj_To_Fields(component)
+      {
+        let value_elem = document.getElementById("id_value");
+        value_elem.innerText = component.id;
+
+        value_elem = document.getElementById("title_value");
+        value_elem.value = component.title;
+
+        value_elem = document.getElementById("key_value");
+        value_elem.value = component.key;
+
+        value_elem = document.getElementById("type_value");
+        value_elem.innerText = component.content_type;
+
+        value_elem = document.getElementById("content_value");
+        value_elem.innerHTML = component.content;
+
+        value_elem = document.getElementById("project_value");
+        value_elem.value = component.project_id;
+      }
+
+      function Fields_To_Obj(component)
+      {
+        let value_elem
+
+        //value_elem = document.getElementById("id_value");
+        //component.id = value_elem.innerText;
+
+        value_elem = document.getElementById("title_value");
+        component.title = value_elem.value;
+
+        value_elem = document.getElementById("key_value");
+        component.key = value_elem.value;
+
+        //value_elem = document.getElementById("type_value");
+        //component.content_type = value_elem.innerText;
+
+        value_elem = document.getElementById("content_value");
+        component.content = value_elem.value;
+
+        value_elem = document.getElementById("project_value");
+        component.project_id = value_elem.value;
+      }
+
+      function Return_To_Page()
+      {
+        window.history.back();
+      }
+
+      async function On_Click_Save()
+      {
+        Fields_To_Obj(component);
+        const is_saved = await component.Save(db);
+        if (is_saved)
+        {
+          Return_To_Page();
+        }
+        else
+        {
+          Utils.Handle_Errors(db);
+        }
+      }
+
+      function On_Click_Cancel()
+      {
+        Return_To_Page();
+      }
+    </script>
+  </head>
+
+  <body>
+    <de-header title="Component - Text"></de-header>
+
+    <div id="form">
+      <label id="id_label">Id.</label><span id="id_value" class="field_value"></span>
+      <label>Title</label><input id="title_value" class="field_value">
+      <label>Key</label><input id="key_value" class="field_value">
+      <label>Type</label><span id="type_value" class="field_value"></span>
+      <label>Content</label><textarea id="content_value" rows="20" cols="60" class="field_value"></textarea>
+
+      <label>Project</label>
+      <select id="project_value" class="field_value">
+        <option>None</option>
+      </select>
+
+      <label></label>
+      <span>
+        <button id="ok_btn">OK</button>
+        <button id="cancel_btn">Cancel</button>
+      </span>
+    </div>
+  </body>
+</html>

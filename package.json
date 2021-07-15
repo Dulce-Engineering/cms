@@ -1,0 +1,20 @@
+{
+  "name": "nexcms",
+  "version": "1.0.0",
+  "description": "Nexiate CMS",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "firebase deploy --only hosting",
+    "start": "firebase serve --only hosting"
+  },
+  "author": "Steven Ramirez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/nexiate/nexcms/issues"
+  },
+  "homepage": "https://gitlab.com/nexiate/nexcms#readme",
+  "devDependencies": {
+    "firebase-tools": "^9.12.1"
+  }
+}

@@ -1,0 +1,45 @@
+body
+{
+  padding: 40px;
+  margin: 0;
+  color: #000;
+  background-color: #fff;
+}
+button
+{
+  background-color: #fff;
+  border-width: 4px;
+  border-color: #777;
+  border-style: double;
+  cursor: pointer;
+  border-radius: 20px;
+}
+button:hover
+{
+  background-color: #ddd;
+}
+button:disabled
+{
+  background-color: #fff;
+  border-color: #ccc;
+  color: #ccc;
+  cursor: default;
+}
+#form
+{
+  border-top: 4px double #000;
+  border-bottom: 1px solid #000;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 10px 10px;
+}
+#form label
+{
+  justify-self: end;
+}
+.field_value
+{
+  justify-self: start; 
+}

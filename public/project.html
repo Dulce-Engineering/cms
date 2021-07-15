@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Nexiate CMS - Project</title>
+
+    <script defer src="/__/firebase/8.6.5/firebase-app.js"></script>
+    <script defer src="/__/firebase/8.6.5/firebase-auth.js"></script>
+    <script defer src="/__/firebase/8.6.5/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.css"  />
+
+    <script src="/components/index_ext.js" type="module"></script>
+    <link type="text/css" rel="stylesheet" href="styles.css"  />
+    
+    <script type="module">
+      import Utils from "./lib/Utils.js";
+      import De_Project from "./lib/De_Project.js";
+      import De_Db_Firestore from "./lib/De_Db_Firestore.js";
+
+      window.onload = Main;
+      let db;
+      let project;
+
+      async function Main()
+      {
+        db = new De_Db_Firestore();
+
+        await Prepare_Fields(db);
+
+        // prepare object
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get('id');
+        if (id)
+        {
+          project = await De_Project.Select_By_Id(db, id);
+        }
+        else
+        {
+          project = new De_Project();
+          Utils.Hide("id_label");
+          Utils.Hide("id_value");
+        }
+
+        // populate fields
+        Obj_To_Fields(project);
+
+        const ok_btn = document.getElementById("ok_btn");
+        ok_btn.addEventListener("click", On_Click_Save);
+
+        const cancel_btn = document.getElementById("cancel_btn");
+        cancel_btn.addEventListener("click", On_Click_Cancel);
+      }
+
+      async function Prepare_Fields(db)
+      {
+      }
+
+      function Obj_To_Fields(project)
+      {
+        let value_elem = document.getElementById("id_value");
+        value_elem.innerText = project.id;
+
+        value_elem = document.getElementById("title_value");
+        value_elem.value = project.title;
+
+        value_elem = document.getElementById("key_value");
+        value_elem.value = project.key;
+
+        value_elem = document.getElementById("url_value");
+        value_elem.value = project.url;
+      }
+
+      function Fields_To_Obj(project)
+      {
+        let value_elem;
+
+        value_elem = document.getElementById("title_value");
+        project.title = value_elem.value;
+
+        value_elem = document.getElementById("key_value");
+        project.key = value_elem.value;
+
+        value_elem = document.getElementById("url_value");
+        project.url = value_elem.value;
+      }
+
+      function Return_To_Page()
+      {
+        window.history.back();
+      }
+
+      async function On_Click_Save()
+      {
+        Fields_To_Obj(project);
+        const is_saved = await project.Save(db);
+        if (is_saved)
+        {
+          Return_To_Page();
+        }
+        else
+        {
+          Utils.Handle_Errors(db);
+        }
+      }
+
+      function On_Click_Cancel()
+      {
+        Return_To_Page();
+      }
+    </script>
+  </head>
+
+  <body>
+    <de-header title="Project"></de-header>
+
+    <div id="form">
+      <label id="id_label">Id.</label><span id="id_value" class="field_value"></span>
+      <label>Title</label><input id="title_value" class="field_value">
+      <label>Key</label><input id="key_value" class="field_value">
+      <label>URL</label><input id="url_value" class="field_value">
+
+      <label></label>
+      <span>
+        <button id="ok_btn">OK</button>
+        <button id="cancel_btn">Cancel</button>
+      </span>
+    </div>
+
+  </body>
+</html>

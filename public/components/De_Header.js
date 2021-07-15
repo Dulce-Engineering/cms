@@ -1,0 +1,185 @@
+import Utils from "../lib/Utils.js";
+
+class De_Header extends HTMLElement 
+{
+  constructor() 
+  {
+    super();
+
+    this.app = firebase.app("nx-cms");
+    this.auth = firebase.auth(this.app);
+    this.ui = new firebaseui.auth.AuthUI(this.auth);
+
+    this.On_Auth_State_Changed = this.On_Auth_State_Changed.bind(this);
+    this.On_Sign_In_Clicked = this.On_Sign_In_Clicked.bind(this);
+    this.On_Sign_Out_Clicked = this.On_Sign_Out_Clicked.bind(this);
+    this.On_Acc_Clicked = this.On_Acc_Clicked.bind(this);
+
+    this.Render();
+  }
+
+  connectedCallback()
+  {
+    this.auth.onAuthStateChanged(this.On_Auth_State_Changed);
+  }
+
+  disconnectedCallback()
+  {
+  }
+
+  adoptedCallback()
+  {
+  }
+
+  attributeChangedCallback(attr_name, old_value, new_value)
+  {
+    if (attr_name == "title")
+    {
+      const title_span = this.querySelector("#title_span");
+      title_span.innerText = new_value;
+    }
+  }
+
+  static observedAttributes = ["title"];
+
+  // Events =======================================================================================
+
+  On_Auth_State_Changed(user)
+  {
+    if (user)
+    {
+      this.On_User_Has_Signed_In(user);
+    }
+    else
+    {
+      this.On_User_Has_Signed_Out();
+    }
+  }
+
+  On_User_Has_Signed_In(user)
+  {
+    const elem = this.querySelector("#user_name");
+    elem.innerText = user.displayName;
+
+    Utils.Hide("signin_info", this);
+    Utils.Show("user_info", this);
+  }
+
+  On_User_Has_Signed_Out()
+  {
+    Utils.Show("signin_info", this);
+    Utils.Hide("user_info", this);
+  }
+
+  On_Sign_In_Clicked()
+  {
+    const auth_ui_config = 
+    {
+      callbacks:
+      {
+        signInSuccessWithAuthResult: () => false,
+        uiShown: this.On_User_Is_Signing_In
+      },
+      signInFlow: 'popup',
+      signInOptions: [
+        firebase.auth.EmailAuthProvider.PROVIDER_ID,
+      ],
+    };
+
+    let auth_div = document.getElementById("firebaseui-auth-container");
+    if (!auth_div)
+    {
+      auth_div = document.createElement("div");
+      auth_div.id = "firebaseui-auth-container";
+      document.body.append(auth_div);
+    }
+    this.ui.start('#firebaseui-auth-container', auth_ui_config);
+  }
+
+  On_Sign_Up_Clicked()
+  {
+    window.open("user.html", "_self");
+  }
+
+  async On_Sign_Out_Clicked()
+  {
+    await this.auth.signOut();
+  }
+
+  On_User_Is_Signing_In() 
+  {
+    Utils.Hide("signin_info", this);
+    Utils.Hide("user_info", this);
+  }
+
+  On_Acc_Clicked()
+  {
+    const uid = this.auth.currentUser.uid;
+    window.open("user.html?uid=" + uid, "_self");
+  }
+
+  // Rendering ====================================================================================
+
+  Render()
+  {
+    const html =
+      `<style>
+        #btn_bar
+        {
+          float: right;
+        }
+        #title
+        {
+          font-size: 25px;
+        }
+        #user_info
+        {
+          --def-display: inline-block;
+          display: none;
+        }
+        #signin_info
+        {
+          --def-display: inline-block;
+          display: none;
+        }
+        #main
+        {
+          margin-bottom: 50px;
+          height: 28px;
+        }
+      </style>
+
+      <div id="main">
+        <span id="title"><a href="/"><span>deCMS</span></a> - <span id="title_span"></span></span>
+        <div id="firebaseui-auth-container"></div>
+        <div id="btn_bar">
+          <div id="user_info">
+            <span></span>
+            <span id="user_name"></span>
+            <button id="acc_btn">Account</button>
+            <button id="sign_out_btn">Sign Out</button>
+          </div>
+          <div id="signin_info">
+            <button id="sign_up_btn">Sign Up</button>
+            <button id="sign_in_btn">Sign In</button>
+          </div>
+        </div>
+      </div>`;
+    this.innerHTML = html;
+
+    const sign_in_btn = document.getElementById("sign_in_btn");
+    sign_in_btn.auth = this.auth;
+    sign_in_btn.addEventListener("click", this.On_Sign_In_Clicked);
+
+    const sign_up_btn = document.getElementById("sign_up_btn");
+    sign_up_btn.addEventListener("click", this.On_Sign_Up_Clicked);
+
+    const sign_out_btn = document.getElementById("sign_out_btn");
+    sign_out_btn.addEventListener("click", this.On_Sign_Out_Clicked);
+
+    const acc_btn = this.querySelector("#acc_btn");
+    acc_btn.addEventListener("click", this.On_Acc_Clicked);
+  }
+}
+
+export default De_Header;

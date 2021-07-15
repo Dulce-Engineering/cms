@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Nexiate CMS</title>
+
+    <script defer src="/__/firebase/8.6.5/firebase-app.js"></script>
+    <script defer src="/__/firebase/8.6.5/firebase-auth.js"></script>
+    <script defer src="/__/firebase/8.6.5/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.css"  />
+
+    <script src="/components/index_ext.js" type="module"></script>
+    <link type="text/css" rel="stylesheet" href="styles.css"  />
+
+    <style>
+    </style>
+    
+    <script type="module">
+      import Utils from "./lib/Utils.js";
+
+      window.onload = Main;
+
+      function Main()
+      {
+      }
+    </script>
+  </head>
+
+  <body>
+    <de-header title="Projects"></de-header>
+
+    <div>
+      <de-table-project id="project_table"></de-table-project>
+    </div>
+  </body>
+</html>

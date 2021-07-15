@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Nexiate CMS - Components</title>
+
+    <script defer src="/__/firebase/8.6.5/firebase-app.js"></script>
+    <script defer src="/__/firebase/8.6.5/firebase-auth.js"></script>
+    <script defer src="/__/firebase/8.6.5/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.css"  />
+
+    <script src="/components/index_ext.js" type="module"></script>
+    <link type="text/css" rel="stylesheet" href="styles.css"  />
+
+    <style>
+    </style>
+    
+    <script type="module">
+      import Utils from "./lib/Utils.js";
+
+      window.onload = Main;
+
+      function Main()
+      {
+        const component_table = document.getElementById("component_table");
+        const urlParams = new URLSearchParams(window.location.search);
+        const project_id = urlParams.get('project_id');
+        if (project_id)
+        {
+          component_table.where = {"WHERE_PROJECT": project_id};
+        }
+        else
+        {
+          component_table.updateRender();
+        }
+      }
+    </script>
+  </head>
+
+  <body>
+    <de-header title="Components"></de-header>
+    <div>
+      <de-table-component id="component_table" auto-start=false></de-table-component>
+    </div>
+  </body>
+</html>
