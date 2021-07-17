@@ -1,4 +1,4 @@
-# nexcms
+# deCMS
 ## Setup
 - npm i
 ## Run
@@ -6,7 +6,7 @@
 ## Deploy
 - npm run deploy
 ## Dev Site
-- [Nexiate CMS](https://decms-6dc54.firebaseapp.com/)
+- [deCMS](https://decms-6dc54.firebaseapp.com/)
 ## Usage
 - Add the following scripts:
 ```

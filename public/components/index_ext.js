@@ -10,7 +10,7 @@ import De_Dialog from './De_Dialog.js';
 import De_Dialog_Cols from './De_Dialog_Cols.js';
 import Fb_Config from "./config.js";
 
-firebase.initializeApp(Fb_Config, "nx-cms");
+firebase.initializeApp(Fb_Config, "de-cms");
 
 customElements.define('de-comp', De_Comp);
 customElements.define('de-text', De_Text);

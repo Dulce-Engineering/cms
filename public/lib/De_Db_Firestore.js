@@ -4,7 +4,7 @@ class De_Db_Firestore
 {
   constructor()
   {
-    this.app = firebase.app("nx-cms");
+    this.app = firebase.app("de-cms");
     this.db = this.app.firestore();
     this.auth = firebase.auth(this.app);
     this.last_error = null;

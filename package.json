@@ -1,7 +1,7 @@
 {
   "name": "nexcms",
   "version": "1.0.0",
-  "description": "Nexiate CMS",
+  "description": "deCMS",
   "main": "index.html",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -11,9 +11,9 @@
   "author": "Steven Ramirez",
   "license": "ISC",
   "bugs": {
-    "url": "https://gitlab.com/nexiate/nexcms/issues"
+    "url": "https://github.com/Dulce-Engineering/cms/issues"
   },
-  "homepage": "https://gitlab.com/nexiate/nexcms#readme",
+  "homepage": "https://github.com/Dulce-Engineering/cms",
   "devDependencies": {
     "firebase-tools": "^9.12.1"
   }

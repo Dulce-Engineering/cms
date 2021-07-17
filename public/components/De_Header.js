@@ -6,7 +6,7 @@ class De_Header extends HTMLElement
   {
     super();
 
-    this.app = firebase.app("nx-cms");
+    this.app = firebase.app("de-cms");
     this.auth = firebase.auth(this.app);
     this.ui = new firebaseui.auth.AuthUI(this.auth);
 
