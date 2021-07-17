@@ -99,45 +99,13 @@ class De_Dialog extends HTMLElement
   Render()
   {
     this.innerHTML = 
-      `<style>
-        .main
-        {
-          display: grid;
-          grid-template-columns: 1fr 2fr;
-          gap: 5px;
-          padding: 0px 15px;
-          box-sizing: border-box;
-          width: 100%;
-        }
-        label
-        {
-          justify-self: end;
-        }  
-        #title_div
-        {
-          margin: 15px;
-          font-weight: bold;
-        }
-        #btn_div
-        {
-          margin: 15px;
-          text-align: right;
-        }
-      </style>
-      <div id="title_div">Dialog Title</div>
-      <div id="body_div" class="main"></div>
-      <div id="btn_div">
+      `<div id="title_div" class="de-dialog-header">Dialog Title</div>
+      <div id="body_div" class="de-dialog-body"></div>
+      <div id="btn_div" class="de-dialog-footer">
         <button id="ok_btn">OK</button>
         <button id="cancel_btn">Cancel</button>
       </div>`;
-    //this.style.width = "200px";
-    //this.style.height = "250px";  
-    this.style.display = "none";
-    this.style.position = "fixed";
-    this.style.border = "1px solid #000";
-    this.style.boxShadow = "1px solid #000";
-    this.style.backgroundColor = "#fff";
-    this.style.boxShadow = "0px 0px 10px 10px #fff";
+    this.classList.add("de-dialog");
 
     const ok_btn = this.querySelector("#ok_btn");
     ok_btn.onclick = this.On_Click_OK;

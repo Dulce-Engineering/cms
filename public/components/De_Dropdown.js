@@ -23,10 +23,7 @@ class De_Dropdown extends HTMLElement
   set items(items)
   {
     const item_elem = document.createElement("span");
-    item_elem.style.fontSize = "20px";
-    item_elem.style.fontWeight = "bold";
-    item_elem.style.padding = "0px 5px";
-    item_elem.style.textAlign = "right";
+    item_elem.classList.add("de-dropdown-header");
     item_elem.addEventListener("click", this.On_Click_Src_Elem);
     item_elem.innerHTML = "&#215;";
     this.append(item_elem);
@@ -36,7 +33,7 @@ class De_Dropdown extends HTMLElement
       const item_elem = document.createElement("span");
       item_elem.item_data = item.data;
       item_elem.item_action_fn = item.action;
-      item_elem.classList.add("item");
+      item_elem.classList.add("de-dropdown-item");
       item_elem.addEventListener("click", this.On_Click_Item);
       item_elem.append(item.label);
 
@@ -135,27 +132,7 @@ class De_Dropdown extends HTMLElement
 
   Render()
   {
-    this.style.display = "none";
-    this.style.flexDirection = "column";
-    this.style.cursor = "pointer";
-    this.style.position = "fixed";
-    this.style.border = "1px solid #000";
-    this.style.backgroundColor = "#fff";
-    this.style.boxShadow = "0px 0px 10px 10px #fff";
-    
-    const styleElem = document.createElement("style");
-    styleElem.innerHTML = 
-      `.item 
-      {
-        font-size: 13px;
-        font-weight: normal;
-        padding: 5px 10px;
-      }
-      .item:hover
-      {
-        background-color: #eee;
-      }`;
-    this.appendChild(styleElem);
+    this.classList.add("de-dropdown");
   }
 }
 

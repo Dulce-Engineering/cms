@@ -123,49 +123,24 @@ class De_Header extends HTMLElement
   Render()
   {
     const html =
-      `<style>
-        #btn_bar
-        {
-          float: right;
-        }
-        #title
-        {
-          font-size: 25px;
-        }
-        #user_info
-        {
-          --def-display: inline-block;
-          display: none;
-        }
-        #signin_info
-        {
-          --def-display: inline-block;
-          display: none;
-        }
-        #main
-        {
-          margin-bottom: 50px;
-          height: 28px;
-        }
-      </style>
-
-      <div id="main">
-        <span id="title"><a href="/"><span>deCMS</span></a> - <span id="title_span"></span></span>
-        <div id="firebaseui-auth-container"></div>
-        <div id="btn_bar">
-          <div id="user_info">
-            <span></span>
-            <span id="user_name"></span>
-            <button id="acc_btn">Account</button>
-            <button id="sign_out_btn">Sign Out</button>
-          </div>
-          <div id="signin_info">
-            <button id="sign_up_btn">Sign Up</button>
-            <button id="sign_in_btn">Sign In</button>
-          </div>
+      `<span id="title" class="de-header-title">
+        <a href="/"><span>deCMS</span></a> - <span id="title_span"></span>
+      </span>
+      <div id="firebaseui-auth-container"></div>
+      <div id="btn_bar" class="de-header-action">
+        <div id="user_info" class="de-header-user">
+          <span></span>
+          <span id="user_name"></span>
+          <button id="acc_btn">Account</button>
+          <button id="sign_out_btn">Sign Out</button>
+        </div>
+        <div id="signin_info" class="de-header-signin">
+          <button id="sign_up_btn">Sign Up</button>
+          <button id="sign_in_btn">Sign In</button>
         </div>
       </div>`;
     this.innerHTML = html;
+    this.classList.add("de-header");
 
     const sign_in_btn = document.getElementById("sign_in_btn");
     sign_in_btn.auth = this.auth;

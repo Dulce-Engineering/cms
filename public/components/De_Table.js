@@ -141,38 +141,7 @@ class De_Table extends HTMLElement
   render()
   {
     const html = 
-    `<style>
-      table
-      {
-        width: 100%;
-        border-collapse: collapse;
-      }
-      thead
-      {
-        border-bottom: 4px double #000;
-      }
-      tbody
-      {
-      }
-      tfoot
-      {
-        border-top: 1px solid #000;
-      }
-      th
-      {
-        text-align: left;
-        padding: 10px;
-      }
-      tr
-      {
-      }
-      td
-      {
-        padding: 10px;
-      }
-    </style>
-
-    <div id="tableContainer">
+    `<div id="tableContainer">
       <table id="tableElem">
         <thead><tr id="headerRowElem"></tr></thead>
         <tbody id="bodyElem">
