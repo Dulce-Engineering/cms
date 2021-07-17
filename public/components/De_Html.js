@@ -24,7 +24,10 @@ class De_Html extends HTMLElement
 
   async Render()
   {
-    const contents = await De_Component.Select_HTML_Contents(this.db, this.project.id, this.key);
+    //const contents = await De_Component.Select_HTML_Contents(this.db, this.project.id, this.key);
+    const fn = this.db.fns.httpsCallable('De_Component_Select_HTML_Contents');
+    const result = await fn({project_id: this.project.id, key: this.key});
+    const contents = result.data;
     if (!Utils.isEmpty(contents))
     {
       for (const content of contents)

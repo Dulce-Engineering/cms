@@ -1,4 +1,5 @@
-import Utils from "./Utils.js";
+const Utils = require("./Utils.js");
+const firebase = require('firebase-admin');
 
 class De_Db_Firestore
 {
@@ -7,7 +8,6 @@ class De_Db_Firestore
     this.app = firebase.app("de-cms");
     this.db = this.app.firestore();
     this.auth = firebase.auth(this.app);
-    this.fns = firebase.functions(this.app);
     this.last_error = null;
   }
   
@@ -219,4 +219,4 @@ class De_Db_Firestore
   }
 }
 
-export default De_Db_Firestore;
+module.exports = De_Db_Firestore;
