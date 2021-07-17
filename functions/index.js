@@ -9,35 +9,23 @@ const db = new De_Db_Firestore();
 
 async function De_Component_Select_HTML_Contents(data, ctx)
 {
-  const contents = await De_Component.Select_HTML_Contents(db, data.project_id, data.key);
-  return contents;
-  //throw new functions.https.HttpsError(code, msg);
+  return await De_Component.Select_HTML_Contents(db, data.project_id, data.key);
 }
 
-async function Test(req, res)
+async function De_Component_Select_Text_Contents(data, ctx)
 {
-  res.status(200).send("yo ho ho!");
+  return await De_Component.Select_Text_Contents(db, data.project_id, data.key);
+}
+
+async function Health(req, res)
+{
+  res.status(200).send("v1");
 }
 
 const runtimeOpts = {timeoutSeconds: 540};
 exports.De_Component_Select_HTML_Contents = functions.https.onCall(De_Component_Select_HTML_Contents);
-exports.Test = functions.runWith(runtimeOpts).https.onRequest(Test);
-
-/*function Api_Client(req, res)
-{
-
-}
-
-async function Api_Server(req, res)
-{
-  const contents = await De_Component.Select_HTML_Contents(db, this.project.id, this.key);
-  const contents = await De_Component.Select_Text_Contents(db, this.project.id, this.key);
-
-  // functions.logger.info("Hello logs!", {structuredData: true});
-  res.send(contents);
-  res.status(200);
-  res.end();
-}*/
+exports.De_Component_Select_Text_Contents = functions.https.onCall(De_Component_Select_Text_Contents);
+exports.Health = functions.runWith(runtimeOpts).https.onRequest(Health);
 
 /*exports.updateAllTrendsScheduled = 
   functions

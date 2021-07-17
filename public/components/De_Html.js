@@ -1,6 +1,15 @@
-import De_Component from "../lib/De_Component.js";
 import Utils from "../lib/Utils.js";
 import De_Db_Firestore from "../lib/De_Db_Firestore.js";
+
+class De_Component
+{
+  static async Select_HTML_Contents(db, project_id, key)
+  {
+    const fn = db.fns.httpsCallable('De_Component_Select_HTML_Contents');
+    const result = await fn({project_id, key});
+    return result.data;
+  }
+}
 
 class De_Html extends HTMLElement 
 {
@@ -24,10 +33,7 @@ class De_Html extends HTMLElement
 
   async Render()
   {
-    //const contents = await De_Component.Select_HTML_Contents(this.db, this.project.id, this.key);
-    const fn = this.db.fns.httpsCallable('De_Component_Select_HTML_Contents');
-    const result = await fn({project_id: this.project.id, key: this.key});
-    const contents = result.data;
+    const contents = await De_Component.Select_HTML_Contents(this.db, this.project.id, this.key);
     if (!Utils.isEmpty(contents))
     {
       for (const content of contents)

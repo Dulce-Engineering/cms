@@ -1,6 +1,15 @@
-import De_Component from "../lib/De_Component.js";
 import Utils from "../lib/Utils.js";
 import De_Db_Firestore from "../lib/De_Db_Firestore.js";
+
+class De_Component
+{
+  static async Select_Text_Contents(db, project_id, key)
+  {
+    const fn = db.fns.httpsCallable('De_Component_Select_Text_Contents');
+    const result = await fn({project_id, key});
+    return result.data;
+  }
+}
 
 class De_Text extends HTMLElement 
 {
