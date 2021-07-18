@@ -1,4 +1,4 @@
-import Utils from "./Utils.js";
+const Utils = require("./Utils.js");
 
 class De_Component
 {
@@ -70,4 +70,4 @@ class De_Component
   }
 }
 
-export default De_Component;
+module.exports = De_Component;

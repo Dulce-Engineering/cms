@@ -1,6 +1,6 @@
 import De_Db_Firestore from "../lib/De_Db_Firestore.js";
 
-class De_Project
+class Project
 {
   static async Select_By_Key(db, key)
   {
@@ -27,7 +27,7 @@ class De_Project extends HTMLElement
   {
     if (this.key)
     {
-      this.project = await De_Project.Select_By_Key(this.db, this.key);
+      this.project = await Project.Select_By_Key(this.db, this.key);
       if (this.project)
       {
         this.dispatchEvent(this.connected_event);

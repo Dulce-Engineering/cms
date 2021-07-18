@@ -1,8 +1,8 @@
-import functions from 'firebase-functions';
-import firebase from 'firebase-admin';
-import De_Db_Firestore from './lib/De_Db_Firestore.js';
-import De_Component from './lib/De_Component.js';
-import De_Project from './lib/De_Project.js';
+const functions = require('firebase-functions');
+const firebase = require('firebase-admin');
+const De_Db_Firestore = require('./lib/De_Db_Firestore.js');
+const De_Component = require('./lib/De_Component.js');
+const De_Project = require('./lib/De_Project.js');
 
 const config = functions.config().firebase;
 firebase.initializeApp(config, "de-cms");

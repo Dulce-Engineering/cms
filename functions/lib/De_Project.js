@@ -1,4 +1,4 @@
-import Utils from "./Utils.js";
+const Utils = require("./Utils.js");
 
 class De_Project
 {
@@ -62,4 +62,4 @@ class De_Project
   }
 }
 
-export default De_Project;
+module.exports = De_Project;
