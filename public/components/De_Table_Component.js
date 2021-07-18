@@ -48,9 +48,20 @@ class De_Table_Component extends De_Table
     return columns;
   }
 
-  getRows()
+  async getRows()
   {
-    return De_Component.Select_All(this.db, this.orderByCode, this.filters);
+    let res;
+
+    try
+    {
+      res = await De_Component.Select_All(this.db, this.orderByCode, this.filters);
+    }
+    catch (e) 
+    {
+      Utils.Handle_Errors(this.db);
+    }
+
+    return res;
   }
 
   getRowActions(row_elem, component)

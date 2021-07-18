@@ -58,12 +58,19 @@ class De_Db_Firestore
 
   async Select_Objs(table_name, class_type, where)
   {
-    let res;
+    let res, query_res;
 
     const table = this.db.collection(table_name);
     const query = this.Add_Where(table, where);
-    const query_res = await query.get();
-    if (!query_res.empty)
+
+    try {query_res = await query.get();}
+    catch (e) 
+    {
+      this.last_error = e;
+      throw e;
+    }
+
+    if (query_res && !query_res.empty)
     {
       res = [];
       for (const row of query_res.docs)

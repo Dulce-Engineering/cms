@@ -1,5 +1,5 @@
-const Utils = require("./Utils.js");
-const firebase = require('firebase-admin');
+import Utils from "./Utils.js";
+import firebase from 'firebase-admin';
 
 class De_Db_Firestore
 {
@@ -219,4 +219,4 @@ class De_Db_Firestore
   }
 }
 
-module.exports = De_Db_Firestore;
+export default De_Db_Firestore;

@@ -379,13 +379,16 @@ class Utils
 
   static Handle_Errors(db)
   {
-    if (db.last_error.code == "permission-denied")
+    if (db.last_error)
     {
-      alert("You do not have permission.");
-    }
-    else
-    {
-      alert("Unable to save.");
+      if (db.last_error.code == "permission-denied")
+      {
+        alert("You do not have permission.");
+      }
+      else
+      {
+        alert("There was a problem.");
+      }
     }
   }
   

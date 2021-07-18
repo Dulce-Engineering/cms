@@ -1,1 +1,3 @@
-stuff
+To Do
+- User - change password
+- db - disable all external access
