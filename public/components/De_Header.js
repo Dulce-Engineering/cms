@@ -2,6 +2,8 @@ import Utils from "../lib/Utils.js";
 
 class De_Header extends HTMLElement 
 {
+  // Lifecycle ====================================================================================
+
   constructor() 
   {
     super();
@@ -42,42 +44,26 @@ class De_Header extends HTMLElement
 
   static observedAttributes = ["title"];
 
-  // Events =======================================================================================
+  // API ==========================================================================================
 
-  On_Auth_State_Changed(user)
+  Sign_In(signin_fn)
   {
-    if (user)
+    let signInSuccessWithAuthResult = (auth_result, redirect_url) => false;
+    if (signin_fn)
     {
-      this.On_User_Has_Signed_In(user);
+      signInSuccessWithAuthResult = function (auth_result, redirect_url)
+      {
+        const display_name = auth_result.user.displayName;
+        this.Render_Signed_In(display_name);
+      };
+      signInSuccessWithAuthResult = signInSuccessWithAuthResult.bind(this);
     }
-    else
-    {
-      this.On_User_Has_Signed_Out();
-    }
-  }
 
-  On_User_Has_Signed_In(user)
-  {
-    const elem = this.querySelector("#user_name");
-    elem.innerText = user.displayName;
-
-    Utils.Hide("signin_info", this);
-    Utils.Show("user_info", this);
-  }
-
-  On_User_Has_Signed_Out()
-  {
-    Utils.Show("signin_info", this);
-    Utils.Hide("user_info", this);
-  }
-
-  On_Sign_In_Clicked()
-  {
     const auth_ui_config = 
     {
       callbacks:
       {
-        signInSuccessWithAuthResult: () => false,
+        signInSuccessWithAuthResult,
         uiShown: this.On_User_Is_Signing_In
       },
       signInFlow: 'popup',
@@ -94,6 +80,36 @@ class De_Header extends HTMLElement
       document.body.append(auth_div);
     }
     this.ui.start('#firebaseui-auth-container', auth_ui_config);
+  }
+  
+  // Events =======================================================================================
+
+  On_Auth_State_Changed(user)
+  {
+    if (user)
+    {
+      this.On_User_Has_Signed_In(user);
+    }
+    else
+    {
+      this.On_User_Has_Signed_Out();
+    }
+  }
+
+  On_User_Has_Signed_In(user)
+  {
+    this.Render_Signed_In(user.displayName);
+  }
+
+  On_User_Has_Signed_Out()
+  {
+    Utils.Show("signin_info", this);
+    Utils.Hide("user_info", this);
+  }
+
+  On_Sign_In_Clicked()
+  {
+    this.Sign_In();
   }
 
   On_Sign_Up_Clicked()
@@ -119,6 +135,15 @@ class De_Header extends HTMLElement
   }
 
   // Rendering ====================================================================================
+
+  Render_Signed_In(display_name)
+  {
+    const elem = this.querySelector("#user_name");
+    elem.innerText = display_name;
+
+    Utils.Hide("signin_info", this);
+    Utils.Show("user_info", this);
+  }
 
   Render()
   {

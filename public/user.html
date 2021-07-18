@@ -38,7 +38,7 @@
         if (fb_user)
         {
           user = fb_user;
-          Utils.Hide("p_label"); Utils.Hide("p_value");
+          //Utils.Hide("p_label"); Utils.Hide("p_value");
           document.getElementById("email_value").disabled = true;
         }
         else
@@ -99,11 +99,8 @@
         Fields_To_Obj(user_details);
         if (user.uid)
         {
-          delete user_details.email;
-          delete user_details.password;
-          delete user_details.uid;
-          await user.updateProfile(user_details);
-          Return_To_Page();
+          await Update_User(user, user_details)
+          //Return_To_Page();
         }
         else
         {
@@ -125,11 +122,45 @@
       {
         Return_To_Page();
       }
+
+      async function Update_User(fb_user, new_details)
+      {
+        delete new_details.email;
+        //delete user_details.password;
+        delete new_details.uid;
+        await fb_user.updateProfile(new_details);
+        await Update_Password(fb_user, new_details.password);
+      }
+
+      async function Update_Password(user, password)
+      {
+        try 
+        {
+          await user.updatePassword(password);
+          alert("User details have been successfully updated.");
+        }
+        catch (e)
+        {
+          if (e.code == "auth/requires-recent-login")
+          {
+            const hdr_elem = document.getElementById("hdr");
+            hdr_elem.Sign_In(Signed_In);
+            function Signed_In()
+            {
+              Update_Password(user, password);
+            }
+          }
+          else
+          {
+            Utils.Handle_Errors(e);
+          }
+        }
+      }
     </script>
   </head>
 
   <body>
-    <de-header title="User"></de-header>
+    <de-header id="hdr" title="User"></de-header>
 
     <div id="form" autocomplete="off">
       <label id="id_label">Id.</label><span id="id_value" class="field_value"></span>
