@@ -1,14 +1,5 @@
 import De_Db_Firestore from "../lib/De_Db_Firestore.js";
-
-class Project
-{
-  static async Select_By_Key(db, key)
-  {
-    const fn = db.fns.httpsCallable('De_Project_Select_By_Key');
-    const result = await fn({key});
-    return result.data;
-  }
-}
+import Project from "../lib/De_Project.js";
 
 class De_Project extends HTMLElement 
 {

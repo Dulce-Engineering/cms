@@ -3,6 +3,18 @@
   <head>
     <meta charset="utf-8">
     <title>CMS Test</title>
+    <style>
+      #h_p1
+      {
+        border: 1px solid red;
+        display: inline-block;
+      }
+      #hp
+      {
+        border: 1px solid blue;
+        display: inline-block;
+      }
+    </style>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase.js"></script>
     <script src="/components/index_ext.js" type="module"></script>
     <link type="text/css" rel="stylesheet" href="styles.css"/>
@@ -11,7 +23,7 @@
   <body>
     <de-project id="p1" key="plantimator"></de-project>
     <de-project id="p2" key="job_woper"></de-project>
-    <de-text key="h_p1" project-id="p1"></de-text>
-    <de-html key="hp" project-id="p2"></de-html>
+    <de-text id="h_p1" key="h_p1" project-id="p1"></de-text>
+    <de-html id="hp" key="hp" project-id="p2"></de-html>
   </body>
 </html>
