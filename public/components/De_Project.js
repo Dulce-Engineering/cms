@@ -14,28 +14,7 @@ class De_Project extends HTMLElement
     this.connected_event = new Event("connected");
   }
 
-  async connectedCallback()
-  {
-    if (this.key)
-    {
-      this.project = await Project.Select_By_Key(this.db, this.key);
-      if (this.project)
-      {
-        this.dispatchEvent(this.connected_event);
-      }
-    }
-  }
-
-  disconnectedCallback()
-  {
-
-  }
-
-  adoptedCallback()
-  {
-
-  }
-
+  static observedAttributes = ["key"];
   attributeChangedCallback(attr_name, old_value, new_value)
   {
     if (attr_name == "key")
@@ -44,9 +23,20 @@ class De_Project extends HTMLElement
     }
   }
 
-  static get observedAttributes()
+  async connectedCallback()
   {
-    return ["key"];
+    if (this.key)
+    {
+      const firestore_app = firebase.app("de-cms");
+      const firestore_auth = firebase.auth(firestore_app);
+      await firestore_auth.signInAnonymously();
+
+      this.project = await Project.Select_By_Key(this.db, this.key);
+      if (this.project)
+      {
+        this.dispatchEvent(this.connected_event);
+      }
+    }
   }
 }
 

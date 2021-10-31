@@ -29,10 +29,10 @@ async function Health(req, res)
 }
 
 const runtimeOpts = {timeoutSeconds: 540};
-exports.De_Component_Select_HTML_Contents = functions.https.onCall(De_Component_Select_HTML_Contents);
-exports.De_Component_Select_Text_Contents = functions.https.onCall(De_Component_Select_Text_Contents);
-exports.De_Project_Select_By_Key = functions.https.onCall(De_Project_Select_By_Key);
-exports.Health = functions.runWith(runtimeOpts).https.onRequest(Health);
+//exports.De_Component_Select_HTML_Contents = functions.https.onCall(De_Component_Select_HTML_Contents);
+//exports.De_Component_Select_Text_Contents = functions.https.onCall(De_Component_Select_Text_Contents);
+//exports.De_Project_Select_By_Key = functions.https.onCall(De_Project_Select_By_Key);
+//exports.Health = functions.runWith(runtimeOpts).https.onRequest(Health);
 
 /*exports.updateAllTrendsScheduled = 
   functions

@@ -1,3 +1,3 @@
 To Do
-- User - change password
-- db - disable all external access
+- replace alert with snackbar
+- split folders into client, admin, and db

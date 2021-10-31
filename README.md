@@ -12,7 +12,7 @@
 ```
   <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
-  <script defer src="https://decms-6dc54.firebaseapp.com/components/index_ext.js" type="module"></script>
+  <script defer src="https://decms-6dc54.firebaseapp.com/components/index.js" type="module"></script>
 ```
 - Indicate which project to use with an appropriate project key:
 ```
@@ -28,7 +28,7 @@
   <head>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
-    <script defer src="https://decms-6dc54.firebaseapp.com/components/index_ext.js" type="module"></script>
+    <script defer src="https://decms-6dc54.firebaseapp.com/components/index.js" type="module"></script>
   </head>
   <body>
     <de-project id="p1" key="plantimator"></de-project>
