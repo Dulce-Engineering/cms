@@ -88,11 +88,11 @@ class De_Table_Project extends De_Table
         res = project.title;
         break;
 
-        case 2: // Key
+      case 2: // Key
         res = project.key;
         break;
 
-        case 3: // Key
+      case 3: // URL
         const a_elem = document.createElement("a");
         a_elem.href = project.url;
         a_elem.innerText = project.url;

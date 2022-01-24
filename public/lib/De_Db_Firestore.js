@@ -2,12 +2,9 @@ import Utils from "./Utils.js";
 
 class De_Db_Firestore
 {
-  constructor()
+  constructor(fb_db)
   {
-    this.app = firebase.app("de-cms");
-    this.db = this.app.firestore();
-    this.auth = firebase.auth(this.app);
-    this.fns = firebase.functions(this.app);
+    this.db = fb_db;
     this.last_error = null;
   }
   

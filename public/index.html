@@ -1,35 +1,67 @@
+
 <!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>deCMS</title>
+    <title>BrandKind Admin - Home</title>
 
-    <script src="/__/firebase/8.6.8/firebase.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.js"></script>
     <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.css"/>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link type="text/css" rel="stylesheet" href="styles.css"  />
-    <script src="/components/index.js" type="module"></script>
+    <link type="text/css" rel="stylesheet" href="styles/styles.css"  />
+
     <style>
+      body
+      {
+        text-align: center;
+      }
+      #signin_div
+      {
+        padding: 20px 30px;;
+        background-color: #f002;
+        margin: 0px 5px;
+      }
+      #welcome_div
+      {
+        padding: 20px 30px;;
+        margin: 0px 5px;
+      }
     </style>
-    
+
     <script type="module">
-      import Utils from "./lib/Utils.js";
+      import Context from "./lib/Context.js";
+      //import "../components/index.js";
+      import Header_Buddy from './node_modules/header-buddy/Header_Buddy.js';
+      customElements.define(Header_Buddy.tname, Header_Buddy);
 
       window.onload = Main;
-
       function Main()
       {
+        Context.Set_Id_Shortcuts(document, window);
+
+        const ctx = new Context();
+        header_elem.Init(ctx, Header_Signed_In, Header_Signed_Out);
+      }
+      
+      function Header_Signed_In()
+      {
+        welcome_div.hidden = false;
+        signin_div.hidden = true;
+      }
+
+      async function Header_Signed_Out()
+      {
+        welcome_div.hidden = true;
+        signin_div.hidden = false;
       }
     </script>
   </head>
 
   <body>
-    <de-header title="Projects"></de-header>
-
-    <div>
-      <de-table-project id="project_table"></de-table-project>
+    <header-buddy id="header_elem" title="Home"></header-buddy>
+    <div id="signin_div" hidden=true>Please sign in.</div>
+    <div id="welcome_div" hidden=true>
+      Welcome to the Content Management System. 
+      Please use the menu on the top left of the screen to navigate.
     </div>
   </body>
 </html>

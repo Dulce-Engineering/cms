@@ -18,13 +18,12 @@ class De_Project
     return db.Select_Objs("project", De_Project);
   }
 
-  static Select_All_By_User(db)
+  static Select_All_By_User(db, uid)
   {
     let res;
 
-    if (db.auth.currentUser)
+    if (uid)
     {
-      const uid = db.auth.currentUser.uid;
       const where = [{field: "uids", op: "array-contains", value: uid}];
       res = db.Select_Objs("project", De_Project, where);  
     }

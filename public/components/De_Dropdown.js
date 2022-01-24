@@ -2,6 +2,8 @@ import Utils from "../lib/Utils.js";
 
 class De_Dropdown extends HTMLElement 
 {
+  static tname = "de-dropdown";
+
   constructor() 
   {
     super();

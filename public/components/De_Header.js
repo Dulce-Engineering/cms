@@ -16,13 +16,13 @@ class De_Header extends HTMLElement
     this.On_Sign_In_Clicked = this.On_Sign_In_Clicked.bind(this);
     this.On_Sign_Out_Clicked = this.On_Sign_Out_Clicked.bind(this);
     this.On_Acc_Clicked = this.On_Acc_Clicked.bind(this);
-
-    this.Render();
   }
 
   connectedCallback()
   {
     this.auth.onAuthStateChanged(this.On_Auth_State_Changed);
+
+    this.Render();
   }
 
   disconnectedCallback()
