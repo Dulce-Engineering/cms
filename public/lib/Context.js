@@ -31,6 +31,27 @@ class Context
       dest_elem[id] = elem;
     }
   }
+
+  static Toast_Show(msg, style_class)
+  {
+    const div = document.createElement("div");
+    div.style.position = "fixed";
+    div.style.left = "20%";
+    div.style.top = "10px";
+    div.style.textAlign = "center";
+    div.style.padding = "10px";
+    div.style.backgroundColor = "#f004";
+    div.style.right = "20%";
+    div.innerText = msg;
+    div.classList.add(style_class);
+    document.body.append(div);
+    setTimeout(() => Context.Hide_Toast(div), 5000);
+  }
+
+  static Hide_Toast(toast_elem)
+  {
+    toast_elem.remove();
+  }
 }
 
 export default Context;

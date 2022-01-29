@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>deCMS - Home</title>
+    <title>deCMS - Projects</title>
 
     <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.css"/>
     <link type="text/css" rel="stylesheet" href="styles.css"  />
@@ -13,8 +13,6 @@
       import Context from "./lib/Context.js";
       import Datasource from "./node_modules/table-buddy/Datasource.mjs";
       import De_Project from "./lib/De_Project.js"
-
-      //import "../components/index.js";
       import Header_Buddy from './node_modules/header-buddy/Header_Buddy.js';
       import Table_Buddy from './node_modules/table-buddy/Table_Buddy.mjs';
       import Menu_Buddy from './node_modules/menu-buddy/Menu_Buddy.mjs';
@@ -168,7 +166,8 @@
       {
         await projects_elem.Set_Datasource(null);
         //projects_elem.removeEventListener("clickrow", Reg_Forms_Click_Row);
-        projects_elem.Render_Msg("You must sign in.");
+        //projects_elem.Render_Msg("You must sign in.");
+        Context.Toast_Show("You must sign in.", "warning");
       }
     </script>
   </head>
