@@ -390,6 +390,10 @@ class Utils
         alert("There was a problem.");
       }
     }
+    else
+    {
+      alert("There was a problem.");
+    }
   }
   
   static hasValue(data)
