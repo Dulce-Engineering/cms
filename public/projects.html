@@ -7,7 +7,7 @@
     <title>deCMS - Projects</title>
 
     <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.css"/>
-    <link type="text/css" rel="stylesheet" href="styles.css"  />
+    <link type="text/css" rel="stylesheet" href="styles/styles.css"  />
 
     <script type="module">
       import Context from "./lib/Context.js";
@@ -17,12 +17,11 @@
       import Table_Buddy from './node_modules/table-buddy/Table_Buddy.mjs';
       import Menu_Buddy from './node_modules/menu-buddy/Menu_Buddy.mjs';
       import Menu_Buddy_Btn from './node_modules/menu-buddy/Menu_Buddy_Btn.mjs';
-      customElements.define(Header_Buddy.tname, Header_Buddy);
       customElements.define(Table_Buddy.tname, Table_Buddy);
       customElements.define(Menu_Buddy.tname, Menu_Buddy);
       customElements.define(Menu_Buddy_Btn.tname, Menu_Buddy_Btn);
+      customElements.define(Header_Buddy.tname, Header_Buddy);
       
-      let ctx;
       const align_left = "text-align: left;";
 
       class Projects_Ds extends Datasource.Memory
@@ -46,6 +45,7 @@
           const cols =
           [
             {title_fn: this.Render_Header_Row_Actions, field_fn: this.Render_Row_Actions, style: align_left}, 
+            new Table_Buddy.Column_No(align_left), 
             {title: "Id", field_name: "id", style: align_left}, 
             {title: "Title", field_name: "title", style: align_left}, 
             {title: "Key", field_name: "key", style: align_left},
@@ -60,6 +60,8 @@
           this.data = await De_Project.Select_All_By_User(this.ctx.db, this.ctx.user.uid, sort_by, filter_by);
         }
 
+        // colum options ==========================================================================
+        
         Render_Header_Row_Actions()
         {
           const m =
@@ -69,32 +71,9 @@
             options: 
             [
               {title: "Add", on_click_fn: this.Add_Option_On_Click}, 
-              {title: "Columns"}, 
-              {title: "Filter"}, 
-              {title: "Sort"}
-            ]
-          };
-
-          const main_menu = new Menu_Buddy_Btn();
-          main_menu.innerHTML = "&equiv;";
-          main_menu.menu = m;
-          //main_menu.menu_buddy.style.width = "200px";
-
-          return main_menu; 
-        }
-
-        Render_Row_Actions(project)
-        {
-          const m =
-          {
-            title: "Project Actions",
-            class_name: "menu",
-            options: 
-            [
-              {title: "Components", on_click_fn: this.Components_Option_On_Click, project_id: project.id}, 
-              {title: "View", on_click_fn: this.View_Option_On_Click, project_id: project.id}, 
-              {title: "Edit", on_click_fn: this.Edit_Option_On_Click, project_id: project.id}, 
-              {title: "Delete", on_click_fn: this.Del_Option_On_Click, project_id: project.id}
+              //{title: "Columns"}, 
+              //{title: "Filter"}, 
+              //{title: "Sort"}
             ]
           };
 
@@ -111,14 +90,34 @@
           window.open("project.html", "_self");
         }
 
+        // row options ============================================================================
+
+        Render_Row_Actions(project)
+        {
+          const m =
+          {
+            title: "Project Actions",
+            class_name: "menu",
+            options: 
+            [
+              {title: "Components", on_click_fn: this.Components_Option_On_Click, project_id: project.id}, 
+              {title: "Edit", on_click_fn: this.Edit_Option_On_Click, project_id: project.id}, 
+              {title: "Delete", on_click_fn: this.Del_Option_On_Click, project_id: project.id}
+            ]
+          };
+
+          const main_menu = new Menu_Buddy_Btn();
+          main_menu.innerHTML = "&equiv;";
+          main_menu.menu = m;
+          //main_menu.menu_buddy.style.width = "200px";
+
+          return main_menu; 
+        }
+
         async Edit_Option_On_Click(event, option)
         {
           const id = option.project_id;
           window.open("project.html?id=" + id, "_self");
-        }
-
-        async View_Option_On_Click(event)
-        {
         }
 
         async Components_Option_On_Click(event, option)
@@ -150,19 +149,16 @@
       window.onload = Main;
       function Main()
       {
-        Context.Set_Id_Shortcuts(document, window);
-
-        ctx = new Context();
-        header_elem.Init(ctx, Header_Signed_In, Header_Signed_Out);
+        new Context(Header_Signed_In, Header_Signed_Out);
       }
       
-      function Header_Signed_In()
+      function Header_Signed_In(ctx)
       {
         const ds = new Projects_Ds(ctx, projects_elem);
         //projects_elem.addEventListener("clickrow", Reg_Forms_Click_Row);
       }
 
-      async function Header_Signed_Out()
+      async function Header_Signed_Out(ctx)
       {
         await projects_elem.Set_Datasource(null);
         //projects_elem.removeEventListener("clickrow", Reg_Forms_Click_Row);
@@ -174,6 +170,6 @@
 
   <body>
     <header-buddy id="header_elem" title="CMS - Projects"></header-buddy>
-    <table-buddy id="projects_elem" xstyle-src="styles/reg_forms.css"></table-buddy>
+    <table-buddy id="projects_elem" style-src="/styles/table.css"></table-buddy>
   </body>
 </html>

@@ -1,0 +1,33 @@
+table
+{
+  background-color: #fff;
+  width: 100%;
+  border: 10px solid #fff;
+  border-collapse: collapse;
+}
+
+th
+{
+  background-color: #eee;
+  padding: 8px 8px;
+}
+
+th:first-child
+{
+  border-radius: 8px 0px 0px 8px;
+}
+
+th:last-child
+{
+  border-radius: 0px 8px 8px 0px;
+}
+
+tbody td
+{
+  padding: 10px 8px;
+}
+
+tbody tr
+{
+  border-bottom: 1px solid #ddd;
+}

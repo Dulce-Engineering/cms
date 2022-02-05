@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>BrandKind Admin - Home</title>
+    <title>deCMS</title>
 
     <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.css"/>
     <link type="text/css" rel="stylesheet" href="styles/styles.css"  />
@@ -29,26 +29,26 @@
 
     <script type="module">
       import Context from "./lib/Context.js";
-      //import "../components/index.js";
+      import Menu_Buddy from './node_modules/menu-buddy/Menu_Buddy.mjs';
+      import Menu_Buddy_Btn from './node_modules/menu-buddy/Menu_Buddy_Btn.mjs';
       import Header_Buddy from './node_modules/header-buddy/Header_Buddy.js';
+      customElements.define(Menu_Buddy.tname, Menu_Buddy);
+      customElements.define(Menu_Buddy_Btn.tname, Menu_Buddy_Btn);
       customElements.define(Header_Buddy.tname, Header_Buddy);
 
       window.onload = Main;
       function Main()
       {
-        Context.Set_Id_Shortcuts(document, window);
-
-        const ctx = new Context();
-        header_elem.Init(ctx, Header_Signed_In, Header_Signed_Out);
+        new Context(Header_Signed_In, Header_Signed_Out);
       }
       
-      function Header_Signed_In()
+      function Header_Signed_In(ctx)
       {
         welcome_div.hidden = false;
         signin_div.hidden = true;
       }
 
-      async function Header_Signed_Out()
+      async function Header_Signed_Out(ctx)
       {
         welcome_div.hidden = true;
         signin_div.hidden = false;

@@ -9,10 +9,8 @@ import Db from "./De_Db_Firestore.js";
 
 class Context
 {
-  constructor(app_name)
+  constructor(Header_Signed_In, Header_Signed_Out)
   {
-    //this.fb_app = firebase.app(app_name);
-    //this.fb_auth = firebase.auth(this.fb_app);
     this.fb_app = firebase.app();
     this.fb_anl = firebase.analytics();
     this.fb_fns = firebase.functions();
@@ -20,6 +18,25 @@ class Context
     this.fb_db = firebase.firestore();
     this.db = new Db(this.fb_db);
     //this.cache = new Client_Cache_Local();
+
+    this.Init(Header_Signed_In, Header_Signed_Out)
+  }
+
+  Init(Header_Signed_In, Header_Signed_Out)
+  {
+    Context.Set_Id_Shortcuts(document, window);
+
+    const m =
+    {
+      title: "deCMS",
+      class_name: "menu",
+      options: 
+      [
+        {title: "Projects", on_click_fn: () => window.open("projects.html", "_self")}, 
+        {title: "Components", on_click_fn: () => window.open("components.html", "_self")}, 
+      ]
+    };
+    header_elem.Init(this, Header_Signed_In, Header_Signed_Out, null, m);
   }
 
   static Set_Id_Shortcuts(src_elem, dest_elem)
