@@ -5,28 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>deCMS - Edit Text Component</title>
 
-    <script src="/__/firebase/8.6.8/firebase.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.js"></script>
-    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.css"  />
-
-    <script src="/components/index.js" type="module"></script>
-    <link type="text/css" rel="stylesheet" href="styles.css"  />
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.css"/>
+    <link type="text/css" rel="stylesheet" href="/styles/styles.css"  />
     
     <script type="module">
-      import Utils from "./lib/Utils.js";
+      import Context from "./lib/Context.js";
       import De_Project from "./lib/De_Project.js";
       import De_Component from "./lib/De_Component.js";
-      import De_Db_Firestore from "./lib/De_Db_Firestore.js";
+      import Utils from "./lib/Utils.js";
+      import Header_Buddy from './node_modules/header-buddy/Header_Buddy.js';
+      import Menu_Buddy from './node_modules/menu-buddy/Menu_Buddy.mjs';
+      import Menu_Buddy_Btn from './node_modules/menu-buddy/Menu_Buddy_Btn.mjs';
+      customElements.define(Header_Buddy.tname, Header_Buddy);
+      customElements.define(Menu_Buddy.tname, Menu_Buddy);
+      customElements.define(Menu_Buddy_Btn.tname, Menu_Buddy_Btn);
 
       window.onload = Main;
-      let db;
       let component;
 
-      async function Main()
+      function Main()
       {
-        db = new De_Db_Firestore();
+        new Context(Header_Signed_In, Header_Signed_Out);
+      }
 
-        await Prepare_Fields(db);
+      async function Header_Signed_In(ctx)
+      {
+        await Prepare_Fields(ctx.db);
 
         // prepare object
         const urlParams = new URLSearchParams(window.location.search);
@@ -34,7 +38,7 @@
         const project_id = urlParams.get('project_id');
         if (id) // edit form
         {
-          component = await De_Component.Select_By_Id(db, id);
+          component = await De_Component.Select_By_Id(ctx.db, id);
         }
         else // add form
         {
@@ -52,68 +56,44 @@
         // populate fields
         Obj_To_Fields(component);
 
-        const ok_btn = document.getElementById("ok_btn");
-        ok_btn.addEventListener("click", On_Click_Save);
-
-        const cancel_btn = document.getElementById("cancel_btn");
+        ok_btn.addEventListener("click", () => On_Click_Save(ctx));
         cancel_btn.addEventListener("click", On_Click_Cancel);
+      }
+
+      function Header_Signed_Out(ctx)
+      {
+        Clear_Fields();
+        Context.Toast_Show("You must sign in.", "warning");
       }
 
       async function Prepare_Fields(db)
       {
-        const projects_elem = document.getElementById("project_value");
         const projects = await De_Project.Select_All(db);
         for (const project of projects)
         {
           const option_elem = document.createElement("option");
           option_elem.value = project.id;
           option_elem.innerText = project.title;
-          projects_elem.append(option_elem);
+          project_value.append(option_elem);
         }
       }
 
       function Obj_To_Fields(component)
       {
-        let value_elem = document.getElementById("id_value");
-        value_elem.innerText = component.id;
-
-        value_elem = document.getElementById("title_value");
-        value_elem.value = component.title;
-
-        value_elem = document.getElementById("key_value");
-        value_elem.value = component.key;
-
-        value_elem = document.getElementById("type_value");
-        value_elem.innerText = component.content_type;
-
-        value_elem = document.getElementById("content_value");
-        value_elem.innerHTML = component.content;
-
-        value_elem = document.getElementById("project_value");
-        value_elem.value = component.project_id;
+        id_value.innerText = component.id;
+        title_value.value = component.title;
+        key_value.value = component.key;
+        type_value.innerText = component.content_type;
+        content_value.innerHTML = component.content;
+        project_value.value = component.project_id;
       }
 
       function Fields_To_Obj(component)
       {
-        let value_elem
-
-        //value_elem = document.getElementById("id_value");
-        //component.id = value_elem.innerText;
-
-        value_elem = document.getElementById("title_value");
-        component.title = value_elem.value;
-
-        value_elem = document.getElementById("key_value");
-        component.key = value_elem.value;
-
-        //value_elem = document.getElementById("type_value");
-        //component.content_type = value_elem.innerText;
-
-        value_elem = document.getElementById("content_value");
-        component.content = value_elem.value;
-
-        value_elem = document.getElementById("project_value");
-        component.project_id = value_elem.value;
+        component.title = title_value.value;
+        component.key = key_value.value;
+        component.content = content_value.value;
+        component.project_id = project_value.value;
       }
 
       function Return_To_Page()
@@ -121,10 +101,10 @@
         window.history.back();
       }
 
-      async function On_Click_Save()
+      async function On_Click_Save(ctx)
       {
         Fields_To_Obj(component);
-        const is_saved = await component.Save(db);
+        const is_saved = await component.Save(ctx.db);
         if (is_saved)
         {
           Return_To_Page();
@@ -143,7 +123,7 @@
   </head>
 
   <body>
-    <de-header title="Component - Text"></de-header>
+    <header-buddy id="header_elem" title="CMS - Component - Text"></header-buddy>
 
     <div id="form">
       <label id="id_label">Id.</label><span id="id_value" class="field_value"></span>
@@ -151,11 +131,7 @@
       <label>Key</label><input id="key_value" class="field_value">
       <label>Type</label><span id="type_value" class="field_value"></span>
       <label>Content</label><textarea id="content_value" rows="20" cols="60" class="field_value"></textarea>
-
-      <label>Project</label>
-      <select id="project_value" class="field_value">
-        <option>None</option>
-      </select>
+      <label>Project</label><select id="project_value" class="field_value"><option>None</option></select>
 
       <label></label>
       <span>

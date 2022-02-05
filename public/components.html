@@ -53,12 +53,12 @@
 
         Get_Columns()
         {
-          this.sel_col = new Table_Buddy.Column_Select("id");
+          this.sel_col = new Table_Buddy.Column_Select("id", align_left);
           const cols =
           [
             {title_fn: this.Render_Col_Menu, field_fn: this.Render_Row_Menu, style: align_left}, 
             this.sel_col, 
-            new Table_Buddy.Column_No(), 
+            new Table_Buddy.Column_No(align_left), 
             {title: "Id", field_name: "id", style: align_left}, 
             {title: "Title", field_name: "title", style: align_left}, 
             {title: "Key", field_name: "key", style: align_left},
