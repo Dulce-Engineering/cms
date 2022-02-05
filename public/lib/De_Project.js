@@ -41,13 +41,12 @@ class De_Project
     return db.Select_Obj("project", De_Project, [{field: "key", op: "==", value: key}]);
   }
 
-  Save(db)
+  Save(db, uid)
   {
     let res;
 
-    if (db.auth.currentUser)
+    if (uid)
     {
-      const uid = db.auth.currentUser.uid;
       this.uids = [uid];
       res = db.Save(this, "project");
     }

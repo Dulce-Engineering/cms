@@ -7,7 +7,7 @@
     <title>deCMS - Project</title>
 
     <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.css"/>
-    <link type="text/css" rel="stylesheet" href="styles.css"  />
+    <link type="text/css" rel="stylesheet" href="/styles/styles.css"  />
     
     <script type="module">
       import Context from "./lib/Context.js";
@@ -21,24 +21,20 @@
       customElements.define(Menu_Buddy_Btn.tname, Menu_Buddy_Btn);
 
       window.onload = Main;
-      let ctx;
       let project;
 
       function Main()
       {
-        Context.Set_Id_Shortcuts(document, window);
-
-        ctx = new Context();
-        header_elem.Init(ctx, Header_Signed_In, Header_Signed_Out);
+        new Context(Header_Signed_In, Header_Signed_Out);
       }
 
-      function Header_Signed_Out()
+      function Header_Signed_Out(ctx)
       {
         Clear_Fields();
         Context.Toast_Show("You must sign in.", "warning");
       }
 
-      async function Header_Signed_In()
+      async function Header_Signed_In(ctx)
       {
         await Prepare_Fields(ctx.db);
 
@@ -59,10 +55,7 @@
         // populate fields
         Obj_To_Fields(project);
 
-        const ok_btn = document.getElementById("ok_btn");
-        ok_btn.addEventListener("click", On_Click_Save);
-
-        const cancel_btn = document.getElementById("cancel_btn");
+        ok_btn.addEventListener("click", () => On_Click_Save(ctx));
         cancel_btn.addEventListener("click", On_Click_Cancel);
       }
 
@@ -98,17 +91,17 @@
         window.history.back();
       }
 
-      async function On_Click_Save()
+      async function On_Click_Save(ctx)
       {
         Fields_To_Obj(project);
-        const is_saved = await project.Save(db);
+        const is_saved = await project.Save(ctx.db, ctx.user.uid);
         if (is_saved)
         {
           Return_To_Page();
         }
         else
         {
-          Utils.Handle_Errors(db);
+          Utils.Handle_Errors(ctx.db);
         }
       }
 
