@@ -117,15 +117,14 @@
           window.open(url, "_self");
         }
 
-        async Del_Sel_On_Click(event, )
+        async Del_Sel_On_Click(event)
         {
           const msg = "Are you sure?";
           if (window.confirm(msg))
           {
             for (const id of this.sel_col.selected_ids)
             {
-              //const is_deleted = await De_Component.Delete(this.ctx.db, id);
-              const is_deleted = false;
+              const is_deleted = await De_Component.Delete(this.ctx.db, id);
               if (!is_deleted)
               {
                 Utils.Handle_Errors(this.ctx.db);
@@ -169,13 +168,10 @@
 
         async Del_On_Click(event, option)
         {
-          const data = event.target.item_data;
-
           const confirmed = window.confirm("Are you sure?");
           if (confirmed)
           {
-            //const is_deleted = await De_Component.Delete(this.db, data.id);
-            const is_deleted = false;
+            const is_deleted = await De_Component.Delete(this.ctx.db, option.component_id);
             if (is_deleted)
             {
               this.table_elem.Update_Render();
