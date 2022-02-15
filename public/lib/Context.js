@@ -3,6 +3,7 @@ import '/__/firebase/9.4.0/firebase-functions-compat.js';
 import '/__/firebase/9.4.0/firebase-analytics-compat.js';
 import '/__/firebase/9.4.0/firebase-auth-compat.js';
 import '/__/firebase/9.4.0/firebase-firestore-compat.js';
+import '/__/firebase/9.4.0/firebase-storage-compat.js';
 import '/__/firebase/init.js?useEmulator=true';
 import Db from "./De_Db_Firestore.js";
 //import Client_Cache_Local from "../node_modules/cache-buddy/Client_Cache_Local.js";
@@ -16,6 +17,7 @@ class Context
     this.fb_fns = firebase.functions();
     this.fb_auth = firebase.auth();
     this.fb_db = firebase.firestore();
+    this.fb_strg = firebase.storage();
     this.db = new Db(this.fb_db);
     //this.cache = new Client_Cache_Local();
 
@@ -34,6 +36,7 @@ class Context
       [
         {title: "Projects", on_click_fn: () => window.open("projects.html", "_self")}, 
         {title: "Components", on_click_fn: () => window.open("components.html", "_self")}, 
+        {title: "Products", on_click_fn: () => window.open("products.html", "_self")}, 
       ]
     };
     header_elem.Init(this, Header_Signed_In, Header_Signed_Out, null, m);

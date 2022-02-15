@@ -12,27 +12,6 @@ class De_Db_Firestore
   {
 
   }
-  
-  async Select_Values(field_name, table_name, where)
-  {
-    let res;
-
-    const table = this.db.collection(table_name);
-    const query = this.Add_Where(table, where);
-    const query_res = await query.get();
-    if (!query_res.empty)
-    {
-      res = [];
-      for (const row of query_res.docs)
-      {
-        const obj = row.data();
-        const value = obj[field_name];
-        res.push(value);
-      }
-    }
-
-    return res;
-  }
 
   async Select_Obj(table_name, class_type, where)
   {
@@ -53,7 +32,59 @@ class De_Db_Firestore
     return res;
   }
 
+  async Select_Obj_By_Id(id, table_name, class_type)
+  {
+    let class_obj;
+
+    const table = this.db.collection(table_name);
+    const query = table.doc(id);
+    const query_res = await query.get();
+    if (query_res.exists)
+    {
+      const obj = query_res.data();
+      obj.id = query_res.id;
+      class_obj = new class_type(obj);
+    }
+
+    return class_obj;
+  }
+  
+  async Select_Values(field_name, table_name, where)
+  {
+    let res;
+
+    const objs = await this.Select(table_name, where);
+    if (!De_Db_Firestore.Is_Empty(objs))
+    {
+      res = [];
+      for (const obj of objs)
+      {
+        res.push(obj[field_name]);
+      }
+    }
+
+    return res;
+  }
+
   async Select_Objs(table_name, class_type, where)
+  {
+    let res;
+
+    const objs = await this.Select(table_name, where);
+    if (!De_Db_Firestore.Is_Empty(objs))
+    {
+      res = [];
+      for (const obj of objs)
+      {
+        const class_obj = new class_type(obj);
+        res.push(class_obj);
+      }
+    }
+
+    return res;
+  }
+
+  async Select(table_name, where)
   {
     let res, query_res;
 
@@ -72,31 +103,13 @@ class De_Db_Firestore
       res = [];
       for (const row of query_res.docs)
       {
-        const raw_obj = row.data();
-        raw_obj.id = row.id;
-        const class_obj = new class_type(raw_obj);
-        res.push(class_obj);
+        const obj = row.data();
+        obj.id = row.id;
+        res.push(obj);
       }
     }
 
     return res;
-  }
-
-  async Select_Obj_By_Id(id, table_name, class_type)
-  {
-    let class_obj;
-
-    const table = this.db.collection(table_name);
-    const query = table.doc(id);
-    const query_res = await query.get();
-    if (query_res.exists)
-    {
-      const obj = query_res.data();
-      obj.id = query_res.id;
-      class_obj = new class_type(obj);
-    }
-
-    return class_obj;
   }
 
   async Save(class_obj, table_name)
@@ -119,7 +132,7 @@ class De_Db_Firestore
   {
     let res = false;
 
-    const obj = Utils.To_Obj(class_obj);
+    const obj = this.To_Obj(class_obj);
     delete obj.id;
     const table = this.db.collection(table_name);
 
@@ -141,7 +154,7 @@ class De_Db_Firestore
   {
     let res = false;
 
-    const obj = Utils.To_Obj(class_obj);
+    const obj = this.To_Obj(class_obj);
     const id = obj.id;
     delete obj.id;
     const table = this.db.collection(table_name);
@@ -173,6 +186,16 @@ class De_Db_Firestore
     {
       this.last_error = e;
     }
+
+    return res;
+  }
+
+  async Exists(table_name, id)
+  {
+    const table = this.db.collection(table_name);
+    const query = table.doc(id);
+    const query_res = await query.get();
+    const res = query_res.exists;
 
     return res;
   }
@@ -220,6 +243,42 @@ class De_Db_Firestore
     }
 
     return db_where;
+  }
+
+  To_Obj(class_obj)
+  {
+    return class_obj.To_Db_Obj ? class_obj.To_Db_Obj(class_obj) : Utils.To_Obj(class_obj);
+  }
+
+  static Is_Empty(items)
+  {
+    let res = false;
+
+    if (items == null || items == undefined)
+    {
+      res = true;
+    }
+    else if (Array.isArray(items))
+    {
+      if (items.length == 0)
+      {
+        res = true;
+      }
+    }
+    else if (typeof items == "string")
+    {
+      const str = items.trim();
+      if (str.length == 0 || str == "")
+      {
+        res = true;
+      }
+    }
+    else if (items.length == 0)
+    {
+      res = true;
+    }
+
+    return res;
   }
 }
 

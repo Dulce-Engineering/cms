@@ -1,0 +1,48 @@
+:host
+{
+  xborder: 2px solid #f003;
+  background-color: #eee;
+  padding: 8px;
+}
+
+ul
+{
+  display: flex;
+  padding: 0;
+  margin: 8px 0px 0px 0px;
+  list-style: none;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+button
+{
+  border: none;
+  padding: 6px 12px;
+  margin: 0;
+  background-color: #faac;
+  border-radius: 5px;
+  font-family: 'Roboto';
+  font-size: 12px;
+  cursor: pointer;
+}
+button:focus-visible
+{
+  background-color: #faaf;
+}
+button:hover
+{
+  background-color: #faaf;
+}
+
+li
+{
+  position: relative;
+}
+li button
+{
+  position: absolute;
+  background-color: #faac;
+  left: 4px;
+  top: 4px;
+}
