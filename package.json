@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "deploy": "firebase deploy --only hosting",
-    "start": "firebase serve --only hosting"
+    "start": "firebase serve --only hosting",
+    "startf": "firebase serve --only hosting,functions"
   },
   "author": "Steven Ramirez",
   "license": "ISC",

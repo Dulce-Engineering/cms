@@ -1,17 +1,17 @@
-class De_Comp extends HTMLElement 
+class De_Sample_Component extends HTMLElement 
 {
+  static tname = "de-sample";
+
   constructor() 
   {
     super();
 
     this.attachShadow({mode: 'open'});
-    const rootElem = this.render();
-    this.shadowRoot.append(rootElem);
   }
 
   connectedCallback()
   {
-
+    this.render();
   }
 
   disconnectedCallback()
@@ -36,12 +36,11 @@ class De_Comp extends HTMLElement
 
   render()
   {
-    console.log("nxComp.render()");
     const div = document.createElement("div");
     div.append("Hasta la vista React!!!");
 
-    return div;
+    this.shadowRoot.append(div);
   }
 }
 
-export default De_Comp;
+export default De_Sample_Component;

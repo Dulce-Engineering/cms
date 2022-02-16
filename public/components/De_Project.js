@@ -3,6 +3,8 @@ import Project from "../lib/De_Project.js";
 
 class De_Project extends HTMLElement 
 {
+  static tname = "de-project";
+
   constructor() 
   {
     super();

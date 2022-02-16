@@ -10,6 +10,7 @@ class De_Product
     this.name = null;
     this.price = null;
     this.project_id = null;
+    this.brand_id = null;
     this.images = null;
 
     Utils.To_Class_Obj(data, this);
@@ -21,7 +22,8 @@ class De_Product
       id: this.id,
       name: this.name,
       price: this.price,
-      project_id: this.project_id
+      project_id: this.project_id,
+      brand_id: this.brand_id
     };
   } 
 
@@ -43,10 +45,39 @@ class De_Product
     return db.Select_Objs(De_Product.table_name, De_Product, where);
   }
 
+  static Select_By_Project(db, project_id)
+  {
+    const where = [{field: "project_id", op: "==", value: project_id}];
+    return db.Select_Objs(De_Product.table_name, De_Product, where);
+  }
+
+  Get_Tag(db, tag_id)
+  {
+    const where = 
+    [
+      {field: "product_id", op: "==", value: this.id},
+      {field: "tag_id", op: "==", value: tag_id}
+    ];
+    return db.Select_Row("product_tag", where);
+  }
+
+  async Get_Brand_Name(db)
+  {
+    let res;
+
+    const brand = await db.Select_Row_By_Id(this.brand_id, "brand");
+    if (brand)
+    {
+      res = brand.name;
+    }
+
+    return res;
+  }
+
   static async Select_By_Id(db, db_strg, id)
   {
     const product = await db.Select_Obj_By_Id(id, De_Product.table_name, De_Product);
-    product.images = await De_Product_Image.Get_Images_By_Product_Id(db, db_strg, id);
+    product.images = await De_Product_Image.Get_Images_By_Product(db, db_strg, id);
 
     return product;
   }
@@ -65,7 +96,7 @@ class De_Product
   async Save(db, db_strg)
   {
     await db.Save(this, De_Product.table_name);
-    await De_Product_Image.Save_By_Product_Id(db, db_strg, this.id, this.images);
+    await De_Product_Image.Save_By_Product(db, db_strg, this.id, this.images);
 
     return true;
   }
@@ -97,13 +128,13 @@ class De_Product_Image
     };
   } 
 
-  static Select_By_Product_Id(db, product_id)
+  static Select_By_Product(db, product_id)
   {
     const where = [{field: "product_id", op: "==", value: product_id}];
     return db.Select_Objs(De_Product_Image.table_name, De_Product_Image, where);
   }
 
-  static async Get_Images_By_Product_Id(db, db_strg, product_id)
+  static async Get_Images_By_Product(db, db_strg, product_id)
   {
     let files;
     const where = [{field: "product_id", op: "==", value: product_id}];
@@ -123,7 +154,7 @@ class De_Product_Image
     return files;
   }
 
-  static async Save_By_Product_Id(db, db_strg, product_id, files)
+  static async Save_By_Product(db, db_strg, product_id, files)
   {
     await De_Product_Image.Delete_Missing(db, db_strg, files, product_id);
     await De_Product_Image.Insert_New(db, db_strg, files, product_id);
@@ -131,7 +162,7 @@ class De_Product_Image
 
   static async Delete_Missing(db, db_strg, files, product_id)
   {
-    const prod_images = await De_Product_Image.Select_By_Product_Id(db, product_id);
+    const prod_images = await De_Product_Image.Select_By_Product(db, product_id);
     if (!Utils.isEmpty(prod_images))
     {
       for (const prod_image of prod_images)
@@ -168,6 +199,7 @@ class De_Product_Image
     await db.Save(this, De_Product_Image.table_name);
     if (this.image)
     {
+      //this.image.new_id = this.id;
       const ref = db_strg.ref().child(De_Product_Image.table_name + "/" + this.id);
       if (!await this.Image_Exists(db_strg))
       {

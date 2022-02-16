@@ -4,18 +4,52 @@ class De_Db_Firestore
 {
   constructor(fb_db)
   {
-    this.db = fb_db;
+    if (fb_db)
+    {
+      this.db = fb_db;
+    }
+    else if (firebase)
+    {
+      this.app = firebase.app("de-cms");
+      if (this.app)
+      {
+        this.db = this.app.firestore();
+        //this.auth = firebase.auth(this.app);
+        //this.fns = firebase.functions(this.app);
+      }
+    }
     this.last_error = null;
   }
   
-  async Select_Value()
+  async Select_Value(table_name, field_name, where)
   {
+    let res;
 
+    const obj = await this.Select_Row(table_name, where);
+    if (obj)
+    {
+      res = obj[field_name];
+    }
+
+    return res;
   }
 
   async Select_Obj(table_name, class_type, where)
   {
     let res;
+
+    const obj = await this.Select_Row(table_name, where);
+    if (obj)
+    {
+      res = new class_type(obj);
+    }
+
+    return res;
+  }
+
+  async Select_Row(table_name, where)
+  {
+    let obj;
 
     const table = this.db.collection(table_name);
     const query = this.Add_Where(table, where).limit(1);
@@ -23,30 +57,40 @@ class De_Db_Firestore
     if (!query_res.empty)
     {
       const row = query_res.docs[0];
-      const raw_obj = row.data();
-      raw_obj.id = row.id;
-      const class_obj = new class_type(raw_obj);
-      res = class_obj;
+      obj = row.data();
+      obj.id = row.id;
+    }
+
+    return obj;
+  }
+
+  async Select_Obj_By_Id(id, table_name, class_type)
+  {
+    let res;
+
+    const obj = await this.Select_Row_By_Id(id, table_name);
+    if (obj)
+    {
+      res = new class_type(obj);
     }
 
     return res;
   }
 
-  async Select_Obj_By_Id(id, table_name, class_type)
+  async Select_Row_By_Id(id, table_name)
   {
-    let class_obj;
+    let obj;
 
     const table = this.db.collection(table_name);
     const query = table.doc(id);
     const query_res = await query.get();
     if (query_res.exists)
     {
-      const obj = query_res.data();
+      obj = query_res.data();
       obj.id = query_res.id;
-      class_obj = new class_type(obj);
     }
 
-    return class_obj;
+    return obj;
   }
   
   async Select_Values(field_name, table_name, where)

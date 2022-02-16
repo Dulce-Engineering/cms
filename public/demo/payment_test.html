@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>CMS Demo - Payments</title>
+    <link type="text/css" rel="stylesheet" href="/styles/styles.css"/>
+    <style>
+      main
+      {
+        margin: 20px 0px;
+        padding: 20px;
+        background-color: #fff;
+      }
+    </style>
+    <script type="text/javascript" src="https://sandbox.web.squarecdn.com/v1/square.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase.js"></script>
+    <script type="module">
+      //import 'https://www.gstatic.com/firebasejs/9.4.0/firebase-app-compat.js';
+      //import 'https://www.gstatic.com/firebasejs/9.4.0/firebase-auth-compat.js';
+      //import 'https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore-compat.js';
+      import '/__/firebase/9.4.0/firebase-app-compat.js';
+      import '/__/firebase/9.4.0/firebase-auth-compat.js';
+      import '/__/firebase/9.4.0/firebase-firestore-compat.js';
+
+      import Square from "../lib/Square.js";
+      import "../components/index_ext.js";
+
+      window.onload = Main;
+      const square = new Square();
+
+      async function Main()
+      {
+        document.getElementById("pay_btn").addEventListener("click", On_Click_Pay_Btn);
+
+        const appId = 'sandbox-sq0idb-CNQ94Dzj8pmDeQ9wsi94WA';
+        const locationId = 'LDMH1XZKVK4C9';
+        await square.Init(appId, locationId, "#cc_div");
+      }
+
+      async function On_Click_Pay_Btn()
+      {
+        const pay_res = await square.Process_Payment();
+        console.log("On_Click_Pay_Btn(): pay_res =", pay_res);
+      }
+    </script>
+  </head>
+
+  <body>
+    <main>
+      <de-project id="cw" key="catwalk"></de-project>
+      <de-product-gallery project-id="cw"></de-product-gallery>
+      <de-cart></de-cart>
+      <div id="cc_div"></div>
+      <button id="pay_btn">Pay $1.00</button>
+    </main>
+  </body>
+</html>
