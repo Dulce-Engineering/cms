@@ -15,6 +15,7 @@ class De_Product_Gallery extends HTMLElement
     this.db = new De_Db_Firestore();
 
     this.On_Project_Connected = this.On_Project_Connected.bind(this);
+    this.On_Click_Add_To_Cart = this.On_Click_Add_To_Cart.bind(this);
   }
 
   connectedCallback()
@@ -43,9 +44,10 @@ class De_Product_Gallery extends HTMLElement
     this.Render_Products();
   }
 
-  On_Click_Add_To_Cart()
+  On_Click_Add_To_Cart(event)
   {
-
+    const addproduct = new CustomEvent('addproduct', { detail: event.target.product });
+    this.dispatchEvent(addproduct);
   }
 
   // rendering ====================================================================================
@@ -100,6 +102,7 @@ class De_Product_Gallery extends HTMLElement
     product_elem.append(image_elem);
     // add to cart
     const btn_elem = document.createElement("button");
+    btn_elem.product = product;
     btn_elem.addEventListener("click", this.On_Click_Add_To_Cart);
     btn_elem.innerText = "Add to Cart";
     product_elem.append(btn_elem);

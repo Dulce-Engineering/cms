@@ -61,17 +61,19 @@ class De_Product
     return db.Select_Row("product_tag", where);
   }
 
-  async Get_Brand_Name(db)
+  Get_Tag_Data(db, tag_id)
   {
-    let res;
+    const where = 
+    [
+      {field: "product_id", op: "==", value: this.id},
+      {field: "tag_id", op: "==", value: tag_id}
+    ];
+    return db.Select_Value("product_tag", "data", where);
+  }
 
-    const brand = await db.Select_Row_By_Id(this.brand_id, "brand");
-    if (brand)
-    {
-      res = brand.name;
-    }
-
-    return res;
+  Get_Brand_Name(db)
+  {
+    return db.Select_Value_By_Id(this.brand_id, "brand", "name");
   }
 
   static async Select_By_Id(db, db_strg, id)

@@ -33,6 +33,19 @@ class De_Db_Firestore
 
     return res;
   }
+  
+  async Select_Value_By_Id(id, table_name, field_name)
+  {
+    let res;
+
+    const obj = await this.Select_Row_By_Id(id, table_name);
+    if (obj)
+    {
+      res = obj[field_name];
+    }
+
+    return res;
+  }
 
   async Select_Obj(table_name, class_type, where)
   {

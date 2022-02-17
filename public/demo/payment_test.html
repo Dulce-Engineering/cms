@@ -12,12 +12,11 @@
         background-color: #fff;
       }
     </style>
-    <script type="text/javascript" src="https://sandbox.web.squarecdn.com/v1/square.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase.js"></script>
     <script type="module">
       //import 'https://www.gstatic.com/firebasejs/9.4.0/firebase-app-compat.js';
       //import 'https://www.gstatic.com/firebasejs/9.4.0/firebase-auth-compat.js';
       //import 'https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore-compat.js';
+      import "https://sandbox.web.squarecdn.com/v1/square.js";
       import '/__/firebase/9.4.0/firebase-app-compat.js';
       import '/__/firebase/9.4.0/firebase-auth-compat.js';
       import '/__/firebase/9.4.0/firebase-firestore-compat.js';
@@ -31,10 +30,17 @@
       async function Main()
       {
         document.getElementById("pay_btn").addEventListener("click", On_Click_Pay_Btn);
+        document.getElementById("prod_gallery").addEventListener("addproduct", On_Click_Add_Product);
 
         const appId = 'sandbox-sq0idb-CNQ94Dzj8pmDeQ9wsi94WA';
         const locationId = 'LDMH1XZKVK4C9';
         await square.Init(appId, locationId, "#cc_div");
+      }
+
+      function On_Click_Add_Product(event)
+      {
+        const product = event.detail;
+        document.getElementById("cart").Add_Product(product, 1);
       }
 
       async function On_Click_Pay_Btn()
@@ -48,8 +54,8 @@
   <body>
     <main>
       <de-project id="cw" key="catwalk"></de-project>
-      <de-product-gallery project-id="cw"></de-product-gallery>
-      <de-cart></de-cart>
+      <de-product-gallery id="prod_gallery" project-id="cw"></de-product-gallery>
+      <de-cart id="cart" project-id="cw"></de-cart>
       <div id="cc_div"></div>
       <button id="pay_btn">Pay $1.00</button>
     </main>
