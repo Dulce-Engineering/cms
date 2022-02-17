@@ -437,6 +437,12 @@ class Utils
       dest_elem[id] = elem;
     }
   }
+
+  static To_AUD(num)
+  {
+    const fixed = Number.parseFloat(num).toFixed(2);
+    return "$" + fixed;
+  }
 }
 
 export default Utils;
