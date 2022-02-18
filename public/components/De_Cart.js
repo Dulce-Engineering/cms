@@ -22,7 +22,7 @@ class De_Cart extends HTMLElement
 
   connectedCallback()
   {
-    this.render();
+    this.Render();
   }
 
   static observedAttributes = ["project-id"];
@@ -82,6 +82,7 @@ class De_Cart extends HTMLElement
     const product = event.target.product;
     product.quantity++;
     this.Update_Quantity(product);
+    this.Update_Product_Total(product);
     this.Update_Total();
   }
 
@@ -96,11 +97,27 @@ class De_Cart extends HTMLElement
     else
     {
       this.Update_Quantity(product);
+      this.Update_Product_Total(product);
       this.Update_Total();
     }
   }
 
   // rendering ====================================================================================
+
+  async Update_Product_Total(product)
+  {
+    let total = product.price * product.quantity;
+    let quantity_elem = this.shadowRoot.getElementById(product.id+"_total_price");
+    quantity_elem.innerText = Utils.To_AUD(total);
+
+    const original_price = await product.Get_Tag_Data(this.db, "TAG_ONSALE");
+    if (original_price)
+    {
+      total = original_price * product.quantity;
+      quantity_elem = this.shadowRoot.getElementById(product.id+"_total_original_price");
+      quantity_elem.innerText = Utils.To_AUD(total);
+    }
+  }
 
   Update_Quantity(product)
   {
@@ -111,7 +128,7 @@ class De_Cart extends HTMLElement
   Update_Total()
   {
     const total = this.products.reduce((prev_total, product) => prev_total += product.price * product.quantity, 0);
-    this.total_elem.innerText = total;
+    this.total_elem.innerText = Utils.To_AUD(total);
   }
 
   async Render_Products(products)
@@ -135,17 +152,27 @@ class De_Cart extends HTMLElement
     const original_price_hidden = original_price != null ? "" : "hidden";
 
     const html = `
-      <li id="${product.id}_item">
+      <li id="${product.id}_item" class="product">
         <img id="${product.id}_image" src="${product.image_url}" width="100">
-        <span id="${product.id}_brand">${brand}</span>
-        <span id="${product.id}_name">${product.name}</span>
-        <span id="${product.id}_sku">${sku}</span>
-        <button id="${product.id}_remove_btn">Remove</button>
-        <button id="${product.id}_subtract_btn">-</button>
-        <span id="${product.id}_quantity">${product.quantity}</span>
-        <button id="${product.id}_add_btn">+</button>
-        <span id="${product.id}_original_price" ${original_price_hidden}>${original_price}</span>
-        <span id="${product.id}_price">${product.price}</span>
+        <div class="details">
+          <span id="${product.id}_brand" class="brand">${brand}</span>
+          <span id="${product.id}_name" class="name">${product.name}</span>
+          <span class="sku">sku:</span><span id="${product.id}_sku" class="sku">${sku}</span>
+        </div>
+        <button id="${product.id}_remove_btn" class="remove">Remove</button>
+        <div class="prices">
+          <span id="${product.id}_original_price" class="original_price" ${original_price_hidden}>${Utils.To_AUD(original_price)}</span>
+          <span id="${product.id}_price" class="price">${Utils.To_AUD(product.price)}</span>
+        </div>
+        <div class="quantity">
+          <button id="${product.id}_subtract_btn">-</button>
+          <span id="${product.id}_quantity" class="quantity_value">${product.quantity}</span>
+          <button id="${product.id}_add_btn">+</button>
+        </div>
+        <div class="prices">
+          <span id="${product.id}_total_original_price" class="original_price" ${original_price_hidden}>${Utils.To_AUD(original_price)}</span>
+          <span id="${product.id}_total_price" class="price">${Utils.To_AUD(product.price)}</span>
+        </div>
       </li>
     `;
     const elems = Utils.toDocument(html);
@@ -165,15 +192,17 @@ class De_Cart extends HTMLElement
     return elems;
   }
 
-  render()
+  Render()
   {
+    Utils.Add_Stylesheet(this);
+
     const html = `
       <ul id="products_elem"></ul>
-      <div>Total: <span id="total_elem">0</span></div>
+      <div class="total">Total: <span id="total_elem">0</span></div>
     `;
     const doc = Utils.toDocument(html);
+    this.shadowRoot.append(doc);
 
-    this.shadowRoot.replaceChildren(doc);
     Utils.Set_Id_Shortcuts(this.shadowRoot, this);
   }
 }

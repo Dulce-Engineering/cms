@@ -20,7 +20,7 @@ class De_Product_Gallery extends HTMLElement
 
   connectedCallback()
   {
-    this.render();
+    this.Render();
   }
 
   static observedAttributes = ["project-id"];
@@ -95,22 +95,16 @@ class De_Product_Gallery extends HTMLElement
     return elems;
   }
 
-  render()
+  Render()
   {
-    if (this.hasAttribute("style-src"))
-    {
-      const link = document.createElement("link");
-      link.rel = "stylesheet";
-      link.href = this.getAttribute("style-src");
-      this.shadowRoot.append(link);
-    }
+    Utils.Add_Stylesheet(this);
 
     const html = `
       <div id="products_elem"></div>
     `;
     const elems = Utils.toDocument(html);
-
     this.shadowRoot.append(elems);
+
     Utils.Set_Id_Shortcuts(this.shadowRoot, this);
   }
 }

@@ -443,6 +443,17 @@ class Utils
     const fixed = Number.parseFloat(num).toFixed(2);
     return "$" + fixed;
   }
+
+  static Add_Stylesheet(elem)
+  {
+    if (elem.hasAttribute("style-src"))
+    {
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = elem.getAttribute("style-src");
+      elem.shadowRoot.append(link);
+    }
+  }
 }
 
 export default Utils;

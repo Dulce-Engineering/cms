@@ -1,0 +1,124 @@
+#products_elem
+{
+  display: flex;
+  flex-direction: column;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.product
+{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+}
+
+.product img
+{
+  max-width: 100px;
+  padding: 16px 8px 19px 0;
+}
+
+.details
+{
+  display: inline-flex;
+  flex-direction: column;
+  width: 250px;
+}
+
+.brand
+{
+  font-size: 0.8rem;
+  margin: 7px 0 0 0;
+  height: 20px;
+  font-weight: 800;
+  line-height: 20px;
+  text-transform: uppercase;
+}
+
+.name
+{
+  font-size: 0.75rem;
+  margin: 2px 0 0 0;
+}
+
+.sku
+{
+  color: #888;
+  font-size: 12px;
+  line-height: 18px;
+  text-transform: uppercase;
+}
+
+.remove
+{
+  color: #222;
+  font-size: 13px;
+  line-height: 18px;
+  text-decoration: underline;
+  margin: 0 0 0 20px;
+  padding: 0;
+  border: none;
+  background-color: transparent;
+}
+
+.prices
+{
+  display: inline-flex;
+  flex-direction: column;
+  margin-left: 20px;
+}
+
+.original_price
+{
+  color: #666;
+  text-decoration: line-through;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.price
+{
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.quantity
+{
+  margin-left: 20px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+}
+
+.quantity_value
+{
+  margin: 0 5px;
+}
+
+.quantity button
+{
+  border: none;
+  background-color: transparent;
+  color: #ccc;
+  font-size: 1.5rem;
+  font-family: "Roboto";
+  font-weight: 700;
+  width: 25px;
+  height: 25px;
+  margin: 0;
+  padding: 0;
+  line-height: 20px;
+  cursor: pointer;
+}
+
+.total
+{
+  margin: 10px 0px 0px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+}
