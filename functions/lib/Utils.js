@@ -468,4 +468,5 @@ class Utils
   }
 }
 
-export default Utils;
+//export default Utils;
+module.exports = Utils;

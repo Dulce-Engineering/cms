@@ -1,4 +1,5 @@
 const crypto = require('crypto').webcrypto;
+const De_Product = require('./De_Product');
 const { Client, Environment } = require('square');
 
 /*const config = 
@@ -9,8 +10,9 @@ const { Client, Environment } = require('square');
 
 class Square
 {
-  constructor(is_prod, token)
+  constructor(db, is_prod, token)
   {
+    this.db = db;
     const config = 
     {
       environment: is_prod ? Environment.Production : Environment.Sandbox,
@@ -20,41 +22,54 @@ class Square
     this.Process_Payment = this.Process_Payment.bind(this);
   }
 
-  async Process_Payment(payload)
+  async Process_Payment(data)
   {
+    //console.log("Square.Process_Payment(): data =", data);
     const res =
     {
       success: false
     };
+    let pay_res;
 
+    let amount = 0;
+    for (const product of data.products)
+    {
+      const prod_details = await De_Product.Select_By_Id(this.db, product.id);
+      amount += prod_details.price * product.quantity * 100;
+    }
     const payment = 
     {
-      idempotencyKey: payload.idempotencyKey || Square.Payment_Id(),
-      locationId: payload.locationId,
-      sourceId: payload.sourceId,
-      amountMoney: 
-      {
-        amount: '100', //payload.amount,
-        currency: 'AUD' //payload.curency
-      }
+      idempotencyKey: data.idempotencyKey || Square.Payment_Id(),
+      locationId: data.locationId,
+      sourceId: data.sourceId,
+      amountMoney: {amount, currency: 'AUD'}
     };
-    if (payload.customerId) 
+    if (data.customerId) 
     {
-      payment.customerId = payload.customerId;
+      payment.customerId = data.customerId;
     }
-    if (payload.verificationToken) 
+    if (data.verificationToken) 
     {
-      payment.verificationToken = payload.verificationToken;
+      payment.verificationToken = data.verificationToken;
     }
-    console.log("Square.Process_Payment(): payload =", payload);
+    //console.log("Square.Process_Payment(): payment =", payment);
 
-    const pay_res = await this.client.paymentsApi.createPayment(payment);
-    if (pay_res.statusCode == 200)
+    try {pay_res = await this.client.paymentsApi.createPayment(payment);}
+    catch (error)
+    {
+      //console.log("Square.Process_Payment(): error.body entries =", Object.keys(error.body));
+      const body = JSON.parse(error.body);
+      const errors = body.errors.map(e => ({code: e.code, detail: e.detail, system: "square"}));
+      res.errors = errors;
+    }
+
+    if (pay_res?.statusCode == 200)
     {
       res.success = true;
       res.order_id = pay_res.result.payment.orderId;
+      res.amount = amount/100;
     }
-    console.log("Square.Process_Payment(): res =", res);
+    //console.log("Square.Process_Payment(): res =", res);
 
     return res;
   }

@@ -1,3 +1,5 @@
+import Utils from "../lib/Utils.js";
+
 class De_Sample_Component extends HTMLElement 
 {
   static tname = "de-sample";
@@ -11,7 +13,7 @@ class De_Sample_Component extends HTMLElement
 
   connectedCallback()
   {
-    this.render();
+    this.Render();
   }
 
   disconnectedCallback()
@@ -24,22 +26,23 @@ class De_Sample_Component extends HTMLElement
 
   }
 
+  //static observedAttributes = ["attr-name"];
   attributeChangedCallback(attrName, oldValue, newValue)
   {
 
   }
 
-  static get observedAttributes()
+  Render()
   {
-    return ['a1', "a2", "a3"];
-  }
+    Utils.Add_Stylesheet(this);
 
-  render()
-  {
-    const div = document.createElement("div");
-    div.append("Hasta la vista React!!!");
+    const html = `
+      <div id="msg_elem">Hasta la vista React!</div>
+    `;
+    const doc = Utils.toDocument(html);
+    this.shadowRoot.append(doc);
 
-    this.shadowRoot.append(div);
+    Utils.Set_Id_Shortcuts(this.shadowRoot, this);
   }
 }
 

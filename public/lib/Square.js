@@ -12,7 +12,7 @@ class Square
     await this.paymentMethod.attach(card_elem);
   }
 
-  async Process_Payment(event) 
+  async Process_Payment(products) 
   {
     let res;
 
@@ -20,22 +20,22 @@ class Square
     if (tokenResult.status === 'OK') 
     {
       const Server_Process_Payment = firebase.functions().httpsCallable('Process_Payment');
+      const data_products = products.map(p => ({id: p.id, quantity: p.quantity}));
 
-      const payload =
+      const data =
       {
         locationId: this.locationId,
         sourceId: tokenResult.token,
-        amount: "100",
-        currency: "AUD"
+        products: data_products
       };
-      const paymentResponse = await Server_Process_Payment(payload);
+      const paymentResponse = await Server_Process_Payment(data);
       res = paymentResponse.data;
       //const body = JSON.stringify({locationId: this.locationId, sourceId: tokenResult.token});
       //const options = {method: 'POST', headers: {'Content-Type': 'application/json'}, body};
       //const paymentResponse = await fetch('/payment', options);
     }
 
-    return paymentResponse;
+    return res;
   }
 }
 

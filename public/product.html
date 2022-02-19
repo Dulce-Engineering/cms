@@ -40,7 +40,7 @@
         const project_id = urlParams.get('project_id');
         if (id) // edit form
         {
-          product = await De_Product.Select_By_Id(ctx.db, ctx.fb_strg, id);
+          product = await De_Product.Select_By_Id_With_Images(ctx.db, ctx.fb_strg, id);
         }
         else // add form
         {

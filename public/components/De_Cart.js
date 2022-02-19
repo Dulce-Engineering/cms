@@ -157,7 +157,7 @@ class De_Cart extends HTMLElement
         <div class="details">
           <span id="${product.id}_brand" class="brand">${brand}</span>
           <span id="${product.id}_name" class="name">${product.name}</span>
-          <span class="sku">sku:</span><span id="${product.id}_sku" class="sku">${sku}</span>
+          <span class="sku">sku: <span id="${product.id}_sku">${sku}</span></span>
         </div>
         <button id="${product.id}_remove_btn" class="remove">Remove</button>
         <div class="prices">
@@ -198,7 +198,7 @@ class De_Cart extends HTMLElement
 
     const html = `
       <ul id="products_elem"></ul>
-      <div class="total">Total: <span id="total_elem">0</span></div>
+      <div class="total">Total: <span id="total_elem">$0.00</span></div>
     `;
     const doc = Utils.toDocument(html);
     this.shadowRoot.append(doc);
