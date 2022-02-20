@@ -35,3 +35,8 @@ de-payment button
   font-size: 1rem;
   cursor: pointer;
 }
+
+#det_paypal
+{
+  margin: 10px 25px 0px 25px;
+}
