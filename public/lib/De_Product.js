@@ -1,4 +1,5 @@
 import Utils from "./Utils.js";
+//const Utils = require('./Utils.js');
 
 class De_Product
 {
@@ -76,12 +77,42 @@ class De_Product
     return db.Select_Value_By_Id(this.brand_id, "brand", "name");
   }
 
-  static async Select_By_Id(db, db_strg, id)
+  static async Select_By_Id(db, id)
   {
-    const product = await db.Select_Obj_By_Id(id, De_Product.table_name, De_Product);
+    return db.Select_Obj_By_Id(id, De_Product.table_name, De_Product);
+  }
+
+  static async Select_By_Id_With_Images(db, db_strg, id)
+  {
+    const product = await De_Product.Select_By_Id(db, id);
     product.images = await De_Product_Image.Get_Images_By_Product(db, db_strg, id);
+    product.tags = await De_Product.Select_Tags_By_Product(db, id);
 
     return product;
+  }
+
+  static async Select_Tags_By_Product(db, product_id)
+  {
+    let res;
+    const where = [{field: "product_id", op: "==", value: product_id}];
+    const product_tags = await db.Select("product_tag", where);
+    if (!Utils.isEmpty(product_tags))
+    {
+      res = [];
+      for (const product_tag of product_tags)
+      {
+        const label = await db.Select_Value_By_Id(product_tag.tag_id, "tag", "label");
+        const tag = 
+        {
+          id: product_tag.tag_id,
+          label,
+          data: product_tag.data
+        };
+        res.push(tag);
+      }
+    }
+
+    return res;
   }
 
   static Select_Text_Contents(db, project_id, key)
@@ -99,8 +130,19 @@ class De_Product
   {
     await db.Save(this, De_Product.table_name);
     await De_Product_Image.Save_By_Product(db, db_strg, this.id, this.images);
+    await De_Product.Save_Tags_By_Product(db, this.id, this.tags);
 
     return true;
+  }
+
+  static async Save_Tags_By_Product(db, product_id, tags)
+  {
+    const where = [{field: "product_id", op: "==", value: product_id}];
+    const prev_tags = await db.Select("product_tag", where);
+    await db.Delete_Objs("product_tag", prev_tags);
+
+    const new_tags = tags.map(t => ({data: t.data, product_id, tag_id: t.id}));
+    await db.Insert_Rows(new_tags, "product_tag");
   }
 
   static Delete(db, id)
@@ -232,3 +274,4 @@ class De_Product_Image
 }
 
 export default De_Product;
+//module.exports = De_Product;

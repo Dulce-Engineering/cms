@@ -187,21 +187,43 @@ class De_Db_Firestore
 
   async Insert(class_obj, table_name)
   {
-    let res = false;
-
     const obj = this.To_Obj(class_obj);
     delete obj.id;
-    const table = this.db.collection(table_name);
 
-    try 
+    class_obj.id = this.Insert_Row(obj, table_name);
+    const res = class_obj.id ? true : false;
+
+    return res;
+  }
+
+  async Insert_Row(data, table_name)
+  {
+    const ids = await this.Insert_Rows([data], table_name);
+    const res = !Utils.isEmpty(ids) ? ids[0] : null;
+
+    return res;
+  }
+
+  async Insert_Rows(rows, table_name)
+  {
+    let res;
+
+    if (!Utils.isEmpty(rows))
     {
-      const doc_ref = await table.add(obj);
-      class_obj.id = doc_ref.id;
-      res = true;
-    }
-    catch (e)
-    {
-      this.last_error = e;
+      res = [];
+      const table = this.db.collection(table_name);
+      try 
+      {
+        for (const row of rows)
+        {
+          const doc_ref = await table.add(row);
+          res.push(doc_ref.id);
+        }
+      }
+      catch (e)
+      {
+        this.last_error = e;
+      }  
     }
 
     return res;
@@ -229,19 +251,40 @@ class De_Db_Firestore
     return res;
   }
 
-  async Delete(table_name, id)
+  Delete(table_name, id)
+  {
+    return this.Delete_Ids(table_name, [id])
+  }
+
+  async Delete_Ids(table_name, ids)
   {
     let res = false;
 
     const table = this.db.collection(table_name);
     try
     {
-      await table.doc(id).delete();
+      for (const id of ids)
+      {
+        await table.doc(id).delete();
+      }
       res = true;
     }
     catch (e)
     {
       this.last_error = e;
+    }
+
+    return res;
+  }
+
+  async Delete_Objs(table_name, objs)
+  {
+    let res = false;
+
+    if (!Utils.isEmpty(objs))
+    {
+      const ids = objs.map(o => o.id);
+      res = await this.Delete_Ids(table_name, ids);
     }
 
     return res;

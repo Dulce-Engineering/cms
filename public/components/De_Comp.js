@@ -7,8 +7,8 @@ class De_Sample_Component extends HTMLElement
   constructor() 
   {
     super();
-
     this.attachShadow({mode: 'open'});
+    Utils.Bind(this, "On_");
   }
 
   connectedCallback()
@@ -32,6 +32,10 @@ class De_Sample_Component extends HTMLElement
 
   }
 
+  // events =======================================================================================
+  
+  // rendering ====================================================================================
+
   Render()
   {
     Utils.Add_Stylesheet(this);
@@ -39,8 +43,8 @@ class De_Sample_Component extends HTMLElement
     const html = `
       <div id="msg_elem">Hasta la vista React!</div>
     `;
-    const doc = Utils.toDocument(html);
-    this.shadowRoot.append(doc);
+    const elems = Utils.toDocument(html);
+    this.shadowRoot.append(elems);
 
     Utils.Set_Id_Shortcuts(this.shadowRoot, this);
   }

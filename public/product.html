@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>deCMS - Edit Text Component</title>
+    <title>deCMS - Edit Product</title>
 
     <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.css"/>
     <link type="text/css" rel="stylesheet" href="/styles/styles.css"  />
@@ -12,15 +12,19 @@
       import Context from "./lib/Context.js";
       import De_Project from "./lib/De_Project.js";
       import De_Product from "./lib/De_Product.js";
+      import De_Tag from "./lib/De_Tag.js";
       import Utils from "./lib/Utils.js";
+
       import Header_Buddy from './node_modules/header-buddy/Header_Buddy.js';
       import Menu_Buddy from './node_modules/menu-buddy/Menu_Buddy.mjs';
       import Menu_Buddy_Btn from './node_modules/menu-buddy/Menu_Buddy_Btn.mjs';
       import Image_Buddy from './components_admin/Image_Buddy.js';
+      import Tag_Buddy from './components_admin/Tag_Buddy.js';
       customElements.define(Header_Buddy.tname, Header_Buddy);
       customElements.define(Menu_Buddy.tname, Menu_Buddy);
       customElements.define(Menu_Buddy_Btn.tname, Menu_Buddy_Btn);
       customElements.define(Image_Buddy.tname, Image_Buddy);
+      Tag_Buddy.Define();
 
       window.onload = Main;
       let product;
@@ -77,6 +81,9 @@
           option_elem.innerText = project.title;
           project_value.append(option_elem);
         }
+
+        const tags = await De_Tag.Select_All(db);
+        tags_value.tags = tags;
       }
 
       function Obj_To_Fields(product)
@@ -86,6 +93,7 @@
         price_value.value = product.price;
         project_value.value = product.project_id;
         images_value.value = product.images;
+        tags_value.value = product.tags;
       }
 
       function Fields_To_Obj(product)
@@ -94,6 +102,7 @@
         product.price = price_value.value;
         product.project_id = project_value.value;
         product.images = images_value.value;
+        product.tags = tags_value.value;
       }
 
       function Return_To_Page()
@@ -131,6 +140,12 @@
       <label>Price</label><input id="price_value" class="field_value">
       <label>Project</label><select id="project_value" class="field_value"><option>None</option></select>
       <label>Images</label><image-buddy id="images_value" style-src="/styles/Image_Buddy.css"></image-buddy>
+      <label>Additional Details</label>
+      <tag-buddy 
+        id="tags_value" 
+        style-src="/styles/Tag_Buddy.css" 
+        style-src-add-btn="/styles/Tag_Buddy_Add_Btn.css">
+      </tag-buddy>
 
       <label></label>
       <span>
