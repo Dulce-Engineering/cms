@@ -35,7 +35,7 @@ class Context
       options: 
       [
         {title: "Projects", on_click_fn: () => window.open("projects.html", "_self")}, 
-        {title: "Components", on_click_fn: () => window.open("components.html", "_self")}, 
+        {title: "CMS Components", on_click_fn: () => window.open("components.html", "_self")}, 
         {title: "Products", on_click_fn: () => window.open("products.html", "_self")}, 
       ]
     };

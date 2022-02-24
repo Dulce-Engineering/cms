@@ -18,9 +18,20 @@ class De_Db_Firestore
         //this.fns = firebase.functions(this.app);
       }
     }
-    this.last_error = null;
+    this.error = null;
   }
   
+  get last_error()
+  {
+    return this.error;
+  }
+
+  set last_error(e)
+  {
+    this.error = e;
+    console.error(e);
+  }
+
   async Select_Value(table_name, field_name, where)
   {
     let res;
@@ -190,7 +201,7 @@ class De_Db_Firestore
     const obj = this.To_Obj(class_obj);
     delete obj.id;
 
-    class_obj.id = this.Insert_Row(obj, table_name);
+    class_obj.id = await this.Insert_Row(obj, table_name);
     const res = class_obj.id ? true : false;
 
     return res;
@@ -258,7 +269,7 @@ class De_Db_Firestore
 
   async Delete_Ids(table_name, ids)
   {
-    let res = false;
+    let res = true;
 
     const table = this.db.collection(table_name);
     try
@@ -267,11 +278,11 @@ class De_Db_Firestore
       {
         await table.doc(id).delete();
       }
-      res = true;
     }
     catch (e)
     {
       this.last_error = e;
+      res = false;
     }
 
     return res;
@@ -279,7 +290,7 @@ class De_Db_Firestore
 
   async Delete_Objs(table_name, objs)
   {
-    let res = false;
+    let res = true;
 
     if (!Utils.isEmpty(objs))
     {

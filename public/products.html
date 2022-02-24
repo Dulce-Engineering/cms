@@ -110,7 +110,7 @@
           {
             for (const id of this.sel_col.selected_ids)
             {
-              const is_deleted = await De_Product.Delete(this.ctx.db, id);
+              const is_deleted = await De_Product.Delete(this.ctx.db, this.ctx.fb_strg, id);
               if (!is_deleted)
               {
                 Utils.Handle_Errors(this.ctx.db);
@@ -157,7 +157,7 @@
           const confirmed = window.confirm("Are you sure?");
           if (confirmed)
           {
-            const is_deleted = await De_Product.Delete(this.ctx.db, option.component_id);
+            const is_deleted = await De_Product.Delete(this.ctx.db, this.ctx.fb_strg, option.component_id);
             if (is_deleted)
             {
               this.table_elem.Update_Render();
@@ -198,7 +198,7 @@
   </head>
 
   <body>
-    <header-buddy id="header_elem" title="CMS - Products"></header-buddy>
+    <header-buddy id="header_elem" title="CMS - Products" style-src="styles/Header_Buddy.css"></header-buddy>
     <table-buddy id="products_elem" style-src="/styles/table.css"></table-buddy>
   </body>
 </html>

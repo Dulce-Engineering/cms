@@ -1,0 +1,67 @@
+:host
+{
+  margin-bottom: 5px;
+  display: block;
+  padding: 10px;
+  text-align: left;
+}
+
+#bk-header-bar
+{
+  display: flex;
+  align-items: center;
+}
+.bk-header-title
+{
+  font-size: 2em;
+  margin-left: 10px;
+}
+
+.bk-header-action
+{
+  text-align: right;
+}
+.bk-header-user
+{
+  --def-display: inline-block;
+  display: none;
+}
+.bk-header-signin
+{
+  --def-display: inline-block;
+  display: none;
+}
+#user_name
+{
+  margin-right: 10px;
+}
+
+button
+{
+  border: none;
+  padding: 10px 16px;
+  margin: 8px 8px 0px 0px;
+  background-color: #f002;
+  border-radius: 5px;
+  font-family: 'Roboto';
+  font-size: 16px;
+  cursor: pointer;
+}
+button:focus-visible
+{
+  background-color: #f004;
+}
+button:hover
+{
+  background-color: #f004;
+}
+
+#sign_in_btn
+{
+}
+#sign_out_btn
+{
+}
+#acc_btn
+{
+}

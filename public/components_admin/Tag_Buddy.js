@@ -128,9 +128,12 @@ class Tag_Buddy extends HTMLElement
   Render_Tags(tags)
   {
     this.tag_list.replaceChildren();
-    for (const tag of tags)
+    if (!Utils.isEmpty(tags))
     {
-      this.Render_Tag(tag);
+      for (const tag of tags)
+      {
+        this.Render_Tag(tag);
+      }
     }
   }
 

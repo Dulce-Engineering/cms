@@ -145,9 +145,22 @@ class De_Product
     await db.Insert_Rows(new_tags, "product_tag");
   }
 
-  static Delete(db, id)
+  static async Delete_Tags_By_Product(db, product_id)
   {
-    return db.Delete(De_Product.table_name, id);
+    const where = [{field: "product_id", op: "==", value: product_id}];
+    const tags = await db.Select("product_tag", where);
+    return db.Delete_Objs("product_tag", tags);
+  }
+
+  static async Delete(db, db_strg, id)
+  {
+    let res = true;
+
+    res = res && await db.Delete(De_Product.table_name, id);
+    res = res && await De_Product.Delete_Tags_By_Product(db, id);
+    res = res && await De_Product_Image.Delete_By_Product(db, db_strg, id);
+
+    return res;
   }
 }
 
@@ -218,6 +231,22 @@ class De_Product_Image
         }
       }
     }
+  }
+
+  static async Delete_By_Product(db, db_strg, product_id)
+  {
+    let res = true;
+
+    const prod_images = await De_Product_Image.Select_By_Product(db, product_id);
+    if (!Utils.isEmpty(prod_images))
+    {
+      for (const prod_image of prod_images)
+      {
+        res = res && await prod_image.Delete(db, db_strg);
+      }
+    }
+
+    return res;
   }
 
   static async Insert_New(db, db_strg, files, product_id)
