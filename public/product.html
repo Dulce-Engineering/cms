@@ -13,6 +13,7 @@
       import De_Project from "./lib/De_Project.js";
       import De_Product from "./lib/De_Product.js";
       import De_Tag from "./lib/De_Tag.js";
+      import De_Brand from "./lib/De_Brand.js";
       import Utils from "./lib/Utils.js";
 
       import Header_Buddy from './node_modules/header-buddy/Header_Buddy.js';
@@ -82,6 +83,15 @@
           project_value.append(option_elem);
         }
 
+        const brands = await De_Brand.Select_All(db);
+        for (const brand of brands)
+        {
+          const option_elem = document.createElement("option");
+          option_elem.value = brand.id;
+          option_elem.innerText = brand.name;
+          brand_value.append(option_elem);
+        }
+
         const tags = await De_Tag.Select_All(db);
         tags_value.tags = tags;
       }
@@ -94,6 +104,7 @@
         project_value.value = product.project_id;
         images_value.value = product.images;
         tags_value.value = product.tags;
+        brand_value.value = product.brand_id;
       }
 
       function Fields_To_Obj(product)
@@ -103,6 +114,7 @@
         product.project_id = project_value.value;
         product.images = images_value.value;
         product.tags = tags_value.value;
+        product.brand_id = brand_value.value;
       }
 
       function Return_To_Page()
@@ -137,8 +149,16 @@
     <div id="form">
       <label id="id_label">Id.</label><span id="id_value" class="field_value"></span>
       <label>Name</label><input id="name_value" class="field_value">
+      <label>Brand</label><select id="brand_value" class="field_value"><option>None</option></select>
       <label>Price</label><input id="price_value" class="field_value">
       <label>Project</label><select id="project_value" class="field_value"><option>None</option></select>
+      <label>Main Image</label>
+      <select id="main_image_value" class="field_value">
+        <option>None</option>
+        <option><img src="https://firebasestorage.googleapis.com/v0/b/decms-6dc54.appspot.com/o/product_image%2FaeKtkJJA7pzD73dKYhqG?alt=media&token=41563fd5-45aa-4d49-8317-5252501ac80e"></option>
+        <option><img src="https://firebasestorage.googleapis.com/v0/b/decms-6dc54.appspot.com/o/product_image%2Fx2zkwQlkCLNgbiaG0C1u?alt=media&token=18efd24e-81ed-48c7-925b-551317ffe5d9"></option>
+        <option><img src="https://firebasestorage.googleapis.com/v0/b/decms-6dc54.appspot.com/o/product_image%2Fo7uoXhoH6cqBswiQfQMM?alt=media&token=79c5bebc-2732-46c9-a112-fcb055e0857a"></option>
+      </select>
       <label>Images</label><image-buddy id="images_value" style-src="/styles/Image_Buddy.css"></image-buddy>
       <label>Additional Details</label>
       <tag-buddy 

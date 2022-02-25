@@ -1,5 +1,6 @@
 import Utils from "./Utils.js";
 //const Utils = require('./Utils.js');
+import De_Brand from "./De_Brand.js";
 
 class De_Product
 {
@@ -13,6 +14,9 @@ class De_Product
     this.project_id = null;
     this.brand_id = null;
     this.images = null;
+    this.tags = null;
+    this.image_url = null;
+    this.main_image = null;
 
     Utils.To_Class_Obj(data, this);
   }
@@ -24,7 +28,8 @@ class De_Product
       name: this.name,
       price: this.price,
       project_id: this.project_id,
-      brand_id: this.brand_id
+      brand_id: this.brand_id,
+      image_url: this.image_url
     };
   } 
 
@@ -74,7 +79,7 @@ class De_Product
 
   Get_Brand_Name(db)
   {
-    return db.Select_Value_By_Id(this.brand_id, "brand", "name");
+    return De_Brand.Get_Brand_Name(db, this.brand_id);
   }
 
   static async Select_By_Id(db, id)
@@ -131,6 +136,8 @@ class De_Product
     await db.Save(this, De_Product.table_name);
     await De_Product_Image.Save_By_Product(db, db_strg, this.id, this.images);
     await De_Product.Save_Tags_By_Product(db, this.id, this.tags);
+    // this.image_url = De_Product_Image.Get_URL(this.main_image);
+    // save this
 
     return true;
   }
