@@ -21,11 +21,13 @@
       import Menu_Buddy_Btn from './node_modules/menu-buddy/Menu_Buddy_Btn.mjs';
       import Image_Buddy from './components_admin/Image_Buddy.js';
       import Tag_Buddy from './components_admin/Tag_Buddy.js';
+      import Select_Image from './components_admin/Select_Image.js';
       customElements.define(Header_Buddy.tname, Header_Buddy);
       customElements.define(Menu_Buddy.tname, Menu_Buddy);
       customElements.define(Menu_Buddy_Btn.tname, Menu_Buddy_Btn);
       customElements.define(Image_Buddy.tname, Image_Buddy);
       Tag_Buddy.Define();
+      Select_Image.Define();
 
       window.onload = Main;
       let product;
@@ -37,8 +39,6 @@
 
       async function Header_Signed_In(ctx)
       {
-        await Prepare_Fields(ctx.db);
-
         // prepare object
         const urlParams = new URLSearchParams(window.location.search);
         const id = urlParams.get('id');
@@ -59,6 +59,8 @@
           Utils.Disable("project_value");
         }
 
+        await Prepare_Fields(ctx.db, product);
+
         // populate fields
         Obj_To_Fields(product);
 
@@ -72,7 +74,7 @@
         Context.Toast_Show("You must sign in.", "warning");
       }
 
-      async function Prepare_Fields(db)
+      async function Prepare_Fields(db, product)
       {
         const projects = await De_Project.Select_All(db);
         for (const project of projects)
@@ -92,6 +94,9 @@
           brand_value.append(option_elem);
         }
 
+        main_image_value.images = product.images;
+        images_value.addEventListener("change", On_Change_Images);
+
         const tags = await De_Tag.Select_All(db);
         tags_value.tags = tags;
       }
@@ -105,6 +110,7 @@
         images_value.value = product.images;
         tags_value.value = product.tags;
         brand_value.value = product.brand_id;
+        main_image_value.value = product.main_image;
       }
 
       function Fields_To_Obj(product)
@@ -115,6 +121,7 @@
         product.images = images_value.value;
         product.tags = tags_value.value;
         product.brand_id = brand_value.value;
+        product.main_image = main_image_value.value;
       }
 
       function Return_To_Page()
@@ -140,26 +147,48 @@
       {
         Return_To_Page();
       }
-    </script>
+
+      function On_Change_Images()
+      {
+        main_image_value.images = images_value.value;
+      }
+</script>
   </head>
 
   <body>
     <header-buddy id="header_elem" title="CMS - Component - Text" style-src="styles/Header_Buddy.css"></header-buddy>
 
     <div id="form">
-      <label id="id_label">Id.</label><span id="id_value" class="field_value"></span>
-      <label>Name</label><input id="name_value" class="field_value">
-      <label>Brand</label><select id="brand_value" class="field_value"><option>None</option></select>
-      <label>Price</label><input id="price_value" class="field_value">
-      <label>Project</label><select id="project_value" class="field_value"><option>None</option></select>
+      <label id="id_label">Id.</label>
+      <span id="id_value" class="field_value"></span>
+
+      <label>Name</label>
+      <input id="name_value" class="field_value">
+
+      <label>Brand</label>
+      <select id="brand_value" class="field_value"><option>None</option></select>
+
+      <label>Price</label>
+      <input id="price_value" class="field_value">
+
+      <label>Project</label>
+      <select id="project_value" class="field_value"><option>None</option></select>
+
       <label>Main Image</label>
-      <select id="main_image_value" class="field_value">
-        <option>None</option>
-        <option><img src="https://firebasestorage.googleapis.com/v0/b/decms-6dc54.appspot.com/o/product_image%2FaeKtkJJA7pzD73dKYhqG?alt=media&token=41563fd5-45aa-4d49-8317-5252501ac80e"></option>
-        <option><img src="https://firebasestorage.googleapis.com/v0/b/decms-6dc54.appspot.com/o/product_image%2Fx2zkwQlkCLNgbiaG0C1u?alt=media&token=18efd24e-81ed-48c7-925b-551317ffe5d9"></option>
-        <option><img src="https://firebasestorage.googleapis.com/v0/b/decms-6dc54.appspot.com/o/product_image%2Fo7uoXhoH6cqBswiQfQMM?alt=media&token=79c5bebc-2732-46c9-a112-fcb055e0857a"></option>
-      </select>
-      <label>Images</label><image-buddy id="images_value" style-src="/styles/Image_Buddy.css"></image-buddy>
+      <select-image 
+        id="main_image_value" 
+        class="field_value" 
+        style-src="/styles/Select_Image.css"
+        style-src-menu-btn="/styles/Select_Image_Menu_Btn.css"
+        style-src-menu="/styles/Select_Image_Menu.css">
+      </select-image>
+
+      <label>Images</label>
+      <image-buddy 
+        id="images_value" 
+        style-src="/styles/Image_Buddy.css">
+      </image-buddy>
+
       <label>Additional Details</label>
       <tag-buddy 
         id="tags_value" 

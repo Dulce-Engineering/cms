@@ -3,16 +3,16 @@ import Utils from "../lib/Utils.js";
 class Image_Buddy extends HTMLElement 
 {
   static tname = "image-buddy";
+  static Define()
+  {
+    customElements.define(Image_Buddy.tname, Image_Buddy);
+  }
 
   constructor() 
   {
     super();
-
     this.images_value = [];
-    this.On_Click_Add_Image = this.On_Click_Add_Image.bind(this);
-    this.On_Change_Input_Image = this.On_Change_Input_Image.bind(this);
-    this.On_Click_Del_Btn = this.On_Click_Del_Btn.bind(this);
-
+    Utils.Bind(this, "On_");
     this.attachShadow({mode: 'open'});
   }
 
@@ -48,6 +48,9 @@ class Image_Buddy extends HTMLElement
     const input_images = event.target;
     this.images_value = [...this.images_value, ...input_images.files];
     this.Render_Images();
+
+    const change = new Event("change");
+    this.dispatchEvent(change);
   }
 
   On_Click_Del_Btn(event)
@@ -55,6 +58,9 @@ class Image_Buddy extends HTMLElement
     const del_btn = event.target;
     this.images_value = this.images_value.filter(i => i != del_btn.file);
     this.Render_Images();
+    
+    const change = new Event("change");
+    this.dispatchEvent(change);
   }
 
   // rendering ====================================================================================
@@ -70,6 +76,11 @@ class Image_Buddy extends HTMLElement
 
   Render_Image(file)
   {
+    if (!file.obj_url)
+    {
+      file.obj_url = URL.createObjectURL(file);
+    }
+
     const image_item = document.createElement('li');
     this.image_list.appendChild(image_item);
 
@@ -80,20 +91,15 @@ class Image_Buddy extends HTMLElement
     image_item.appendChild(del_btn);
 
     const img = document.createElement('img');
-    img.src = URL.createObjectURL(file);
+    img.src = file.obj_url;
     img.height = 100;
     image_item.appendChild(img);
   }
 
   Render()
   {
-    let style = "";
-    if (this.hasAttribute("style-src"))
-    {
-      style = "<link rel=\"stylesheet\" href=\"" + this.getAttribute("style-src") + "\"></link>";
-    }
+    Utils.Add_Stylesheet(this);
     const html = `
-      ${style}
       <button id="add_image_btn">Add</button>
       <ul id="image_list"></ul>
     `;

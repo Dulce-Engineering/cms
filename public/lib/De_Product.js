@@ -92,6 +92,7 @@ class De_Product
     const product = await De_Product.Select_By_Id(db, id);
     product.images = await De_Product_Image.Get_Images_By_Product(db, db_strg, id);
     product.tags = await De_Product.Select_Tags_By_Product(db, id);
+    product.main_image = De_Product_Image.Find_By_URL(product.images, product.image_url);
 
     return product;
   }
@@ -136,8 +137,8 @@ class De_Product
     await db.Save(this, De_Product.table_name);
     await De_Product_Image.Save_By_Product(db, db_strg, this.id, this.images);
     await De_Product.Save_Tags_By_Product(db, this.id, this.tags);
-    // this.image_url = De_Product_Image.Get_URL(this.main_image);
-    // save this
+    this.image_url = this.main_image.url;
+    await db.Save(this, De_Product.table_name);
 
     return true;
   }
@@ -212,6 +213,7 @@ class De_Product_Image
       const response = await fetch(url);
       const blob = await response.blob();
       const file = new File([blob], image_id);
+      file.url = url;
       files.push(file);
     }
 
@@ -284,6 +286,7 @@ class De_Product_Image
       if (!await this.Image_Exists(db_strg))
       {
         await ref.put(this.image);
+        this.image.url = await ref.getDownloadURL();
       }
     }
   }
@@ -303,6 +306,18 @@ class De_Product_Image
     catch (error)
     {
       res = false;
+    }
+
+    return res;
+  }
+
+  static Find_By_URL(images, url)
+  {
+    let res;
+
+    if (!Utils.isEmpty(images))
+    {
+      res = images.find(i => i.url == url);
     }
 
     return res;

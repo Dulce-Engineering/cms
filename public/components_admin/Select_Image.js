@@ -1,18 +1,19 @@
 import Utils from "../lib/Utils.js";
 
-class Select_Buddy extends HTMLElement 
+class Select_Image extends HTMLElement 
 {
-  static tname = "image-buddy";
+  static tname = "select-image";
+  static Define()
+  {
+    customElements.define(Select_Image.tname, Select_Image);
+  }
 
   constructor() 
   {
     super();
-
-    this.images_value = [];
-    this.On_Click_Add_Image = this.On_Click_Add_Image.bind(this);
-    this.On_Change_Input_Image = this.On_Change_Input_Image.bind(this);
-    this.On_Click_Del_Btn = this.On_Click_Del_Btn.bind(this);
-
+    this.image_value = null;
+    this.image_placeholder = this.Render_Image_Placeholder();
+    Utils.Bind(this, "On_");
     this.attachShadow({mode: 'open'});
   }
 
@@ -21,89 +22,139 @@ class Select_Buddy extends HTMLElement
     this.Render();
   }
 
-  set value(files)
+  set value(file)
   {
-    this.images_value = files || [];
-    this.Render_Images();
+    this.image_value = file;
+    this.Render_Image();
   }
 
   get value()
   {
-    return this.images_value;
+    return this.image_value;
+  }
+
+  set images(files)
+  {
+    this.image_files = files;
+    this.Render_Menu();
+
+    if (!this.image_files.includes(this.value))
+    {
+      this.value = null;
+    }
   }
 
   // events =======================================================================================
 
-  On_Click_Add_Image()
+  On_Option_Click(event, option)
   {
-    const input_images = document.createElement("input");
-    input_images.type = "file";
-    input_images.multiple = true;
-    input_images.addEventListener("change", this.On_Change_Input_Image);
-    input_images.click();
-  }
-
-  On_Change_Input_Image(event)
-  {
-    const input_images = event.target;
-    this.images_value = [...this.images_value, ...input_images.files];
-    this.Render_Images();
-  }
-
-  On_Click_Del_Btn(event)
-  {
-    const del_btn = event.target;
-    this.images_value = this.images_value.filter(i => i != del_btn.file);
-    this.Render_Images();
+    if (option && option.id == "OPTION_NONE")
+    {
+      this.value = null;
+    }
+    else
+    {
+      this.value = event.target.image_file;
+    }
+    this.menu_elem.menu_buddy.Hide();
   }
 
   // rendering ====================================================================================
 
-  Render_Images()
+  Render_Image()
   {
-    this.image_list.replaceChildren();
-    for (let file of this.images_value)
+    if (this.image_value)
     {
-      this.Render_Image(file);
+      this.image_elem.src = this.image_value.obj_url;
     }
+    else
+    {
+      this.image_elem.src = this.image_placeholder;
+    }
+    this.image_elem.height = 100;
   }
 
-  Render_Image(file)
+  Render_Image_Placeholder()
   {
-    const image_item = document.createElement('li');
-    this.image_list.appendChild(image_item);
+    const str = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+        <rect width="100" height="100" stroke="#eee" stroke-width="4" fill="none" />
+        <line x1="0" y1="0" x2="100" y2="100" stroke="#eee" stroke-width="3" />
+        <line x1="0" y1="100" x2="100" y2="0" stroke="#eee" stroke-width="3" />
+        <!--text fill="#bbb" font-size="16px" dy="4" x="50%" y="50%" text-anchor="middle">None</text-->
+      </svg>
+    `;
 
-    const del_btn = document.createElement("button");
-    del_btn.addEventListener("click", this.On_Click_Del_Btn);
-    del_btn.innerText = "Delete";
-    del_btn.file = file;
-    image_item.appendChild(del_btn);
+    const cleaned = str
+      .replace(/[\t\n\r]/gim, '') // Strip newlines and tabs
+      .replace(/\s\s+/g, ' ') // Condense multiple spaces
+      .replace(/'/gim, '\\i'); // Normalize quotes
 
-    const img = document.createElement('img');
-    img.src = URL.createObjectURL(file);
-    img.height = 100;
-    image_item.appendChild(img);
+    const encoded = encodeURIComponent(cleaned)
+      .replace(/\(/g, '%28') // Encode brackets
+      .replace(/\)/g, '%29');
+
+    return `data:image/svg+xml;charset=UTF-8,${encoded}`;
+  }
+
+  Render_Menu()
+  {
+    const menu =
+    {
+      title: "Images",
+      class_name: "menu",
+      options:
+      [
+        {
+          id: "OPTION_NONE",
+          title: "None",
+          on_click_fn: this.On_Option_Click
+        }
+      ]
+    };
+
+    for (const file of this.image_files)
+    {
+      if (!file.obj_url)
+      {
+        file.obj_url = URL.createObjectURL(file);
+      }
+        
+      const img_elem = document.createElement("img");
+      img_elem.src = file.obj_url;
+      img_elem.image_file = file;
+      img_elem.addEventListener("click", this.On_Option_Click);
+
+      const img_cont = document.createElement("div");
+      img_cont.classList.add("img_cont");
+      img_cont.append(img_elem);
+
+      const option = {title: img_cont};
+      menu.options.push(option);
+    }
+
+    this.menu_elem.menu = menu;
   }
 
   Render()
   {
-    let style = "";
-    if (this.hasAttribute("style-src"))
-    {
-      style = "<link rel=\"stylesheet\" href=\"" + this.getAttribute("style-src") + "\"></link>";
-    }
+    Utils.Add_Stylesheet(this);
+    const menu_btn_style = this.getAttribute("style-src-menu-btn");
+    const menu_style = this.getAttribute("style-src-menu");
+
     const html = `
-      ${style}
-      <button id="add_image_btn">Add</button>
-      <ul id="image_list"></ul>
+      <img id="image_elem">
+      <menu-buddy-btn id="menu_elem" 
+        btn-style-src="${menu_btn_style}"
+        menu-style-src="${menu_style}">
+        Select
+      </menu-buddy-btn>
     `;
     const doc = Utils.toDocument(html);
 
     this.shadowRoot.append(doc);
     Utils.Set_Id_Shortcuts(this.shadowRoot, this);
-
-    this.add_image_btn.addEventListener("click", this.On_Click_Add_Image);
   }
 }
 
-export default Select_Buddy;
+export default Select_Image;
