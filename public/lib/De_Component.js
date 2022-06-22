@@ -45,7 +45,9 @@ class De_Component
       {field: "content_type", op: "==", value: "text"},
       {field: "project_id", op: "==", value: project_id}
     ];
-    return db.Select_Values("content", "component", where);
+    //return db.Select_Values("content", "component", where);
+    const id = `De_Component.Select_Text_Contents(${project_id}, ${key})`;
+    return db.cache.use(id, () => db.Select_Values("content", "component", where));
   }
 
   static Select_HTML_Contents(db, project_id, key)
