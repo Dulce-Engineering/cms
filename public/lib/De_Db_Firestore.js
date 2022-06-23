@@ -4,23 +4,26 @@ class De_Db_Firestore
 {
   constructor(fb_db)
   {
-    if (fb_db)
-    {
-      this.db = fb_db;
-    }
-    else if (firebase)
+    this.fb_db = fb_db || null;
+    this.error = null;
+  }
+  
+  get db()
+  {
+    if (!this.fb_db)
     {
       this.app = firebase.app("de-cms");
       if (this.app)
       {
-        this.db = this.app.firestore();
+        this.fb_db = this.app.firestore();
         //this.auth = firebase.auth(this.app);
         //this.fns = firebase.functions(this.app);
       }
     }
-    this.error = null;
+
+    return this.fb_db;
   }
-  
+
   get last_error()
   {
     return this.error;

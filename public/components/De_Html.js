@@ -1,5 +1,4 @@
 import Utils from "../lib/Utils.js";
-import De_Db_Firestore from "../lib/De_Db_Firestore.js";
 import De_Component from "../lib/De_Component.js";
 
 class De_Html extends HTMLElement 
@@ -8,33 +7,9 @@ class De_Html extends HTMLElement
   {
     super();
 
-    this.key = null;
-    this.project = null;
-
-    this.db = new De_Db_Firestore();
-
+    this.project_elem = null;
     this.On_Project_Connected = this.On_Project_Connected.bind(this);
   }
-
-  On_Project_Connected(event)
-  {
-    this.project = event.target.project;
-    this.Render();
-  }
-
-  async Render()
-  {
-    const contents = await De_Component.Select_HTML_Contents(this.db, this.project.id, this.key);
-    if (!Utils.isEmpty(contents))
-    {
-      for (const content of contents)
-      {
-        this.innerHTML = content;
-      }
-    }
-  }
-
-  // Life-Cycle ===================================================================================
 
   connectedCallback()
   {
@@ -48,25 +23,51 @@ class De_Html extends HTMLElement
   {
   }
 
+  static observedAttributes = ["project-id"];
   attributeChangedCallback(attr_name, old_value, new_value)
   {
-    if (attr_name == "key")
+    if (attr_name == "project-id")
     {
-      this.key = new_value;
-    }
-    else if (attr_name == "project-id")
-    {
-      const project_elem = document.getElementById(new_value);
-      if (project_elem)
+      this.project_elem = document.getElementById(new_value);
+      if (this.project_elem)
       {
-        project_elem.addEventListener("connected", this.On_Project_Connected);
+        this.project_elem.addEventListener("connected", this.On_Project_Connected);
       }
     }
   }
 
-  static get observedAttributes()
+  // Events =======================================================================================
+
+  On_Project_Connected(event)
   {
-    return ["key", "project-id"];
+    this.Render();
+  }
+
+  // Rendering ====================================================================================
+
+  async Render()
+  {
+    const key = this.getAttribute("key");
+    if (key)
+    {
+      const project_id = await this.project_elem.Get_Project_Id();
+      const contents = await De_Component.Select_HTML_Contents(this.project_elem.db, project_id, key);
+      if (!Utils.isEmpty(contents))
+      {
+        for (const content of contents)
+        {
+          this.innerHTML = content;
+        }
+      }
+      else
+      {
+        console.warn("De_Html.Render(): No CMS content found.");
+      }
+    }
+    else
+    {
+      console.warn("De_Html.Render(): No 'key' attribute supplied.");
+    }
   }
 }
 

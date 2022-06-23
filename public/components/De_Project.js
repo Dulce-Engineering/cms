@@ -1,4 +1,4 @@
-import De_Db_Firestore from "../lib/De_Db_Firestore.js";
+import Db from "../lib/De_Db_Firestore_Cache.js";
 import Project from "../lib/De_Project.js";
 
 class De_Project extends HTMLElement 
@@ -9,36 +9,43 @@ class De_Project extends HTMLElement
   {
     super();
 
-    this.key = null;
-    this.project = null;
-
-    this.db = new De_Db_Firestore();
+    this.db = new Db();
+    this.cms_project = null;
     this.connected_event = new Event("connected");
   }
 
-  static observedAttributes = ["key"];
+  //static observedAttributes = ["key"];
   attributeChangedCallback(attr_name, old_value, new_value)
   {
-    if (attr_name == "key")
-    {
-      this.key = new_value;
-    }
   }
 
   async connectedCallback()
   {
-    if (this.key)
-    {
-      const firestore_app = firebase.app("de-cms");
-      const firestore_auth = firebase.auth(firestore_app);
-      await firestore_auth.signInAnonymously();
+    this.dispatchEvent(this.connected_event);
+  }
 
-      this.project = await Project.Select_By_Key(this.db, this.key);
-      if (this.project)
+  async Get_Project_Id()
+  {
+    const key = "De_Project.Get_Project_Id()";
+    return this.db.cache.use(key, () => this.Get_Project_Id_No_Cache());
+  }
+
+  async Get_Project_Id_No_Cache()
+  {
+    if (!this.cms_project)
+    {
+      const key = this.getAttribute("key");
+      if (key)
       {
-        this.dispatchEvent(this.connected_event);
+        const firestore_app = firebase.app("de-cms");
+        const firestore_auth = firebase.auth(firestore_app);
+        await firestore_auth.signInAnonymously();
+  
+        this.cms_project = await Project.Select_By_Key(this.db, key);
       }
     }
+
+    return this.cms_project.id;
   }
 }
 

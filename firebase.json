@@ -7,11 +7,20 @@
     "public": "public",
     "ignore": [
       "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
+      "**/.*"
     ],
     "headers":
     [
+      {
+        "source": "/node_modules/**",
+        "headers":
+        [
+          {
+            "key": "Access-Control-Allow-Origin",
+            "value": "*"
+          }
+        ]
+      },
       {
         "source": "/components/**",
         "headers":

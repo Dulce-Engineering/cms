@@ -1,5 +1,4 @@
 import Utils from "../lib/Utils.js";
-import Db from "../lib/De_Db_Firestore_Cache.js";
 import De_Component from "../lib/De_Component.js";
 
 class De_Text extends HTMLElement 
@@ -8,8 +7,7 @@ class De_Text extends HTMLElement
   {
     super();
 
-    this.project = null;
-    this.db = new Db();
+    this.project_elem = null;
     this.On_Project_Connected = this.On_Project_Connected.bind(this);
   }
 
@@ -30,10 +28,10 @@ class De_Text extends HTMLElement
   {
     if (attr_name == "project-id")
     {
-      const project_elem = document.getElementById(new_value);
-      if (project_elem)
+      this.project_elem = document.getElementById(new_value);
+      if (this.project_elem)
       {
-        project_elem.addEventListener("connected", this.On_Project_Connected);
+        this.project_elem.addEventListener("connected", this.On_Project_Connected);
       }
     }
   }
@@ -42,7 +40,6 @@ class De_Text extends HTMLElement
 
   On_Project_Connected(event)
   {
-    this.project = event.target.project;
     this.Render();
   }
 
@@ -53,7 +50,8 @@ class De_Text extends HTMLElement
     const key = this.getAttribute("key");
     if (key)
     {
-      const contents = await De_Component.Select_Text_Contents(this.db, this.project.id, key);
+      const project_id = await this.project_elem.Get_Project_Id();
+      const contents = await De_Component.Select_Text_Contents(this.project_elem.db, project_id, key);
       if (!Utils.isEmpty(contents))
       {
         for (const content of contents)
