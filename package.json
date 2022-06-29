@@ -5,7 +5,9 @@
   "main": "index.html",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "deploy": "firebase deploy --only hosting",
+    "deploy": "firebase deploy",
+    "deployh": "firebase deploy --only hosting",
+    "deployf": "firebase deploy --only functions",
     "start": "firebase serve",
     "startf": "firebase serve --only functions",
     "starth": "firebase serve --only hosting"

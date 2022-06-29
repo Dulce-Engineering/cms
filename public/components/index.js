@@ -1,15 +1,15 @@
+import Client_Cache_Local from '/node_modules/cache-buddy/Client_Cache_Local.js';
 import De_Comp from './De_Comp.js';
 import De_Html from './De_Html.js';
 import De_Project from './De_Project.js';
 import De_Text from './De_Text.js';
-//import Fb_Config from "./config.js";
-import Client_Cache_Local from '../node_modules/cache-buddy/Client_Cache_Local.js';
-import api from "http://localhost:5001/decms-6dc54/us-central1/api/rpc-client";
+import config from "./config.js";
 
-api.De_Project.server_host = "http://localhost:5001/decms-6dc54/us-central1/api";
-api.De_Component.server_host = "http://localhost:5001/decms-6dc54/us-central1/api";
+const api = await import(config[window.location.host].api_client_url);
+api.default.De_Project.server_host = config[window.location.host].api_server_host;
+api.default.De_Component.server_host = config[window.location.host].api_server_host;
+window.api = api.default;
 
-window.api = api;
 window.cache = new Client_Cache_Local();
 
 customElements.define('de-comp', De_Comp);

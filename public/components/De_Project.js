@@ -8,8 +8,6 @@ class De_Project_Component extends HTMLElement
   {
     super();
 
-    this.db = null;
-    this.cms_project = null;
     this.connected_event = new Event("connected");
   }
 
@@ -34,25 +32,6 @@ class De_Project_Component extends HTMLElement
   {
     const project = await this.Get_Project();
     return project.id;
-  }
-
-  static async Get_Firebase()
-  {
-    const fb_app = await import('/__/firebase/9.4.0/firebase-app.js');
-    const fb_auth = await import('/__/firebase/9.4.0/firebase-auth.js');
-    const fb_firestore =  await import('/__/firebase/9.4.0/firebase-firestore.js');
-    const config = await import("../components/config.js");
-
-    const app = fb_app.initializeApp(config, "de-cms");
-
-    //const auth = fb_auth.getAuth(app);
-    const auth = fb_auth.initializeAuth(app, {persistence: fb_auth.browserSessionPersistence,
-      popupRedirectResolver: undefined});
-    await fb_auth.signInAnonymously(auth);
-
-    const db = fb_firestore.getFirestore(app);
-
-    return {db};
   }
 }
 
