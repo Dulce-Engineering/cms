@@ -1,5 +1,4 @@
 import Utils from "../lib/Utils.js";
-import De_Component from "../lib/De_Component.js";
 
 class De_Html extends HTMLElement 
 {
@@ -36,6 +35,12 @@ class De_Html extends HTMLElement
     }
   }
 
+  async Get_HTML(project_id, key)
+  {
+    const cache_key = "De_Html.Get_HTML("+project_id+", "+key+")";
+    return cache.use(cache_key, () => api.De_Component.Select_HTML_Contents(project_id, key));
+  }
+
   // Events =======================================================================================
 
   On_Project_Connected(event)
@@ -51,7 +56,7 @@ class De_Html extends HTMLElement
     if (key)
     {
       const project_id = await this.project_elem.Get_Project_Id();
-      const contents = await De_Component.Select_HTML_Contents(this.project_elem.db, project_id, key);
+      const contents = await this.Get_HTML(project_id, key);
       if (!Utils.isEmpty(contents))
       {
         for (const content of contents)

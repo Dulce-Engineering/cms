@@ -10,17 +10,6 @@ class De_Db_Firestore
   
   get db()
   {
-    if (!this.fb_db)
-    {
-      this.app = firebase.app("de-cms");
-      if (this.app)
-      {
-        this.fb_db = this.app.firestore();
-        //this.auth = firebase.auth(this.app);
-        //this.fns = firebase.functions(this.app);
-      }
-    }
-
     return this.fb_db;
   }
 

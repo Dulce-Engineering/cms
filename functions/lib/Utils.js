@@ -444,13 +444,13 @@ class Utils
     return "$" + fixed;
   }
 
-  static Add_Stylesheet(elem)
+  static Add_Stylesheet(elem, attrib_name = "style-src")
   {
-    if (elem.hasAttribute("style-src"))
+    if (elem.hasAttribute(attrib_name))
     {
       const link = document.createElement("link");
       link.rel = "stylesheet";
-      link.href = elem.getAttribute("style-src");
+      link.href = elem.getAttribute(attrib_name);
       elem.shadowRoot.append(link);
     }
   }
