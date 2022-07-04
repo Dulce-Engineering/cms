@@ -1,16 +1,18 @@
-import De_Text from './De_Text.js';
+import Client_Cache_Local from '/node_modules/cache-buddy/Client_Cache_Local.js';
+import De_Comp from './De_Comp.js';
 import De_Html from './De_Html.js';
 import De_Project from './De_Project.js';
-//import De_Product_Gallery from "./De_Product_Gallery.js";
-//import De_Cart from "./De_Cart.js";
-//import De_Payment from "./De_Payment.js";
-import Fb_Config from "./config.js";
+import De_Text from './De_Text.js';
+import config from "./config.js";
 
-firebase.initializeApp(Fb_Config, "de-cms");
+const api = await import(config.get().api_client_url);
+api.default.De_Project.server_host = config.get().api_server_host;
+api.default.De_Component.server_host = config.get().api_server_host;
+window.api = api.default;
 
+window.cache = new Client_Cache_Local();
+
+customElements.define('de-comp', De_Comp);
 customElements.define('de-text', De_Text);
 customElements.define('de-html', De_Html);
 customElements.define(De_Project.tname, De_Project);
-//customElements.define(De_Product_Gallery.tname, De_Product_Gallery);
-//customElements.define(De_Cart.tname, De_Cart);
-//customElements.define(De_Payment.tname, De_Payment);

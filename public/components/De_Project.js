@@ -18,6 +18,7 @@ class De_Project_Component extends HTMLElement
 
   async connectedCallback()
   {
+    await this.Get_Project();
     this.dispatchEvent(this.connected_event);
   }
 
