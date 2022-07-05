@@ -1,4 +1,0 @@
-To Do
-- replace alert with snackbar
-- split folders into client, admin, and db
-
