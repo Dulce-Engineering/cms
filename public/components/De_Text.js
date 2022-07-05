@@ -12,6 +12,7 @@ class De_Text extends HTMLElement
 
   connectedCallback()
   {
+    this.Render_Wait();
   }
 
   disconnectedCallback()
@@ -50,6 +51,15 @@ class De_Text extends HTMLElement
 
   // Rendering ====================================================================================
 
+  Render_Wait()
+  {
+    const wait_elem = document.createElement("span");
+    wait_elem.classList.add("wait");
+    wait_elem.innerHTML = "&star;";
+
+    this.replaceChildren(wait_elem);
+  }
+
   async Render()
   {
     const key = this.getAttribute("key");
@@ -71,7 +81,7 @@ class De_Text extends HTMLElement
           {
             elems = this.Render_As_Paras(content);
           }
-          this.append(...elems);
+          this.replaceChildren(...elems);
         }
       }
       else
