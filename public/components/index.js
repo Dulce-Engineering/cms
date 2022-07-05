@@ -11,6 +11,7 @@ api.default.De_Component.server_host = config.get().api_server_host;
 window.api = api.default;
 
 window.cache = new Client_Cache_Local();
+window.cache.expiryMillis = 86400000; // a day
 
 customElements.define('de-comp', De_Comp);
 customElements.define('de-text', De_Text);
