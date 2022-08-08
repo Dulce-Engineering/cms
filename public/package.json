@@ -15,7 +15,7 @@
   },
   "homepage": "https://github.com/Dulce-Engineering/cms",
   "dependencies": {
-    "cache-buddy": "^1.1.0",
+    "cache-buddy": "^1.1.1",
     "filter-buddy": "^1.1.1",
     "header-buddy": "^1.0.0",
     "menu-buddy": "^1.2.5",

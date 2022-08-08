@@ -8,6 +8,7 @@ class De_Html extends HTMLElement
 
     this.project_elem = null;
     this.On_Project_Connected = this.On_Project_Connected.bind(this);
+    this.Render_Contents = this.Render_Contents.bind(this);
   }
 
   connectedCallback()
@@ -36,11 +37,12 @@ class De_Html extends HTMLElement
     }
   }
 
-  async Get_HTML(project_id, key)
+  Get_HTML(project_id, key, update_fn)
   {
     const cache_key = "De_Html.Get_HTML("+project_id+", "+key+")";
-    return cache.use(cache_key, () => api.De_Component.Select_HTML_Contents(project_id, key));
-  }
+    cache.Use_Update
+      (cache_key, () => api.De_Component.Select_HTML_Contents(project_id, key), update_fn);
+}
 
   // Events =======================================================================================
 
@@ -66,22 +68,26 @@ class De_Html extends HTMLElement
     if (key)
     {
       const project_id = await this.project_elem.Get_Project_Id();
-      const contents = await this.Get_HTML(project_id, key);
-      if (!Utils.isEmpty(contents))
-      {
-        for (const content of contents)
-        {
-          this.innerHTML = content;
-        }
-      }
-      else
-      {
-        console.warn("De_Html.Render(): No CMS content found.");
-      }
+      this.Get_HTML(project_id, key, this.Render_Contents);
     }
     else
     {
       console.warn("De_Html.Render(): No 'key' attribute supplied.");
+    }
+  }
+
+  Render_Contents(contents)
+  {
+    if (!Utils.isEmpty(contents))
+    {
+      for (const content of contents)
+      {
+        this.innerHTML = content;
+      }
+    }
+    else
+    {
+      console.warn("De_Html.Render(): No CMS content found.");
     }
   }
 }

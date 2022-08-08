@@ -8,6 +8,7 @@ class De_Text extends HTMLElement
 
     this.project_elem = null;
     this.On_Project_Connected = this.On_Project_Connected.bind(this);
+    this.Render_Contents = this.Render_Contents.bind(this);
   }
 
   connectedCallback()
@@ -36,10 +37,11 @@ class De_Text extends HTMLElement
     }
   }
 
-  async Get_Text(project_id, key)
+  Get_Text(project_id, key, update_fn)
   {
     const cache_key = "De_Text.Get_Text("+project_id+", "+key+")";
-    return cache.use(cache_key, () => api.De_Component.Select_Text_Contents(project_id, key));
+    cache.Use_Update
+      (cache_key, () => api.De_Component.Select_Text_Contents(project_id, key), update_fn);
   }
 
   // Events =======================================================================================
@@ -66,32 +68,36 @@ class De_Text extends HTMLElement
     if (key)
     {
       const project_id = await this.project_elem.Get_Project_Id();
-      const contents = await this.Get_Text(project_id, key);
-      if (!Utils.isEmpty(contents))
-      {
-        for (const content of contents)
-        {
-          let elems;
-          const render_type = this.getAttribute("renderType");
-          if (render_type && render_type == "text")
-          {
-            elems = this.Render_As_Text(content);
-          }
-          else
-          {
-            elems = this.Render_As_Paras(content);
-          }
-          this.replaceChildren(...elems);
-        }
-      }
-      else
-      {
-        console.warn("De_Text.Render(): No CMS content found.");
-      }
+      this.Get_Text(project_id, key, this.Render_Contents);
     }
     else
     {
       console.warn("De_Text.Render(): No 'key' attribute supplied.");
+    }
+  }
+
+  Render_Contents(contents)
+  {
+    if (!Utils.isEmpty(contents))
+    {
+      for (const content of contents)
+      {
+        let elems;
+        const render_type = this.getAttribute("renderType");
+        if (render_type && render_type == "text")
+        {
+          elems = this.Render_As_Text(content);
+        }
+        else
+        {
+          elems = this.Render_As_Paras(content);
+        }
+        this.replaceChildren(...elems);
+      }
+    }
+    else
+    {
+      console.warn("De_Text.Render(): No CMS content found.");
     }
   }
 
