@@ -466,6 +466,12 @@ class Utils
       }
     }
   }
+
+  static Get_Attr_Def(elem, name, def)
+  {
+    const attr_val = elem.getAttribute(name);
+    return Utils.hasValue(attr_val) ? attr_val : def;
+  }
 }
 
 export default Utils;
