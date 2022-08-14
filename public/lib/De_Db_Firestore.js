@@ -67,9 +67,7 @@ class De_Db_Firestore
   {
     let obj;
 
-    const table = this.db.collection(table_name);
-    const query = this.Add_Where(table, where).limit(1);
-    const query_res = await query.get();
+    const query_res = await this.Select_Query(table_name, where, 1)
     if (!query_res.empty)
     {
       const row = query_res.docs[0];
@@ -146,18 +144,9 @@ class De_Db_Firestore
 
   async Select(table_name, where)
   {
-    let res, query_res;
+    let res = null;
 
-    const table = this.db.collection(table_name);
-    const query = this.Add_Where(table, where);
-
-    try {query_res = await query.get();}
-    catch (e) 
-    {
-      this.last_error = e;
-      throw e;
-    }
-
+    const query_res = await this.Select_Query(table_name, where);
     if (query_res && !query_res.empty)
     {
       res = [];
@@ -170,6 +159,24 @@ class De_Db_Firestore
     }
 
     return res;
+  }
+
+  async Select_Query(table_name, where, limit)
+  {
+    let query_res = null;
+
+    const table = this.db.collection(table_name);
+    let query = this.Add_Where(table, where);
+    query = (limit != null && limit != undefined) ? query.limit(limit): query;
+
+    try {query_res = await query.get();}
+    catch (e) 
+    {
+      this.last_error = e;
+      throw e;
+    }
+
+    return query_res;
   }
 
   async Save(class_obj, table_name)
@@ -316,30 +323,23 @@ class De_Db_Firestore
     return table;
   }
   
-  To_Db_Where(where, conditions)
+  To_Db_Where(values, conditions)
   {
     let db_where;
 
-    if (!Utils.isEmpty(where))
+    if (!Utils.isEmpty(values))
     {
       db_where = [];
 
-      for (let i = 0; i < conditions.length; i += 3)
+      for (const value_name in values)
       {
-        const condition_code = conditions[i];
-        const condition_field = conditions[i+1];
-        const condition_op = conditions[i+2];
-        const condition_map_fn = conditions[i+3];
-
-        let condition_value = where[condition_code];
-        if (condition_value)
+        const condition = conditions.find(c => c.code == value_name);
+        let value = values[value_name];
+        if (value || (condition.use_null && value == null))
         {
-          if (condition_map_fn)
-          {
-            condition_value = condition_map_fn(condition_value);
-          }
+          value = condition.map_fn ? condition.map_fn(value): value;
 
-          const filter = {field: condition_field, op: condition_op, value: condition_value};
+          const filter = {field: condition.field, op: condition.op, value};
           db_where.push(filter);
         }
       }

@@ -32,7 +32,7 @@ class De_Product
   {
     const where = db.To_Db_Where(filters,
     [
-      "WHERE_PROJECT", "project_id", "==", null
+      {code: "WHERE_PROJECT", field: "project_id", op: "=="} 
     ]);
 
     /*query.sql = Db.appendUIOrderBy(query.sql, orderBy, 

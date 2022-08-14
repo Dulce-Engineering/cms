@@ -18,7 +18,8 @@ class De_Component
   {
     const where = db.To_Db_Where(filters,
     [
-      "WHERE_PROJECT", "project_id", "==", null
+      {code: "WHERE_PROJECT", field: "project_id", op: "=="},
+      {code: "WHERE_PARENT", field: "parent_id", op: "==", use_null: true}
     ]);
 
     /*query.sql = Db.appendUIOrderBy(query.sql, orderBy, 
@@ -30,6 +31,13 @@ class De_Component
     ]);*/
   
     return db.Select_Objs("component", De_Component, where);
+  }
+
+  static async Has_Children(db, id)
+  {
+    const where = [{field: "parent_id", op: "==", value: id}];
+    const query_res = await db.Select_Query("component", where);
+    return (query_res && !query_res.empty);
   }
 
   static Select_By_Id(db, id)
