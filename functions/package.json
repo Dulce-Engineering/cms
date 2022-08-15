@@ -15,7 +15,7 @@
   "dependencies": {
     "firebase-admin": "^11.0.0",
     "firebase-functions": "^3.21.2",
-    "rpc-buddy": "^1.2.1"
+    "rpc-buddy": "^1.2.2"
   },
   "devDependencies": {
     "firebase-functions-test": "^0.2.0"
