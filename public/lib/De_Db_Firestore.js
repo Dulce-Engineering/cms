@@ -93,15 +93,18 @@ class De_Db_Firestore
 
   async Select_Row_By_Id(id, table_name)
   {
-    let obj;
+    let obj = null;
 
-    const table = this.db.collection(table_name);
-    const query = table.doc(id);
-    const query_res = await query.get();
-    if (query_res.exists)
+    if (id)
     {
-      obj = query_res.data();
-      obj.id = query_res.id;
+      const table = this.db.collection(table_name);
+      const query = table.doc(id);
+      const query_res = await query.get();
+      if (query_res.exists)
+      {
+        obj = query_res.data();
+        obj.id = query_res.id;
+      }
     }
 
     return obj;
@@ -256,6 +259,7 @@ class De_Db_Firestore
     catch (e)
     {
       this.last_error = e;
+      console.error("De_Db_Firestore.Update(): Unable to update data.", e);
     }
 
     return res;

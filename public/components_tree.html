@@ -32,9 +32,9 @@
         {
           super();
 
-          //this.view_mode = "group";
           this.ctx = ctx;
           this.table_elem = table_elem;
+          this.table_elem.filters["WHERE_PARENT"] = null;
 
           this.Render_Col_Menu = this.Render_Col_Menu.bind(this);
           this.Render_Row_Menu = this.Render_Row_Menu.bind(this);
@@ -43,6 +43,8 @@
           this.Del_On_Click = this.Del_On_Click.bind(this);
           this.Sort_On_Click = this.Sort_On_Click.bind(this);
           this.Get_Columns = this.Get_Columns.bind(this);
+          this.Render_Children_Btn = this.Render_Children_Btn.bind(this);
+          this.Subcomps_On_Click = this.Subcomps_On_Click.bind(this);
           
           this.table_elem.datasource = this;
         }
@@ -62,6 +64,7 @@
 
           cols.push({title_fn: this.Render_Col_Menu, field_fn: this.Render_Row_Menu, style: align_left});
           cols.push(this.sel_col);
+          cols.push({title: "", field_fn: this.Render_Children_Btn, style: align_left});
           cols.push(new Table_Buddy.Column_No(align_left));
           cols.push({title: "Id", field_name: "id", style: align_left});
           cols.push({title: "Title", field_name: "title", style: align_left});
@@ -71,6 +74,79 @@
           cols.push({title: "Project", field_fn: this.Render_Project_Field, style: align_left});
 
           return cols;
+        }
+
+        async Render_Children_Btn(component, row_idx, cell_elem)
+        {
+          let elem = "";
+
+          cell_elem.style.paddingLeft = component.level*32 + "px";
+          if (await De_Component.Has_Children(this.ctx.db, component.id))
+          {
+            elem = document.createElement("input");
+            elem.type = "checkbox";
+            elem.addEventListener("click", this.Subcomps_On_Click);
+            elem.component = component;
+            elem.classList.add("group_toggle");
+          }
+          else
+          {
+            elem = document.createElement("span");
+            elem.innerText = "•";
+            elem.classList.add("group_item");
+          }
+
+          return elem;
+        }
+
+        async Subcomps_On_Click(event)
+        {
+          const btn = event.target;
+          const row_elem = btn.closest("tr");
+
+          if (btn.checked)
+          {
+            await this.Append_Children(row_elem);
+          }
+          else
+          {
+            row_elem.Delete_Children();
+          }
+        }
+
+        async Append_Children(parent_row_elem)
+        {
+          const parent = parent_row_elem.row_data;
+          const filter_by = {"WHERE_PARENT": parent.id};
+          const sort_by = null;
+          const components = await De_Component.Select_All(this.ctx.db, sort_by, filter_by);
+          if (components)
+          {
+            parent_row_elem.sub_row_elems = [];
+            parent_row_elem.Delete_Children = this.Delete_Children;
+            let prev_row_elem = parent_row_elem;
+            for (const component of components)
+            {
+              component.level = parent.level ? parent.level+1: 1;
+              const row_elem = this.table_elem.Render_Row(this.table_elem.columns, component);
+              parent_row_elem.sub_row_elems.push(row_elem);
+              prev_row_elem.after(row_elem);
+              prev_row_elem = row_elem;
+            }
+          }
+        }
+
+        Delete_Children()
+        {
+          if (this.sub_row_elems)
+          {
+            for (let sub_row_elem of this.sub_row_elems)
+            {
+              if (sub_row_elem.Delete_Children)
+                sub_row_elem.Delete_Children();
+              sub_row_elem.remove();
+            }
+          }
         }
 
         Render_Content_Field(component)

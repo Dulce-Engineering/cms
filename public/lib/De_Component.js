@@ -10,6 +10,7 @@ class De_Component
     this.key = null;
     this.project_id = null;
     this.title = null;
+    this.parent_id = null;
 
     Utils.To_Class_Obj(data, this);
   }
@@ -33,11 +34,31 @@ class De_Component
     return db.Select_Objs("component", De_Component, where);
   }
 
-  static async Has_Children(db, id)
+  static async Has_Children(db, id, project_id)
   {
     const where = [{field: "parent_id", op: "==", value: id}];
+    if (project_id)
+    {
+      where.push({field: "project_id", op: "==", value: project_id});
+    }
     const query_res = await db.Select_Query("component", where);
     return (query_res && !query_res.empty);
+  }
+
+  static Get_Children(db, id, project_id)
+  {
+    const where = [{field: "parent_id", op: "==", value: id}];
+    if (project_id)
+    {
+      where.push({field: "project_id", op: "==", value: project_id});
+    }
+    return db.Select_Values("id", "component", where);
+  }
+
+  static async Get_Title(db, id)
+  {
+    const component = await De_Component.Select_By_Id(db, id);
+    return component?.title;
   }
 
   static Select_By_Id(db, id)
