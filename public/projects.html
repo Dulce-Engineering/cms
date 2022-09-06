@@ -100,7 +100,8 @@
             class_name: "menu",
             options: 
             [
-              {title: "Components", on_click_fn: this.Components_Option_On_Click, project_id: project.id}, 
+              {title: "Components", on_click_fn: this.Components_Option_On_Click, project_id: project.id, type: "components"}, 
+              {title: "Components Tree", on_click_fn: this.Components_Option_On_Click, project_id: project.id, type: "components_tree"}, 
               {title: "Edit", on_click_fn: this.Edit_Option_On_Click, project_id: project.id}, 
               {title: "Delete", on_click_fn: this.Del_Option_On_Click, project_id: project.id}
             ]
@@ -123,7 +124,8 @@
         async Components_Option_On_Click(event, option)
         {
           const id = option.project_id;
-          window.open("components.html?project_id=" + id, "_self");
+          const option_type = option.type;
+          window.open(option_type + ".html?project_id=" + id, "_self");
         }
 
         async Del_Option_On_Click(event, option)

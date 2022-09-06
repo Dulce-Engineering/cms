@@ -15,7 +15,7 @@ class De_Component
     Utils.To_Class_Obj(data, this);
   }
 
-  static Select_All(db, orderByCode, filters)
+  static Select_All(db, order_code, filters)
   {
     const where = db.To_Db_Where(filters,
     [
