@@ -98,3 +98,92 @@ body
 {
   border: none;
 }
+
+de-sort
+{
+  margin: 0 0 5px 0;
+  display: inline-block;
+}
+de-sort .add_banner
+{
+  position: relative;
+}
+de-sort .field_list
+{
+  display: none;
+  position: absolute;
+  padding: 10px 20px;
+  list-style-type: none;
+  margin-block-start: 0;
+  margin-block-end: 0;
+  top: 22px;
+  left: 0px;
+  background-color: #ddd;
+  box-shadow: 3px 3px 5px 0px #0006;
+}
+de-sort .field_item
+{
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: 30px;
+}
+de-sort .add_sort
+{
+  display: inline-block;
+}
+de-sort .sort_list
+{
+  display: inline-flex;
+  list-style-type: none;
+  margin-block-start: 0;
+  margin-block-end: 0;
+  padding-inline-start: 0;
+}
+de-sort .sort_item
+{
+  background-color: #fff;
+  border-radius: 20px;
+  margin-left: 5px;
+  padding: 3px 5px 2px 5px;
+}
+de-sort .header
+{
+  display: inline-block;
+}
+de-sort .sort_btn 
+{
+  border: none;
+  padding: 0;
+  margin: 0 0 0 5px;
+  background-color: #f002;
+  border-radius: 20px;
+  font-family: 'Roboto';
+  cursor: pointer;
+  width: 22px;
+  height: 22px;
+}
+de-sort .add_btn
+{
+  border: none;
+  padding: 0;
+  margin: 0 0 0 5px;
+  background-color: #f002;
+  border-radius: 20px;
+  font-family: 'Roboto';
+  cursor: pointer;
+  width: 22px;
+  height: 22px;
+}
+de-sort .remove_btn
+{
+  border: none;
+  padding: 0;
+  margin: 0 0 0 5px;
+  background-color: #f002;
+  border-radius: 20px;
+  font-family: 'Roboto';
+  cursor: pointer;
+  width: 22px;
+  height: 22px;
+}

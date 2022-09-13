@@ -15,6 +15,7 @@
       import Datasource from "./node_modules/table-buddy/Datasource.mjs";
       import De_Component from "../lib/De_Component.js"
       import De_Project from "./lib/De_Project.js"
+      import De_Sort from "./components/De_Sort.js"
       import Header_Buddy from './node_modules/header-buddy/Header_Buddy.js';
       import Table_Buddy from './node_modules/table-buddy/Table_Buddy.mjs';
       import Menu_Buddy from './node_modules/menu-buddy/Menu_Buddy.mjs';
@@ -23,6 +24,7 @@
       customElements.define(Table_Buddy.tname, Table_Buddy);
       customElements.define(Menu_Buddy.tname, Menu_Buddy);
       customElements.define(Menu_Buddy_Btn.tname, Menu_Buddy_Btn);
+      customElements.define(De_Sort.tname, De_Sort);
       
       const align_left = "text-align: left;";
 
@@ -41,7 +43,6 @@
           this.Render_Project_Field = this.Render_Project_Field.bind(this);
           this.Del_Sel_On_Click = this.Del_Sel_On_Click.bind(this);
           this.Del_On_Click = this.Del_On_Click.bind(this);
-          this.Sort_On_Click = this.Sort_On_Click.bind(this);
           this.Get_Columns = this.Get_Columns.bind(this);
           this.Render_Children_Btn = this.Render_Children_Btn.bind(this);
           this.Subcomps_On_Click = this.Subcomps_On_Click.bind(this);
@@ -160,8 +161,6 @@
           return project.title;
         }
 
-        // col actions ============================================================================
-
         Render_Col_Menu()
         {
           const m =
@@ -170,7 +169,6 @@
             class_name: "menu",
             options: 
             [
-              {title: 'Sort', on_click_fn: this.Sort_On_Click},
               {title: 'Add Text Component', on_click_fn: this.Add_Text_On_Click},
               {title: 'Add HTML Component', on_click_fn: this.Add_HTML_On_Click},
               {title: 'Delete Selected', on_click_fn: this.Del_Sel_On_Click},
@@ -186,10 +184,28 @@
           return main_menu; 
         }
 
-        Sort_On_Click()
+        Render_Row_Menu(component)
         {
+          const m =
+          {
+            title: "Component Actions",
+            class_name: "menu",
+            options: 
+            [
+              {title: "Edit", on_click_fn: this.Edit_On_Click, component_id: component.id}, 
+              {title: "Delete", on_click_fn: this.Del_On_Click, component_id: component.id}
+            ]
+          };
 
+          const main_menu = new Menu_Buddy_Btn();
+          main_menu.innerHTML = "&equiv;";
+          main_menu.menu = m;
+          //main_menu.menu_buddy.style.width = "200px";
+
+          return main_menu; 
         }
+
+        // col actions ============================================================================
 
         async Add_Text_On_Click(event)
         {
@@ -223,27 +239,6 @@
 
         // row actions ============================================================================
 
-        Render_Row_Menu(component)
-        {
-          const m =
-          {
-            title: "Component Actions",
-            class_name: "menu",
-            options: 
-            [
-              {title: "Edit", on_click_fn: this.Edit_On_Click, component_id: component.id}, 
-              {title: "Delete", on_click_fn: this.Del_On_Click, component_id: component.id}
-            ]
-          };
-
-          const main_menu = new Menu_Buddy_Btn();
-          main_menu.innerHTML = "&equiv;";
-          main_menu.menu = m;
-          //main_menu.menu_buddy.style.width = "200px";
-
-          return main_menu; 
-        }
-
         Edit_On_Click(event, option)
         {
           let url = "component_text.html";
@@ -275,6 +270,7 @@
       function Main()
       {
         new Context(Header_Signed_In, Header_Signed_Out);
+        sort_bar.addEventListener("sort", On_Sort);
       }
       
       function Header_Signed_In(ctx)
@@ -295,11 +291,24 @@
         //projects_elem.Render_Msg("You must sign in.");
         Context.Toast_Show("You must sign in.", "warning");
       }
+
+      function On_Sort(event)
+      {
+        components_elem.order_by = sort_bar.value;
+      }
     </script>
   </head>
 
   <body>
     <header-buddy id="header_elem" title="CMS - Components" style-src="styles/Header_Buddy.css"></header-buddy>
+    <de-sort id="sort_bar">
+      <li sort-code="ORDERBY_ID">Id</li>
+      <li sort-code="ORDERBY_TITLE">Title</li>
+      <li sort-code="ORDERBY_KEY">Key</li>
+      <li sort-code="ORDERBY_TYPE">Type</li>
+      <li sort-code="ORDERBY_CONTENT">Content</li>
+      <li sort-code="ORDERBY_PROJECT">Project</li>
+    </de-sort>
     <table-buddy id="components_elem" style-src="/styles/table.css"></table-buddy>
   </body>
 </html>

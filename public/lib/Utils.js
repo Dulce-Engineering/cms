@@ -472,6 +472,17 @@ class Utils
     const attr_val = elem.getAttribute(name);
     return Utils.hasValue(attr_val) ? attr_val : def;
   }
+
+  static async Calc_Values(objs, obj_field, calc_fn)
+  {
+    if (objs && objs.length >0)
+    {
+      for (const obj of objs)
+      {
+        obj[obj_field] = await calc_fn(obj);
+      }
+    }
+  }
 }
 
 export default Utils;

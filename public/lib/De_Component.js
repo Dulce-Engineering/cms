@@ -15,23 +15,33 @@ class De_Component
     Utils.To_Class_Obj(data, this);
   }
 
-  static Select_All(db, order_code, filters)
+  static async Select_All(db, sorts, filters)
   {
     const where = db.To_Db_Where(filters,
     [
       {code: "WHERE_PROJECT", field: "project_id", op: "=="},
       {code: "WHERE_PARENT", field: "parent_id", op: "==", use_null: true}
     ]);
+    const objs = await db.Select_Objs("component", De_Component, where);
 
-    /*query.sql = Db.appendUIOrderBy(query.sql, orderBy, 
+    const order_by = db.To_Db_Order_By(sorts, 
     [
-      "ORDERBY_NO_INCIDENTS",  "incident_count",
-      "ORDERBY_LAST_INCIDENT", "last_time",
-      "ORDERBY_SOURCE",        "source",
-      "ORDERBY_ID",            "id"
-    ]);*/
-  
-    return db.Select_Objs("component", De_Component, where);
+      {code: "ORDERBY_CONTENT",    field: "content"},
+      {code: "ORDERBY_TYPE",       field: "content_type"},
+      {code: "ORDERBY_ID",         field: "id"},
+      {code: "ORDERBY_KEY",        field: "key"},
+      {code: "ORDERBY_PROJECT",    field: "project_title"},
+      {code: "ORDERBY_TITLE",      field: "title"},
+      {code: "ORDERBY_PARENT_ID",  field: "parent_id"},
+    ]);
+    if (sorts?.some(o => o.code == "ORDERBY_PROJECT"))
+    {
+      await Utils.Calc_Values
+        (objs, "project_title", (o) => db.Select_Value_By_Id(o.project_id, "project", "title"));
+    }
+    db.Order_By(objs, order_by);
+
+    return objs;
   }
 
   static async Has_Children(db, id, project_id)

@@ -24,6 +24,8 @@ class De_Db_Firestore
     console.error(e);
   }
 
+  // select =======================================================================================
+
   async Select_Value(table_name, field_name, where)
   {
     let res;
@@ -127,11 +129,11 @@ class De_Db_Firestore
     return res;
   }
 
-  async Select_Objs(table_name, class_type, where)
+  async Select_Objs(table_name, class_type, where, order_by)
   {
     let res;
 
-    const objs = await this.Select(table_name, where);
+    const objs = await this.Select(table_name, where, order_by);
     if (!De_Db_Firestore.Is_Empty(objs))
     {
       res = [];
@@ -145,11 +147,11 @@ class De_Db_Firestore
     return res;
   }
 
-  async Select(table_name, where)
+  async Select(table_name, where, order_by)
   {
     let res = null;
 
-    const query_res = await this.Select_Query(table_name, where);
+    const query_res = await this.Select_Query(table_name, where, null, order_by);
     if (query_res && !query_res.empty)
     {
       res = [];
@@ -164,12 +166,13 @@ class De_Db_Firestore
     return res;
   }
 
-  async Select_Query(table_name, where, limit)
+  async Select_Query(table_name, where, limit, order_by)
   {
     let query_res = null;
 
     const table = this.db.collection(table_name);
     let query = this.Add_Where(table, where);
+    query = this.Add_Order_By(query, order_by);
     query = (limit != null && limit != undefined) ? query.limit(limit): query;
 
     try {query_res = await query.get();}
@@ -181,6 +184,8 @@ class De_Db_Firestore
 
     return query_res;
   }
+
+  // save, insert, update =========================================================================
 
   async Save(class_obj, table_name)
   {
@@ -265,6 +270,8 @@ class De_Db_Firestore
     return res;
   }
 
+  // delete =======================================================================================
+
   Delete(table_name, id)
   {
     return this.Delete_Ids(table_name, [id])
@@ -304,14 +311,47 @@ class De_Db_Firestore
     return res;
   }
 
-  async Exists(table_name, id)
+  // where, order by ==============================================================================
+
+  Order_By(data, order_bys)
   {
-    const table = this.db.collection(table_name);
-    const query = table.doc(id);
-    const query_res = await query.get();
-    const res = query_res.exists;
+    let res = data;
+
+    if (!De_Db_Firestore.Is_Empty(order_bys))
+    {
+      const order_by = order_bys[0];
+      const compare_dir = order_by.dir == "asc" ? 1: -1;
+      res = data.sort(Compare);
+
+      function Compare(a, b)
+      {
+        let res = 0;
+
+        if (a[order_by.field] > b[order_by.field]) res = compare_dir;
+        else if (a[order_by.field] < b[order_by.field]) res = -compare_dir;
+        else
+        {
+          // todo: check next sort field
+        }
+
+        return res;
+      }
+    }
 
     return res;
+  }
+
+  Add_Order_By(query, order_bys)
+  {
+    if (!Utils.isEmpty(order_bys))
+    {
+      for (const order_by of order_bys)
+      {
+        query = query.orderBy(order_by.field, order_by.dir);
+      }
+    }
+
+    return query;
   }
 
   Add_Where(table, where_filters)
@@ -325,6 +365,31 @@ class De_Db_Firestore
     }
 
     return table;
+  }
+  
+  To_Db_Order_By(order_codes, order_bys)
+  {
+    let db_order_bys;
+
+    if (!Utils.isEmpty(order_codes))
+    {
+      db_order_bys = [];
+
+      for (const value of order_codes)
+      {
+        const order_code = value.code;
+        const order_dir = value.dir == "desc" ? "desc": "asc";
+
+        const order_by = order_bys.find(o => o.code == order_code);
+        if (order_by)
+        {
+          const db_order_by = {field: order_by.field, dir: order_dir};
+          db_order_bys.push(db_order_by);
+        }
+      }
+    }
+
+    return db_order_bys;
   }
   
   To_Db_Where(values, conditions)
@@ -350,6 +415,18 @@ class De_Db_Firestore
     }
 
     return db_where;
+  }
+
+  // misc =========================================================================================
+  
+  async Exists(table_name, id)
+  {
+    const table = this.db.collection(table_name);
+    const query = table.doc(id);
+    const query_res = await query.get();
+    const res = query_res.exists;
+
+    return res;
   }
 
   To_Obj(class_obj)

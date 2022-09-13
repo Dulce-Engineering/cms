@@ -19,11 +19,13 @@
       import Table_Buddy from './node_modules/table-buddy/Table_Buddy.mjs';
       import Menu_Buddy from './node_modules/menu-buddy/Menu_Buddy.mjs';
       import Menu_Buddy_Btn from './node_modules/menu-buddy/Menu_Buddy_Btn.mjs';
+      import De_Sort from "./components/De_Sort.js"
       customElements.define(Header_Buddy.tname, Header_Buddy);
       customElements.define(Table_Buddy.tname, Table_Buddy);
       customElements.define(Menu_Buddy.tname, Menu_Buddy);
       customElements.define(Menu_Buddy_Btn.tname, Menu_Buddy_Btn);
-      
+      customElements.define(De_Sort.tname, De_Sort);
+
       const align_left = "text-align: left;";
 
       class Projects_Ds extends Datasource.Memory
@@ -199,6 +201,7 @@
       function Main()
       {
         new Context(Header_Signed_In, Header_Signed_Out);
+        sort_bar.addEventListener("sort", On_Sort);
       }
       
       function Header_Signed_In(ctx)
@@ -219,11 +222,24 @@
         //projects_elem.Render_Msg("You must sign in.");
         Context.Toast_Show("You must sign in.", "warning");
       }
+
+      function On_Sort(event)
+      {
+        components_elem.order_by = sort_bar.value;
+      }
     </script>
   </head>
 
   <body>
     <header-buddy id="header_elem" title="CMS - Components" style-src="styles/Header_Buddy.css"></header-buddy>
+    <de-sort id="sort_bar">
+      <li sort-code="ORDERBY_ID">Id</li>
+      <li sort-code="ORDERBY_TITLE">Title</li>
+      <li sort-code="ORDERBY_KEY">Key</li>
+      <li sort-code="ORDERBY_TYPE">Type</li>
+      <li sort-code="ORDERBY_CONTENT">Content</li>
+      <li sort-code="ORDERBY_PROJECT">Project</li>
+    </de-sort>
     <table-buddy id="components_elem" style-src="/styles/table.css"></table-buddy>
   </body>
 </html>
