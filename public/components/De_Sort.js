@@ -58,9 +58,7 @@ class De_Sort extends HTMLElement
       this.sort_list.replaceChildren();
       for (const sort of sort_items)
       {
-        const sort_item = this.Render_Sort(sort);
-        this.sort_list.append(sort_item);
-        this.Enable_Field_Item(sort.code, false);
+        this.Add_Sort(sort);
       }
       this.dispatchEvent(this.sort_event);
     }
@@ -103,25 +101,34 @@ class De_Sort extends HTMLElement
     }
   }
 
+  Add_Sort(sort)
+  {
+    const sort_item = this.Render_Sort(sort);
+    this.sort_list.append(sort_item);
+    this.Enable_Field_Item(sort.code, false);
+  }
+
   // events =======================================================================================
   
   On_Click_Add()
   {
+    // show field menu
     this.field_list.classList.add(this.add_class);
+  }
+  
+  On_Click_Close()
+  {
+    // hide field menu
+    this.field_list.classList.remove(this.add_class);
   }
   
   On_Click_Sort(e, sort)
   {
-    // show field menu
+    // hide field menu
     this.field_list.classList.remove(this.add_class);
 
-    // add selected field to sort list
-    const sort_item = this.Render_Sort(sort);
-    this.sort_list.append(sort_item);
-
-    this.Enable_Field_Item(sort.code, false);
+    this.Add_Sort(sort);
     this.Save();
-
     this.dispatchEvent(this.sort_event);
   }
   
@@ -147,19 +154,24 @@ class De_Sort extends HTMLElement
       <div class="header">
         Sorted By: 
         <span class="add_banner">
-          <button id="add_btn" class="add_btn">+</button>
-          <ul id="field_list" class="field_list"></ul>
+          <button id="add_btn" class="btn add_btn">+</button>
+          <ul id="field_list" class="field_list">
+            <li class="hdr_item">
+              <button id="close_btn" class="btn close_btn">x</button> 
+              Sort Options</li>
+          </ul>
         </span>
       </div>
       <ul id="sort_list" class="sort_list"></ul>
     `;
     const elems = Utils.toDocument(html);
-    elems.getElementById("field_list").replaceChildren(...field_items);
+    elems.getElementById("field_list").append(...field_items);
     this.append(elems);
 
     Utils.Set_Id_Shortcuts(this, this);
 
     this.add_btn.addEventListener("click", this.On_Click_Add);
+    this.close_btn.addEventListener("click", this.On_Click_Close);
   }
 
   Render_Field_Item(field_item)
@@ -168,11 +180,13 @@ class De_Sort extends HTMLElement
 
     const asc_btn = document.createElement("button");
     asc_btn.innerHTML = "▲";
+    asc_btn.classList.add("btn");
     asc_btn.classList.add("sort_btn");
     asc_btn.addEventListener("click", e => this.On_Click_Sort(e, {code, dir: "asc"}));
 
     const desc_btn = document.createElement("button");
     desc_btn.innerHTML = "▼";
+    desc_btn.classList.add("btn");
     desc_btn.classList.add("sort_btn");
     desc_btn.addEventListener("click", e => this.On_Click_Sort(e, {code, dir: "desc"}));
 
@@ -184,6 +198,7 @@ class De_Sort extends HTMLElement
   {
     const remove_btn = document.createElement("button");
     remove_btn.innerText = "x";
+    remove_btn.classList.add("btn");
     remove_btn.classList.add("remove_btn");
     remove_btn.addEventListener("click", e => this.On_Click_Remove(e, sort_item, sort));
 

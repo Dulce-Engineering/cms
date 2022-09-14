@@ -147,43 +147,42 @@ de-sort .sort_item
   margin-left: 5px;
   padding: 3px 5px 2px 5px;
 }
+de-sort .hdr_item
+{
+  white-space: nowrap;
+  text-align: left;
+  font-weight: bold;
+  height: 30px;
+}
 de-sort .header
 {
   display: inline-block;
 }
-de-sort .sort_btn 
+de-sort .btn 
 {
   border: none;
   padding: 0;
-  margin: 0 0 0 5px;
+  margin: 0;
   background-color: #f002;
   border-radius: 20px;
   font-family: 'Roboto';
   cursor: pointer;
   width: 22px;
   height: 22px;
+}
+de-sort .sort_btn 
+{
+  margin: 0 0 0 5px;
 }
 de-sort .add_btn
 {
-  border: none;
-  padding: 0;
   margin: 0 0 0 5px;
-  background-color: #f002;
-  border-radius: 20px;
-  font-family: 'Roboto';
-  cursor: pointer;
-  width: 22px;
-  height: 22px;
 }
 de-sort .remove_btn
 {
-  border: none;
-  padding: 0;
   margin: 0 0 0 5px;
-  background-color: #f002;
-  border-radius: 20px;
-  font-family: 'Roboto';
-  cursor: pointer;
-  width: 22px;
-  height: 22px;
+}
+de-sort .close_btn
+{
+  margin: 0 5px 0 0;
 }
