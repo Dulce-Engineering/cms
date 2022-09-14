@@ -319,19 +319,20 @@ class De_Db_Firestore
 
     if (!De_Db_Firestore.Is_Empty(order_bys))
     {
-      const order_by = order_bys[0];
-      const compare_dir = order_by.dir == "asc" ? 1: -1;
-      res = data.sort(Compare);
+      res = data.sort((a, b) => Compare(a, b, 0));
 
-      function Compare(a, b)
+      function Compare(a, b, idx)
       {
         let res = 0;
 
-        if (a[order_by.field] > b[order_by.field]) res = compare_dir;
-        else if (a[order_by.field] < b[order_by.field]) res = -compare_dir;
-        else
+        if (idx < order_bys.length)
         {
-          // todo: check next sort field
+          const order_by = order_bys[idx];
+          const compare_dir = order_by.dir == "asc" ? 1: -1;
+
+          if (a[order_by.field] > b[order_by.field]) res = compare_dir;
+          else if (a[order_by.field] < b[order_by.field]) res = -compare_dir;
+          else res = Compare(a, b, idx + 1);
         }
 
         return res;

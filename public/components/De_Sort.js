@@ -51,6 +51,21 @@ class De_Sort extends HTMLElement
     return sort_items;
   }
 
+  set value(sort_items)
+  {
+    if (sort_items && sort_items.length > 0)
+    {
+      this.sort_list.replaceChildren();
+      for (const sort of sort_items)
+      {
+        const sort_item = this.Render_Sort(sort);
+        this.sort_list.append(sort_item);
+        this.Enable_Field_Item(sort.code, false);
+      }
+      this.dispatchEvent(this.sort_event);
+    }
+  }
+
   Get_Field_Item(sort_code)
   {
     return this.field_list.querySelector("[sort-code='" + sort_code + "']");
@@ -70,6 +85,24 @@ class De_Sort extends HTMLElement
     btns[1].disabled = !enabled;
   }
 
+  Save()
+  {
+    if (this.id)
+    {
+      const value_str = JSON.stringify(this.value);
+      localStorage.setItem(this.id, value_str);
+    }
+  }
+
+  Load()
+  {
+    if (this.id)
+    {
+      const value_str = localStorage.getItem(this.id);
+      this.value = JSON.parse(value_str);
+    }
+  }
+
   // events =======================================================================================
   
   On_Click_Add()
@@ -87,6 +120,7 @@ class De_Sort extends HTMLElement
     this.sort_list.append(sort_item);
 
     this.Enable_Field_Item(sort.code, false);
+    this.Save();
 
     this.dispatchEvent(this.sort_event);
   }
@@ -94,7 +128,9 @@ class De_Sort extends HTMLElement
   On_Click_Remove(e, sort_item, sort)
   {
     sort_item.remove();
+
     this.Enable_Field_Item(sort.code, true);
+    this.Save();
 
     this.dispatchEvent(this.sort_event);
   }

@@ -49,9 +49,9 @@
           this.table_elem.datasource = this;
         }
 
-        async Update_Data(filter_by, sort_by)
+        async Update_Data(where, order_by)
         {
-          this.data = await De_Component.Select_All(this.ctx.db, sort_by, filter_by);
+          this.data = await De_Component.Select_All(this.ctx.db, order_by, where);
         }
 
         // rendering ==============================================================================
@@ -201,11 +201,13 @@
       function Main()
       {
         new Context(Header_Signed_In, Header_Signed_Out);
-        sort_bar.addEventListener("sort", On_Sort);
       }
       
       function Header_Signed_In(ctx)
       {
+        components_sort_bar.addEventListener("sort", On_Sort);
+        components_sort_bar.Load();
+
         const urlParams = new URLSearchParams(window.location.search);
         const project_id = urlParams.get('project_id');
         if (project_id)
@@ -225,14 +227,14 @@
 
       function On_Sort(event)
       {
-        components_elem.order_by = sort_bar.value;
+        components_elem.order_by = components_sort_bar.value;
       }
     </script>
   </head>
 
   <body>
     <header-buddy id="header_elem" title="CMS - Components" style-src="styles/Header_Buddy.css"></header-buddy>
-    <de-sort id="sort_bar">
+    <de-sort id="components_sort_bar">
       <li sort-code="ORDERBY_ID">Id</li>
       <li sort-code="ORDERBY_TITLE">Title</li>
       <li sort-code="ORDERBY_KEY">Key</li>
