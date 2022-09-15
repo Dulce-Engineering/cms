@@ -20,11 +20,13 @@
       import Menu_Buddy from './node_modules/menu-buddy/Menu_Buddy.mjs';
       import Menu_Buddy_Btn from './node_modules/menu-buddy/Menu_Buddy_Btn.mjs';
       import De_Sort from "./components/De_Sort.js"
+      import De_Columns from "./components/De_Columns.js"
       customElements.define(Header_Buddy.tname, Header_Buddy);
       customElements.define(Table_Buddy.tname, Table_Buddy);
       customElements.define(Menu_Buddy.tname, Menu_Buddy);
       customElements.define(Menu_Buddy_Btn.tname, Menu_Buddy_Btn);
       customElements.define(De_Sort.tname, De_Sort);
+      customElements.define(De_Columns.tname, De_Columns);
 
       const align_left = "text-align: left;";
 
@@ -65,12 +67,12 @@
           cols.push({title_fn: this.Render_Col_Menu, field_fn: this.Render_Row_Menu, style: align_left});
           cols.push(this.sel_col);
           cols.push(new Table_Buddy.Column_No(align_left));
-          cols.push({title: "Id", field_name: "id", style: align_left});
-          cols.push({title: "Title", field_name: "title", style: align_left});
-          cols.push({title: "Key", field_name: "key", style: align_left});
-          cols.push({title: "Type", field_name: "content_type", style: align_left});
-          cols.push({title: "Content", field_fn: this.Render_Content_Field, style: align_left});
-          cols.push({title: "Project", field_fn: this.Render_Project_Field, style: align_left});
+          cols.push({id: "id", title: "Id", field_name: "id", style: align_left});
+          cols.push({id: "title", title: "Title", field_name: "title", style: align_left});
+          cols.push({id: "key", title: "Key", field_name: "key", style: align_left});
+          cols.push({id: "type", title: "Type", field_name: "content_type", style: align_left});
+          cols.push({id: "content", title: "Content", field_fn: this.Render_Content_Field, style: align_left});
+          cols.push({id: "project", title: "Project", field_fn: this.Render_Project_Field, style: align_left});
 
           return cols;
         }
@@ -196,7 +198,6 @@
         }
       }
 
-      //window.onload = Main;
       Main();
       function Main()
       {
@@ -207,6 +208,9 @@
       {
         components_sort_bar.addEventListener("sort", On_Sort);
         components_sort_bar.Load();
+
+        components_columns.addEventListener("update", On_Update_Columns);
+        components_columns.Load();
 
         const urlParams = new URLSearchParams(window.location.search);
         const project_id = urlParams.get('project_id');
@@ -229,6 +233,11 @@
       {
         components_elem.order_by = components_sort_bar.value;
       }
+
+      function On_Update_Columns(event)
+      {
+        components_elem.columns_status = components_columns.value;
+      }
     </script>
   </head>
 
@@ -242,6 +251,14 @@
       <li sort-code="ORDERBY_CONTENT">Content</li>
       <li sort-code="ORDERBY_PROJECT">Project</li>
     </de-sort>
+    <de-columns id="components_columns">
+      <li col-id="id">Id</li>
+      <li col-id="title">Title</li>
+      <li col-id="key">Key</li>
+      <li col-id="type">Type</li>
+      <li col-id="content">Content</li>
+      <li col-id="project">Project</li>
+    </de-columns>
     <table-buddy id="components_elem" style-src="/styles/table.css"></table-buddy>
   </body>
 </html>
