@@ -26,6 +26,7 @@ const rpc_buddy = new RPC_Buddy
   ],
   RPC_Buddy.Express
 );
+rpc_buddy.client_cache_control = "max-age=2592000"; // 30 days
 
 //const Square = require('./lib/Square');
 //const square = new Square(db, false, "EAAAEPtmyNk9S-mNT-qoN2nYzI9SNs7dq18rdJG5zOh1nP4t2Uo5At79tWxFf0mc");
