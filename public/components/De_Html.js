@@ -2,6 +2,8 @@ import Utils from "../lib/Utils.js";
 
 class De_Html extends HTMLElement 
 {
+  static tname = "de-html";
+
   constructor() 
   {
     super();

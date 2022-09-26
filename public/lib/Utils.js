@@ -1,5 +1,13 @@
 class Utils
 {
+  static MILLIS_SECOND = 1000;
+  static MILLIS_MINUTE = Utils.MILLIS_SECOND * 60;
+  static MILLIS_HOUR = Utils.MILLIS_MINUTE * 60;
+  static MILLIS_DAY = Utils.MILLIS_HOUR * 24;
+  static MILLIS_WEEK = Utils.MILLIS_DAY * 7;
+  static MILLIS_MONTH = Utils.MILLIS_WEEK * 4;
+  static MILLIS_YEAR = Utils.MILLIS_MONTH * 12;
+
   static appendParam(params, paramName, paramValue)
   {
     return Utils.appendStr(params, paramName + "=" + paramValue, "&");

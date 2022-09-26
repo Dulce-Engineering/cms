@@ -26,7 +26,7 @@ class De_Project_Component extends HTMLElement
   {
     const key = this.getAttribute("key");
     const cache_key = "De_Project_Component.Get_Project("+key+")";
-    return cache.use(cache_key, () => api.De_Project.Select_By_Key(key));
+    return cache.use(cache_key, () => api.De_Project.Select_By_Key(key), Utils.MILLIS_MONTH);
   }
 
   async Get_Project_Id()
