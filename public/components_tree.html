@@ -15,16 +15,18 @@
       import Datasource from "./node_modules/table-buddy/Datasource.mjs";
       import De_Component from "../lib/De_Component.js"
       import De_Project from "./lib/De_Project.js"
-      import De_Sort from "./components/De_Sort.js"
       import Header_Buddy from './node_modules/header-buddy/Header_Buddy.js';
       import Table_Buddy from './node_modules/table-buddy/Table_Buddy.mjs';
       import Menu_Buddy from './node_modules/menu-buddy/Menu_Buddy.mjs';
       import Menu_Buddy_Btn from './node_modules/menu-buddy/Menu_Buddy_Btn.mjs';
+      import De_Sort from "./components/De_Sort.js"
+      import De_Columns from "./components/De_Columns.js"
       customElements.define(Header_Buddy.tname, Header_Buddy);
       customElements.define(Table_Buddy.tname, Table_Buddy);
       customElements.define(Menu_Buddy.tname, Menu_Buddy);
       customElements.define(Menu_Buddy_Btn.tname, Menu_Buddy_Btn);
       customElements.define(De_Sort.tname, De_Sort);
+      customElements.define(De_Columns.tname, De_Columns);
       
       const align_left = "text-align: left;";
 
@@ -67,12 +69,12 @@
           cols.push(this.sel_col);
           cols.push({title: "", field_fn: this.Render_Children_Btn, style: align_left});
           cols.push(new Table_Buddy.Column_No(align_left));
-          cols.push({title: "Id", field_name: "id", style: align_left});
-          cols.push({title: "Title", field_name: "title", style: align_left});
-          cols.push({title: "Key", field_name: "key", style: align_left});
-          cols.push({title: "Type", field_name: "content_type", style: align_left});
-          cols.push({title: "Content", field_fn: this.Render_Content_Field, style: align_left});
-          cols.push({title: "Project", field_fn: this.Render_Project_Field, style: align_left});
+          cols.push({id: "id", title: "Id", field_name: "id", style: align_left});
+          cols.push({id: "title", title: "Title", field_name: "title", style: align_left});
+          cols.push({id: "key", title: "Key", field_name: "key", style: align_left});
+          cols.push({id: "type", title: "Type", field_name: "content_type", style: align_left});
+          cols.push({id: "content", title: "Content", field_fn: this.Render_Content_Field, style: align_left});
+          cols.push({id: "project", title: "Project", field_fn: this.Render_Project_Field, style: align_left});
 
           return cols;
         }
@@ -265,16 +267,20 @@
         }
       }
 
-      //window.onload = Main;
       Main();
       function Main()
       {
         new Context(Header_Signed_In, Header_Signed_Out);
-        sort_bar.addEventListener("sort", On_Sort);
       }
       
       function Header_Signed_In(ctx)
       {
+        components_tree_sort.addEventListener("sort", On_Sort);
+        components_tree_sort.Load();
+
+        components_tree_columns.addEventListener("update", On_Update_Columns);
+        components_tree_columns.Load();
+
         const urlParams = new URLSearchParams(window.location.search);
         const project_id = urlParams.get('project_id');
         if (project_id)
@@ -294,14 +300,19 @@
 
       function On_Sort(event)
       {
-        components_elem.order_by = sort_bar.value;
+        components_elem.order_by = components_tree_sort.value;
+      }
+
+      function On_Update_Columns(event)
+      {
+        components_elem.columns_status = components_tree_columns.value;
       }
     </script>
   </head>
 
   <body>
     <header-buddy id="header_elem" title="CMS - Components" style-src="styles/Header_Buddy.css"></header-buddy>
-    <de-sort id="sort_bar">
+    <de-sort id="components_tree_sort">
       <li sort-code="ORDERBY_ID">Id</li>
       <li sort-code="ORDERBY_TITLE">Title</li>
       <li sort-code="ORDERBY_KEY">Key</li>
@@ -309,6 +320,14 @@
       <li sort-code="ORDERBY_CONTENT">Content</li>
       <li sort-code="ORDERBY_PROJECT">Project</li>
     </de-sort>
+    <de-columns id="components_tree_columns">
+      <li col-id="id">Id</li>
+      <li col-id="title">Title</li>
+      <li col-id="key">Key</li>
+      <li col-id="type">Type</li>
+      <li col-id="content">Content</li>
+      <li col-id="project">Project</li>
+    </de-columns>
     <table-buddy id="components_elem" style-src="/styles/table.css"></table-buddy>
   </body>
 </html>

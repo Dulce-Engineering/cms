@@ -206,8 +206,8 @@
       
       function Header_Signed_In(ctx)
       {
-        components_sort_bar.addEventListener("sort", On_Sort);
-        components_sort_bar.Load();
+        components_sort.addEventListener("sort", On_Sort);
+        components_sort.Load();
 
         components_columns.addEventListener("update", On_Update_Columns);
         components_columns.Load();
@@ -231,7 +231,7 @@
 
       function On_Sort(event)
       {
-        components_elem.order_by = components_sort_bar.value;
+        components_elem.order_by = components_sort.value;
       }
 
       function On_Update_Columns(event)
@@ -243,7 +243,7 @@
 
   <body>
     <header-buddy id="header_elem" title="CMS - Components" style-src="styles/Header_Buddy.css"></header-buddy>
-    <de-sort id="components_sort_bar">
+    <de-sort id="components_sort">
       <li sort-code="ORDERBY_ID">Id</li>
       <li sort-code="ORDERBY_TITLE">Title</li>
       <li sort-code="ORDERBY_KEY">Key</li>
