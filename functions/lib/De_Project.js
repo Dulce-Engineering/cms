@@ -39,7 +39,6 @@ class De_Project
 
   static Select_By_Key(db, key)
   {
-    //console.log("De_Project.Select_By_Key(): key =", key);
     return db.Select_Obj("project", De_Project, [{field: "key", op: "==", value: key}]);
   }
 

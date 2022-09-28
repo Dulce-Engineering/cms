@@ -21,8 +21,7 @@ const rpc_buddy = new RPC_Buddy
   [De_Project, De_Component],
   [
     {name: "De_Project.Select_By_Key", inject: [db]},
-    {name: "De_Component.Select_Text_Contents", inject: [db]},
-    {name: "De_Component.Select_HTML_Contents", inject: [db]},
+    {name: "De_Component.Select_Contents", inject: [db]},
   ],
   RPC_Buddy.Express
 );

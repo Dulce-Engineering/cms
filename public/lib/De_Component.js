@@ -1,4 +1,5 @@
 import Utils from "./Utils.js";
+//const Utils = require('./Utils.js');
 
 class De_Component
 {
@@ -96,7 +97,6 @@ class De_Component
     const where =
     [
       {field: "key", op: "==", value: key},
-      {field: "content_type", op: "==", value: "text"},
       {field: "project_id", op: "==", value: project_id}
     ];
     return db.Select_Values("content", "component", where);
@@ -116,3 +116,4 @@ class De_Component
 }
 
 export default De_Component;
+//module.exports = De_Component;

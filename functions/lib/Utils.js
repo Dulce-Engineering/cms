@@ -1,5 +1,13 @@
 class Utils
 {
+  static MILLIS_SECOND = 1000;
+  static MILLIS_MINUTE = Utils.MILLIS_SECOND * 60;
+  static MILLIS_HOUR = Utils.MILLIS_MINUTE * 60;
+  static MILLIS_DAY = Utils.MILLIS_HOUR * 24;
+  static MILLIS_WEEK = Utils.MILLIS_DAY * 7;
+  static MILLIS_MONTH = Utils.MILLIS_WEEK * 4;
+  static MILLIS_YEAR = Utils.MILLIS_MONTH * 12;
+
   static appendParam(params, paramName, paramValue)
   {
     return Utils.appendStr(params, paramName + "=" + paramValue, "&");
@@ -463,6 +471,23 @@ class Utils
       if (typeof obj[member] == "function" && member.startsWith(fn_prefix))
       {
         obj[member] = obj[member].bind(obj);
+      }
+    }
+  }
+
+  static Get_Attr_Def(elem, name, def)
+  {
+    const attr_val = elem.getAttribute(name);
+    return Utils.hasValue(attr_val) ? attr_val : def;
+  }
+
+  static async Calc_Values(objs, obj_field, calc_fn)
+  {
+    if (objs && objs.length >0)
+    {
+      for (const obj of objs)
+      {
+        obj[obj_field] = await calc_fn(obj);
       }
     }
   }
