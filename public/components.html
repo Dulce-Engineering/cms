@@ -36,7 +36,6 @@
         {
           super();
 
-          //this.view_mode = "group";
           this.ctx = ctx;
           this.table_elem = table_elem;
 
@@ -45,15 +44,15 @@
           this.Render_Project_Field = this.Render_Project_Field.bind(this);
           this.Del_Sel_On_Click = this.Del_Sel_On_Click.bind(this);
           this.Del_On_Click = this.Del_On_Click.bind(this);
-          this.Sort_On_Click = this.Sort_On_Click.bind(this);
           this.Get_Columns = this.Get_Columns.bind(this);
           
           this.table_elem.datasource = this;
         }
 
-        async Update_Data(where, order_by)
+        async Update_Data(filter_by, sort_by)
         {
-          this.data = await De_Component.Select_All(this.ctx.db, order_by, where);
+          this.data = await De_Component.Select_All(this.ctx.db, sort_by, filter_by);
+          //De_Component.Add_Children(this.ctx.db, this.data, this.open_ids, sort_by, filter_by);
         }
 
         // rendering ==============================================================================
@@ -63,10 +62,15 @@
           const cols = [];
 
           this.sel_col = new Table_Buddy.Column_Select("id", align_left);
+          this.sel_col.id = "select";
 
-          cols.push({title_fn: this.Render_Col_Menu, field_fn: this.Render_Row_Menu, style: align_left});
+          this.idx_col = new Table_Buddy.Column_No(align_left);
+          this.idx_col.id = "row_idx";
+
+          cols.push({id: "menu", title_fn: this.Render_Col_Menu, field_fn: this.Render_Row_Menu, style: align_left});
           cols.push(this.sel_col);
-          cols.push(new Table_Buddy.Column_No(align_left));
+          cols.push(this.idx_col);
+
           cols.push({id: "id", title: "Id", field_name: "id", style: align_left});
           cols.push({id: "title", title: "Title", field_name: "title", style: align_left});
           cols.push({id: "key", title: "Key", field_name: "key", style: align_left});
@@ -88,8 +92,6 @@
           return project.title;
         }
 
-        // col actions ============================================================================
-
         Render_Col_Menu()
         {
           const m =
@@ -98,9 +100,10 @@
             class_name: "menu",
             options: 
             [
-              {title: 'Sort', on_click_fn: this.Sort_On_Click},
-              {title: 'Add Text Component', on_click_fn: this.Add_Text_On_Click},
-              {title: 'Add HTML Component', on_click_fn: this.Add_HTML_On_Click},
+              {title: 'Add Text Component', on_click_fn: this.Add_Component_On_Click, content_type: "text"},
+              {title: 'Add HTML Component', on_click_fn: this.Add_Component_On_Click, content_type: "html"},
+              {title: 'Add Link Component', on_click_fn: this.Add_Component_On_Click, content_type: "link"},
+              {title: 'Add Image Component', on_click_fn: this.Add_Component_On_Click, content_type: "image"},
               {title: 'Delete Selected', on_click_fn: this.Del_Sel_On_Click},
             ]
           };
@@ -114,21 +117,34 @@
           return main_menu; 
         }
 
-        Sort_On_Click()
+        Render_Row_Menu(component)
         {
+          const m =
+          {
+            title: "Component Actions",
+            class_name: "menu",
+            options: 
+            [
+              {title: "Edit", on_click_fn: this.Edit_On_Click, component}, 
+              {title: "Delete", on_click_fn: this.Del_On_Click, component_id: component.id}
+            ]
+          };
 
+          const main_menu = new Menu_Buddy_Btn();
+          main_menu.innerHTML = "&equiv;";
+          main_menu.menu = m;
+          //main_menu.menu_buddy.style.width = "200px";
+
+          return main_menu; 
         }
 
-        async Add_Text_On_Click(event)
-        {
-          const url = Utils.Add_Param("component_text.html", "project_id", Utils.Get_Param("project_id"));
-          window.open(url, "_self");
-        }
+        // col actions ============================================================================
 
-        async Add_HTML_On_Click(event)
+        async Add_Component_On_Click(event, option)
         {
-          const url = Utils.Add_Param("component_html.html", "project_id", Utils.Get_Param("project_id"));
-          window.open(url, "_self");
+          let url = "component_" + option.content_type + ".html";
+          url = Utils.Add_Param(url, "project_id", Utils.Get_Param("project_id"));
+          window.open(url, "_blank");
         }
 
         async Del_Sel_On_Click(event)
@@ -151,33 +167,12 @@
 
         // row actions ============================================================================
 
-        Render_Row_Menu(component)
-        {
-          const m =
-          {
-            title: "Component Actions",
-            class_name: "menu",
-            options: 
-            [
-              {title: "Edit", on_click_fn: this.Edit_On_Click, component_id: component.id}, 
-              {title: "Delete", on_click_fn: this.Del_On_Click, component_id: component.id}
-            ]
-          };
-
-          const main_menu = new Menu_Buddy_Btn();
-          main_menu.innerHTML = "&equiv;";
-          main_menu.menu = m;
-          //main_menu.menu_buddy.style.width = "200px";
-
-          return main_menu; 
-        }
-
         Edit_On_Click(event, option)
         {
-          let url = "component_text.html";
+          let url = "component_" + option.component.content_type + ".html";
           url = Utils.Add_Param(url, "project_id", Utils.Get_Param("project_id"));
-          url = Utils.Add_Param(url, "id", option.component_id);
-          window.open(url, "_self");
+          url = Utils.Add_Param(url, "id", option.component.id);
+          window.open(url, "_blank");
         }
 
         async Del_On_Click(event, option)
@@ -201,6 +196,7 @@
       Main();
       function Main()
       {
+        window.Page_Refresh = Page_Refresh;
         new Context(Header_Signed_In, Header_Signed_Out);
       }
       
@@ -238,6 +234,11 @@
       {
         components_elem.columns_status = components_columns.value;
       }
+
+      function Page_Refresh()
+      {
+        components_elem.Update_Render(false);
+      }
     </script>
   </head>
 
@@ -247,6 +248,7 @@
       <li sort-code="ORDERBY_ID">Id</li>
       <li sort-code="ORDERBY_TITLE">Title</li>
       <li sort-code="ORDERBY_KEY">Key</li>
+      <li sort-code="ORDERBY_KEY#">Key (Numeric)</li>
       <li sort-code="ORDERBY_TYPE">Type</li>
       <li sort-code="ORDERBY_CONTENT">Content</li>
       <li sort-code="ORDERBY_PROJECT">Project</li>

@@ -7,6 +7,7 @@ class De_Component_Link extends De_Component
   {
     super(data);
     this.url = this.url == undefined ? null : this.url;
+    this.content_type = "link";
   }
 }
 

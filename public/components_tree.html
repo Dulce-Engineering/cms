@@ -272,6 +272,7 @@
       Main();
       function Main()
       {
+        window.Page_Refresh = Page_Refresh;
         new Context(Header_Signed_In, Header_Signed_Out);
       }
       
@@ -309,7 +310,12 @@
       {
         components_elem.columns_status = components_tree_columns.value;
       }
-    </script>
+
+      function Page_Refresh()
+      {
+        components_elem.Update_Render(false);
+      }
+</script>
   </head>
 
   <body>

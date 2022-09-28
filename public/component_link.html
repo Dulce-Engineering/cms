@@ -46,7 +46,6 @@
         else // add form
         {
           component = new De_Component_Link();
-          component.content_type = "link";
           //Utils.Hide("id_label");
           //Utils.Hide("id_value");
         }
@@ -123,6 +122,7 @@
       {
         //window.history.back();
         window.close();
+        window.opener.Page_Refresh();
       }
 
       async function On_Click_Save(event, ctx)
