@@ -39,12 +39,12 @@ class De_Html extends HTMLElement
     }
   }
 
-  Get_HTML(project_id, key, update_fn)
+  Get_Content(project_id, key, update_fn)
   {
-    const cache_key = "De_Html.Get_HTML("+project_id+", "+key+")";
+    const cache_key = "De_Component.Get_Content("+project_id+", "+key+")";
     cache.Use_Update
-      (cache_key, () => api.De_Component.Select_HTML_Contents(project_id, key), update_fn);
-}
+      (cache_key, () => api.De_Component.Select_Contents(project_id, key), update_fn);
+  }
 
   // Events =======================================================================================
 
@@ -103,7 +103,7 @@ class De_Html extends HTMLElement
     if (key)
     {
       const project_id = await this.project_elem.Get_Project_Id();
-      this.Get_HTML(project_id, key, this.Render_Contents);
+      this.Get_Content(project_id, key, this.Render_Contents);
     }
     else
     {

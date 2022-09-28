@@ -22,7 +22,8 @@ class De_Component
       {code: "WHERE_PROJECT", field: "project_id", op: "=="},
       {code: "WHERE_PARENT", field: "parent_id", op: "==", use_null: true}
     ]);
-    const objs = await db.Select_Objs("component", De_Component, where);
+    //const objs = await db.Select_Objs("component", De_Component, where);
+    const objs = await db.Select_Objs("component", this.prototype.constructor, where);
 
     const order_by = db.To_Db_Order_By(sorts, 
     [
@@ -30,6 +31,7 @@ class De_Component
       {code: "ORDERBY_TYPE",       field: "content_type"},
       {code: "ORDERBY_ID",         field: "id"},
       {code: "ORDERBY_KEY",        field: "key"},
+      {code: "ORDERBY_KEY#",       field: "key_numeric"},
       {code: "ORDERBY_PROJECT",    field: "project_title"},
       {code: "ORDERBY_TITLE",      field: "title"},
       {code: "ORDERBY_PARENT_ID",  field: "parent_id"},
@@ -42,6 +44,24 @@ class De_Component
     db.Order_By(objs, order_by);
 
     return objs;
+  }
+
+  static Select_By_Id(db, id)
+  {
+    //return db.Select_Obj_By_Id(id, "component", De_Component);
+    return db.Select_Obj_By_Id(id, "component", this.prototype.constructor);
+  }
+
+  get key_numeric()
+  {
+    const key_digit_str = this.key.replace(/\D/g,'');
+    const key_num = Number(key_digit_str);
+    return key_num == NaN ? 0 : key_num;
+  }
+
+  static async Add_Children(db, objs, open_ids, sort_by, filter_by)
+  {
+
   }
 
   static async Has_Children(db, id, project_id)
@@ -71,12 +91,7 @@ class De_Component
     return component?.title;
   }
 
-  static Select_By_Id(db, id)
-  {
-    return db.Select_Obj_By_Id(id, "component", De_Component);
-  }
-
-  static Select_Text_Contents(db, project_id, key)
+  static Select_Contents(db, project_id, key)
   {
     const where =
     [
@@ -84,20 +99,9 @@ class De_Component
       {field: "content_type", op: "==", value: "text"},
       {field: "project_id", op: "==", value: project_id}
     ];
-    //return db.Select_Values("content", "component", where);
-    const id = `De_Component.Select_Text_Contents(${project_id}, ${key})`;
-    return db.cache.use(id, () => db.Select_Values("content", "component", where));
-  }
-
-  static Select_HTML_Contents(db, project_id, key)
-  {
-    const where =
-    [
-      {field: "key", op: "==", value: key},
-      {field: "content_type", op: "==", value: "html"},
-      {field: "project_id", op: "==", value: project_id}
-    ];
     return db.Select_Values("content", "component", where);
+    //const id = `De_Component.Select_Contents(${project_id}, ${key})`;
+    //return db.cache.use(id, () => db.Select_Values("content", "component", where));
   }
 
   Save(db)

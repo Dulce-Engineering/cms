@@ -77,3 +77,25 @@ tbody tr
 {
   transform: rotateZ(90deg);
 }
+
+#menu
+{
+  width: 25px;
+}
+#select
+{
+  width: 25px;
+}
+#row_idx
+{
+  width: 25px;
+}
+#children
+{
+  width: 0;
+}
+#title
+{
+  max-width: 200px;
+  min-width: 80px;
+}

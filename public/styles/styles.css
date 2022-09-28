@@ -99,16 +99,16 @@ body
   border: none;
 }
 
-de-sort
+select-sort
 {
   margin: 0 0 5px 0;
   display: inline-block;
 }
-de-sort .add_banner
+select-sort .add_banner
 {
   position: relative;
 }
-de-sort .field_list
+select-sort .field_list
 {
   display: none;
   position: absolute;
@@ -120,19 +120,20 @@ de-sort .field_list
   left: 0px;
   background-color: #ddd;
   box-shadow: 3px 3px 5px 0px #0006;
+  z-index: 1;
 }
-de-sort .field_item
+select-sort .field_item
 {
   display: flex;
   justify-content: flex-end;
   align-items: center;
   height: 30px;
 }
-de-sort .add_sort
+select-sort .add_sort
 {
   display: inline-block;
 }
-de-sort .sort_list
+select-sort .sort_list
 {
   display: inline-flex;
   list-style-type: none;
@@ -140,25 +141,25 @@ de-sort .sort_list
   margin-block-end: 0;
   padding-inline-start: 0;
 }
-de-sort .sort_item
+select-sort .sort_item
 {
   background-color: #fff;
   border-radius: 20px;
   margin-left: 5px;
   padding: 3px 5px 2px 5px;
 }
-de-sort .hdr_item
+select-sort .hdr_item
 {
   white-space: nowrap;
   text-align: left;
   font-weight: bold;
   height: 30px;
 }
-de-sort .header
+select-sort .header
 {
   display: inline-block;
 }
-de-sort .btn 
+select-sort .btn 
 {
   border: none;
   padding: 0;
@@ -170,33 +171,33 @@ de-sort .btn
   width: 22px;
   height: 22px;
 }
-de-sort .sort_btn 
+select-sort .sort_btn 
 {
   margin: 0 0 0 5px;
 }
-de-sort .add_btn
+select-sort .add_btn
 {
   margin: 0 0 0 5px;
 }
-de-sort .remove_btn
+select-sort .remove_btn
 {
   margin: 0 0 0 5px;
 }
-de-sort .close_btn
+select-sort .close_btn
 {
   margin: 0 5px 0 0;
 }
 
-de-columns
+select-columns
 {
   margin: 0 0 5px 0;
   display: block;
 }
-de-columns .edit_banner
+select-columns .edit_banner
 {
   position: relative;
 }
-de-columns .column_list
+select-columns .column_list
 {
   display: none;
   position: absolute;
@@ -209,29 +210,29 @@ de-columns .column_list
   background-color: #ddd;
   box-shadow: 3px 3px 5px 0px #0006;
 }
-de-columns .column_item
+select-columns .column_item
 {
   display: flex;
   justify-content: flex-end;
   align-items: center;
   height: 30px;
 }
-de-columns .edit_columns
+select-columns .edit_columns
 {
   display: inline-block;
 }
-de-columns .hdr_item
+select-columns .hdr_item
 {
   white-space: nowrap;
   text-align: left;
   font-weight: bold;
   height: 30px;
 }
-de-columns .header
+select-columns .header
 {
   display: inline-block;
 }
-de-columns .btn 
+select-columns .btn 
 {
   border: none;
   padding: 0;
@@ -243,15 +244,15 @@ de-columns .btn
   width: 22px;
   height: 22px;
 }
-de-columns .col_btn 
+select-columns .col_btn 
 {
   margin: 0 0 0 5px;
 }
-de-columns .edit_btn
+select-columns .edit_btn
 {
   margin: 0 0 0 5px;
 }
-de-columns .close_btn
+select-columns .close_btn
 {
   margin: 0 5px 0 0;
 }

@@ -1,8 +1,8 @@
 import Utils from "../lib/Utils.js";
 
-class De_Sort extends HTMLElement 
+class Select_Sort extends HTMLElement 
 {
-  static tname = "de-sort";
+  static tname = "select-sort";
 
   constructor() 
   {
@@ -213,4 +213,4 @@ class De_Sort extends HTMLElement
   }
 }
 
-export default De_Sort;
+export default Select_Sort;

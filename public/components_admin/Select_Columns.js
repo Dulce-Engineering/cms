@@ -1,8 +1,8 @@
 import Utils from "../lib/Utils.js";
 
-class De_Columns extends HTMLElement 
+class Select_Columns extends HTMLElement 
 {
-  static tname = "de-columns";
+  static tname = "select-columns";
 
   constructor() 
   {
@@ -161,4 +161,4 @@ class De_Columns extends HTMLElement
   }
 }
 
-export default De_Columns;
+export default Select_Columns;

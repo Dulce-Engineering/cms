@@ -8,7 +8,7 @@
 
     <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.css"/>
     <link type="text/css" rel="stylesheet" href="styles/styles.css"  />
-    
+      
     <script type="module">
       import Context from "./lib/Context.js";
       import Utils from "./lib/Utils.js";
@@ -19,14 +19,14 @@
       import Table_Buddy from './node_modules/table-buddy/Table_Buddy.mjs';
       import Menu_Buddy from './node_modules/menu-buddy/Menu_Buddy.mjs';
       import Menu_Buddy_Btn from './node_modules/menu-buddy/Menu_Buddy_Btn.mjs';
-      import De_Sort from "./components/De_Sort.js"
-      import De_Columns from "./components/De_Columns.js"
+      import Select_Sort from "./components_admin/Select_Sort.js"
+      import Select_Columns from "./components_admin/Select_Columns.js"
       customElements.define(Header_Buddy.tname, Header_Buddy);
       customElements.define(Table_Buddy.tname, Table_Buddy);
       customElements.define(Menu_Buddy.tname, Menu_Buddy);
       customElements.define(Menu_Buddy_Btn.tname, Menu_Buddy_Btn);
-      customElements.define(De_Sort.tname, De_Sort);
-      customElements.define(De_Columns.tname, De_Columns);
+      customElements.define(Select_Sort.tname, Select_Sort);
+      customElements.define(Select_Columns.tname, Select_Columns);
       
       const align_left = "text-align: left;";
 
@@ -55,6 +55,7 @@
         async Update_Data(filter_by, sort_by)
         {
           this.data = await De_Component.Select_All(this.ctx.db, sort_by, filter_by);
+          //De_Component.Add_Children(this.ctx.db, this.data, this.open_ids, sort_by, filter_by);
         }
 
         // rendering ==============================================================================
@@ -64,11 +65,15 @@
           const cols = [];
 
           this.sel_col = new Table_Buddy.Column_Select("id", align_left);
+          this.sel_col.id = "select";
 
-          cols.push({title_fn: this.Render_Col_Menu, field_fn: this.Render_Row_Menu, style: align_left});
+          this.idx_col = new Table_Buddy.Column_No(align_left);
+          this.idx_col.id = "row_idx";
+
+          cols.push({id: "menu", title_fn: this.Render_Col_Menu, field_fn: this.Render_Row_Menu, style: align_left});
           cols.push(this.sel_col);
-          cols.push({title: "", field_fn: this.Render_Children_Btn, style: align_left});
-          cols.push(new Table_Buddy.Column_No(align_left));
+          cols.push(this.idx_col);
+          cols.push({id: "children", title: "", field_fn: this.Render_Children_Btn, style: align_left});
           cols.push({id: "id", title: "Id", field_name: "id", style: align_left});
           cols.push({id: "title", title: "Title", field_name: "title", style: align_left});
           cols.push({id: "key", title: "Key", field_name: "key", style: align_left});
@@ -171,8 +176,10 @@
             class_name: "menu",
             options: 
             [
-              {title: 'Add Text Component', on_click_fn: this.Add_Text_On_Click},
-              {title: 'Add HTML Component', on_click_fn: this.Add_HTML_On_Click},
+              {title: 'Add Text Component', on_click_fn: this.Add_Component_On_Click, content_type: "text"},
+              {title: 'Add HTML Component', on_click_fn: this.Add_Component_On_Click, content_type: "html"},
+              {title: 'Add Link Component', on_click_fn: this.Add_Component_On_Click, content_type: "link"},
+              {title: 'Add Image Component', on_click_fn: this.Add_Component_On_Click, content_type: "image"},
               {title: 'Delete Selected', on_click_fn: this.Del_Sel_On_Click},
             ]
           };
@@ -194,7 +201,7 @@
             class_name: "menu",
             options: 
             [
-              {title: "Edit", on_click_fn: this.Edit_On_Click, component_id: component.id}, 
+              {title: "Edit", on_click_fn: this.Edit_On_Click, component}, 
               {title: "Delete", on_click_fn: this.Del_On_Click, component_id: component.id}
             ]
           };
@@ -209,16 +216,11 @@
 
         // col actions ============================================================================
 
-        async Add_Text_On_Click(event)
+        async Add_Component_On_Click(event, option)
         {
-          const url = Utils.Add_Param("component_text.html", "project_id", Utils.Get_Param("project_id"));
-          window.open(url, "_self");
-        }
-
-        async Add_HTML_On_Click(event)
-        {
-          const url = Utils.Add_Param("component_html.html", "project_id", Utils.Get_Param("project_id"));
-          window.open(url, "_self");
+          let url = "component_" + option.content_type + ".html";
+          url = Utils.Add_Param(url, "project_id", Utils.Get_Param("project_id"));
+          window.open(url, "_blank");
         }
 
         async Del_Sel_On_Click(event)
@@ -243,10 +245,10 @@
 
         Edit_On_Click(event, option)
         {
-          let url = "component_text.html";
+          let url = "component_" + option.component.content_type + ".html";
           url = Utils.Add_Param(url, "project_id", Utils.Get_Param("project_id"));
-          url = Utils.Add_Param(url, "id", option.component_id);
-          window.open(url, "_self");
+          url = Utils.Add_Param(url, "id", option.component.id);
+          window.open(url, "_blank");
         }
 
         async Del_On_Click(event, option)
@@ -312,22 +314,23 @@
 
   <body>
     <header-buddy id="header_elem" title="CMS - Components" style-src="styles/Header_Buddy.css"></header-buddy>
-    <de-sort id="components_tree_sort">
+    <select-sort id="components_tree_sort">
       <li sort-code="ORDERBY_ID">Id</li>
       <li sort-code="ORDERBY_TITLE">Title</li>
       <li sort-code="ORDERBY_KEY">Key</li>
+      <li sort-code="ORDERBY_KEY#">Key (Numeric)</li>
       <li sort-code="ORDERBY_TYPE">Type</li>
       <li sort-code="ORDERBY_CONTENT">Content</li>
       <li sort-code="ORDERBY_PROJECT">Project</li>
-    </de-sort>
-    <de-columns id="components_tree_columns">
+    </select-sort>
+    <select-columns id="components_tree_columns">
       <li col-id="id">Id</li>
       <li col-id="title">Title</li>
       <li col-id="key">Key</li>
       <li col-id="type">Type</li>
       <li col-id="content">Content</li>
       <li col-id="project">Project</li>
-    </de-columns>
+    </select-columns>
     <table-buddy id="components_elem" style-src="/styles/table.css"></table-buddy>
   </body>
 </html>

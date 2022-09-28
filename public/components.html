@@ -19,14 +19,14 @@
       import Table_Buddy from './node_modules/table-buddy/Table_Buddy.mjs';
       import Menu_Buddy from './node_modules/menu-buddy/Menu_Buddy.mjs';
       import Menu_Buddy_Btn from './node_modules/menu-buddy/Menu_Buddy_Btn.mjs';
-      import De_Sort from "./components/De_Sort.js"
-      import De_Columns from "./components/De_Columns.js"
+      import Select_Sort from "./components_admin/Select_Sort.js"
+      import Select_Columns from "./components_admin/Select_Columns.js"
       customElements.define(Header_Buddy.tname, Header_Buddy);
       customElements.define(Table_Buddy.tname, Table_Buddy);
       customElements.define(Menu_Buddy.tname, Menu_Buddy);
       customElements.define(Menu_Buddy_Btn.tname, Menu_Buddy_Btn);
-      customElements.define(De_Sort.tname, De_Sort);
-      customElements.define(De_Columns.tname, De_Columns);
+      customElements.define(Select_Sort.tname, Select_Sort);
+      customElements.define(Select_Columns.tname, Select_Columns);
 
       const align_left = "text-align: left;";
 
@@ -243,22 +243,22 @@
 
   <body>
     <header-buddy id="header_elem" title="CMS - Components" style-src="styles/Header_Buddy.css"></header-buddy>
-    <de-sort id="components_sort">
+    <select-sort id="components_sort">
       <li sort-code="ORDERBY_ID">Id</li>
       <li sort-code="ORDERBY_TITLE">Title</li>
       <li sort-code="ORDERBY_KEY">Key</li>
       <li sort-code="ORDERBY_TYPE">Type</li>
       <li sort-code="ORDERBY_CONTENT">Content</li>
       <li sort-code="ORDERBY_PROJECT">Project</li>
-    </de-sort>
-    <de-columns id="components_columns">
+    </select-sort>
+    <select-columns id="components_columns">
       <li col-id="id">Id</li>
       <li col-id="title">Title</li>
       <li col-id="key">Key</li>
       <li col-id="type">Type</li>
       <li col-id="content">Content</li>
       <li col-id="project">Project</li>
-    </de-columns>
+    </select-columns>
     <table-buddy id="components_elem" style-src="/styles/table.css"></table-buddy>
   </body>
 </html>
