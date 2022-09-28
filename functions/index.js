@@ -6,6 +6,7 @@ const express = require('express');
 const cors = require('cors');
 const De_Project = require('./lib/De_Project');
 const De_Component = require('./lib/De_Component');
+const De_Component_Link = require('./lib/De_Component_Link');
 
 const app = express();
 app.use(cors({ origin: true }));
@@ -18,10 +19,11 @@ const rpc_buddy = new RPC_Buddy
   app, 
   '/rpc-server', 
   '/rpc-client',
-  [De_Project, De_Component],
+  [De_Project, De_Component, De_Component_Link],
   [
     {name: "De_Project.Select_By_Key", inject: [db]},
     {name: "De_Component.Select_Contents", inject: [db]},
+    {name: "De_Component_Link.Select_Contents", inject: [db]},
   ],
   RPC_Buddy.Express
 );
