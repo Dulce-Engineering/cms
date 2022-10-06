@@ -5,6 +5,15 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Backend Server",
+      "program": "${workspaceFolder}/functions/index.js",
+      "request": "launch",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "type": "pwa-node"
+    },
+    {
       "name": "UI Server",
       "request": "launch",
       "runtimeArgs": ["start"],

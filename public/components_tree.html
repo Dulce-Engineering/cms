@@ -78,7 +78,7 @@
           cols.push({id: "title", title: "Title", field_name: "title", style: align_left});
           cols.push({id: "key", title: "Key", field_name: "key", style: align_left});
           cols.push({id: "type", title: "Type", field_name: "content_type", style: align_left});
-          cols.push({id: "content", title: "Content", field_fn: this.Render_Content_Field, style: align_left});
+          cols.push({id: "content", title: "Content", field_fn: this.Render_Content_Field, style: align_left, render_as: "html"});
           cols.push({id: "project", title: "Project", field_fn: this.Render_Project_Field, style: align_left});
 
           return cols;
@@ -159,7 +159,22 @@
 
         Render_Content_Field(component)
         {
-          return Utils.Abbreviate(component.content);
+          let html = null;
+
+          if (component.content_type == "image")
+          {
+            html = 
+              "<img height=\"100px\" " +
+              "src=\"" + component.url + "\" "+
+              "title=\"" + component.description + "\" "+
+              "alt=\"" + component.description + "\"></img>";
+          }
+          else
+          {
+            html = Utils.Abbreviate(component.content);
+          }
+
+          return html;
         }
 
         async Render_Project_Field(component)
