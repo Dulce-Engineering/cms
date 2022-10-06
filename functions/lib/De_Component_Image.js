@@ -1,7 +1,7 @@
-//import Utils from "./Utils.js";
-//import De_Component from "./De_Component.js";
-const Utils = require('./Utils.js');
-const De_Component = require('./De_Component.js');
+import Utils from "./Utils.js";
+import De_Component from "./De_Component.js";
+//const Utils = require('./Utils.js');
+//const De_Component = require('./De_Component.js');
 
 class De_Component_Image extends De_Component
 {
@@ -53,16 +53,17 @@ class De_Component_Image extends De_Component
 
   static async Select_Contents(db, project_id, key)
   {
+    //console.log("De_Component_Link.Select_Contents()");
     let res = null;
     const where =
     [
       {field: "key", op: "==", value: key},
       {field: "project_id", op: "==", value: project_id}
     ];
-    const links = await db.Select_Objs("component", De_Component_Link, where);
+    const links = await db.Select_Objs("component", De_Component_Image, where);
     if (!Utils.isEmpty(links))
     {
-      res = links.map(l => {return {url: l.url, content: l.content};});
+      res = links.map(l => {return {url: l.url, description: l.description};});
     }
 
     //console.log("De_Component_Link.Select_Contents(): res =", res);
@@ -129,5 +130,5 @@ class De_Component_Image extends De_Component
   }
 }
 
-//export default De_Component_Image;
-module.exports = De_Component_Image;
+export default De_Component_Image;
+//module.exports = De_Component_Image;

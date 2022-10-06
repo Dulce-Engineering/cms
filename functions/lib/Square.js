@@ -1,6 +1,6 @@
-const crypto = require('crypto').webcrypto;
-const De_Product = require('./De_Product');
-const { Client, Environment } = require('square');
+import crypto from 'crypto'; //.webcrypto;
+import De_Product from './De_Product';
+import { Client, Environment } from 'square';
 
 /*const config = 
 {
@@ -87,4 +87,4 @@ class Square
   }
 }
 
-module.exports = Square;
+export default Square;

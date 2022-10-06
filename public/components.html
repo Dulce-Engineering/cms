@@ -126,7 +126,7 @@
             options: 
             [
               {title: "Edit", on_click_fn: this.Edit_On_Click, component}, 
-              {title: "Delete", on_click_fn: this.Del_On_Click, component_id: component.id}
+              {title: "Delete", on_click_fn: this.Del_On_Click, component}
             ]
           };
 
@@ -154,7 +154,8 @@
           {
             for (const id of this.sel_col.selected_ids)
             {
-              const is_deleted = await De_Component.Delete(this.ctx.db, id);
+              const component = this.data.find(c => c.id == id);
+              const is_deleted = await component.Delete(this.ctx.db, this.ctx.fb_strg);
               if (!is_deleted)
               {
                 Utils.Handle_Errors(this.ctx.db);
@@ -180,7 +181,7 @@
           const confirmed = window.confirm("Are you sure?");
           if (confirmed)
           {
-            const is_deleted = await De_Component.Delete(this.ctx.db, option.component_id);
+            const is_deleted = await option.component.Delete(this.ctx.db, this.ctx.fb_strg);
             if (is_deleted)
             {
               this.table_elem.Update_Render();

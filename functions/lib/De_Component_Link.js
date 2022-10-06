@@ -1,7 +1,7 @@
-//import Utils from "./Utils.js";
-//import De_Component from "./De_Component.js";
-const Utils = require('./Utils.js');
-const De_Component = require('./De_Component.js');
+import Utils from "./Utils.js";
+import De_Component from "./De_Component.js";
+//const Utils = require('./Utils.js');
+//const De_Component = require('./De_Component.js');
 
 class De_Component_Link extends De_Component
 {
@@ -31,5 +31,5 @@ class De_Component_Link extends De_Component
   }
 }
 
-//export default De_Component_Link;
-module.exports = De_Component_Link;
+export default De_Component_Link;
+//module.exports = De_Component_Link;

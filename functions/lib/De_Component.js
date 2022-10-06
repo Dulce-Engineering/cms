@@ -1,5 +1,5 @@
-//import Utils from "./Utils.js";
-const Utils = require('./Utils.js');
+import Utils from "./Utils.js";
+//const Utils = require('./Utils.js');
 
 class De_Component
 {
@@ -131,12 +131,13 @@ class De_Component
 
   static Select_Contents(db, project_id, key)
   {
+    //console.log("De_Component.Select_Contents()");
     const where =
     [
       {field: "key", op: "==", value: key},
       {field: "project_id", op: "==", value: project_id}
     ];
-    return db.Select_Values("content", "component", where);
+    return db.Select_Values("content", De_Component.table_name, where);
     //const id = `De_Component.Select_Contents(${project_id}, ${key})`;
     //return db.cache.use(id, () => db.Select_Values("content", "component", where));
   }
@@ -152,5 +153,5 @@ class De_Component
   }
 }
 
-//export default De_Component;
-module.exports = De_Component;
+export default De_Component;
+//module.exports = De_Component;

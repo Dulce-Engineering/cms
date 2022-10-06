@@ -1,5 +1,5 @@
-//import Utils from "./Utils.js";
-const Utils = require('./Utils.js');
+import Utils from "./Utils.js";
+//const Utils = require('./Utils.js');
 import De_Brand from "./De_Brand.js";
 
 class De_Product
@@ -324,5 +324,5 @@ class De_Product_Image
   }
 }
 
-//export default De_Product;
-module.exports = De_Product;
+export default De_Product;
+//module.exports = De_Product;
