@@ -60,7 +60,8 @@ class De_Db_Firestore
     const obj = await this.Select_Row(table_name, where);
     if (obj)
     {
-      res = new class_type(obj);
+      //res = new class_type(obj);
+      res = this.To_Class(obj, class_type);
     }
 
     return res;
@@ -88,7 +89,8 @@ class De_Db_Firestore
     const obj = await this.Select_Row_By_Id(id, table_name);
     if (obj)
     {
-      res = new class_type(obj);
+      //res = new class_type(obj);
+      res = this.To_Class(obj, class_type);
     }
 
     return res;
@@ -140,7 +142,8 @@ class De_Db_Firestore
       res = [];
       for (const obj of objs)
       {
-        const class_obj = new class_type(obj);
+        //const class_obj = new class_type(obj);
+        const class_obj = await this.To_Class(obj, class_type);
         res.push(class_obj);
       }
     }
@@ -434,6 +437,22 @@ class De_Db_Firestore
   To_Obj(class_obj)
   {
     return class_obj.To_Db_Obj ? class_obj.To_Db_Obj(class_obj) : Utils.To_Obj(class_obj);
+  }
+
+  To_Class(db_obj, class_type)
+  {
+    let class_obj = null;
+
+    if (class_type.To_Class_Obj)
+    {
+      class_obj = class_type.To_Class_Obj(db_obj);
+    }
+    else
+    {
+      class_obj = new class_type(db_obj);
+    }
+
+    return class_obj;
   }
 
   static Is_Empty(items)

@@ -1,0 +1,33 @@
+:host
+{
+  xborder: 2px solid #f003;
+  display: flex;
+  justify-content: space-between;
+}
+
+#btn_bar
+{
+  margin-left: 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+button
+{
+  border: none;
+  padding: 6px 12px;
+  margin: 0 0 8px 0;
+  background-color: #faac;
+  border-radius: 5px;
+  font-family: 'Roboto';
+  font-size: 12px;
+  cursor: pointer;
+}
+button:focus-visible
+{
+  background-color: #faaf;
+}
+button:hover
+{
+  background-color: #faaf;
+}

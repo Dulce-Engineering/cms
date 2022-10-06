@@ -130,3 +130,8 @@ form mb-select .mb_clr_btn:hover
 {
   background-color: inherit;
 }
+
+form single-image
+{
+  width: fit-content;
+}

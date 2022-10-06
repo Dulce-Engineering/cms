@@ -3,7 +3,15 @@ import Utils from "./Utils.js";
 
 class De_Component
 {
+  static table_name = "component";
+
   constructor(data)
+  {
+    this.Init();
+    Utils.To_Class_Obj(data, this);
+  }
+
+  Init()
   {
     this.content = null;
     this.content_type = null;
@@ -12,8 +20,38 @@ class De_Component
     this.project_id = null;
     this.title = null;
     this.parent_id = null;
+  }
 
-    Utils.To_Class_Obj(data, this);
+  To_Db_Obj()
+  {
+    return {
+      content: this.content,
+      content_type: this.content_type,
+      id: this.id,
+      key: this.key,
+      project_id: this.project_id,
+      title: this.title,
+      parent_id: this.parent_id,
+    };
+  }
+
+  static async To_Class_Obj(db_obj)
+  {
+    let class_obj = null;
+
+    if (db_obj.content_type == "image")
+    {
+      const imprt = await import("./De_Component_Image.js");
+      const De_Component_Image = imprt.default;
+
+      class_obj = new De_Component_Image(db_obj);
+    }
+    else
+    {
+      class_obj = new this(db_obj);
+    }
+
+    return class_obj;
   }
 
   static async Select_All(db, sorts, filters)
@@ -49,8 +87,7 @@ class De_Component
 
   static Select_By_Id(db, id)
   {
-    //return db.Select_Obj_By_Id(id, "component", De_Component);
-    return db.Select_Obj_By_Id(id, "component", this.prototype.constructor);
+    return db.Select_Obj_By_Id(id, "component", this);
   }
 
   get key_numeric()
@@ -109,9 +146,9 @@ class De_Component
     return db.Save(this, "component");
   }
 
-  static Delete(db, id)
+  Delete(db)
   {
-    return db.Delete("component", id);
+    return db.Delete(De_Component.table_name, this.id);
   }
 }
 
