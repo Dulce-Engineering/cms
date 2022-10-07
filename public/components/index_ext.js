@@ -1,6 +1,5 @@
 import Utils from "../lib/Utils.js";
 import Client_Cache_Local from '/node_modules/cache-buddy/Client_Cache_Local.js';
-//import De_Comp from './De_Comp.js';
 import De_Html from './De_Html.js';
 import De_Project from './De_Project.js';
 import De_Text from './De_Text.js';
@@ -20,7 +19,6 @@ window.api = api.default;
 window.cache = new Client_Cache_Local();
 window.cache.expiryMillis = Utils.MILLIS_WEEK;
 
-//customElements.define('de-comp', De_Comp);
 customElements.define(De_Text.tname, De_Text);
 customElements.define(De_Html.tname, De_Html);
 customElements.define(De_Link.tname, De_Link);

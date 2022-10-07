@@ -2,6 +2,8 @@ import Utils from "./Utils.js";
 
 class De_Project
 {
+  static table_name = "project";
+
   constructor(data)
   {
     this.id = null;
@@ -39,6 +41,15 @@ class De_Project
   static Select_By_Key(db, key)
   {
     return db.Select_Obj("project", De_Project, [{field: "key", op: "==", value: key}]);
+  }
+
+  static async Select_As_Options(db)
+  {
+    const order_by = [{field: "title", dir: "asc"}];
+    const projects = await db.Select_Objs(De_Project.table_name, De_Project, null, order_by);
+    const options = projects.map(p => {return {value: p.id, text: p.title}});
+
+    return options;
   }
 
   Save(db, uid)

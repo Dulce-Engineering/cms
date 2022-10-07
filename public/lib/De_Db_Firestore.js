@@ -115,11 +115,11 @@ class De_Db_Firestore
     return obj;
   }
   
-  async Select_Values(field_name, table_name, where)
+  async Select_Values(field_name, table_name, where, order_by)
   {
     let res;
 
-    const objs = await this.Select(table_name, where);
+    const objs = await this.Select(table_name, where, order_by);
     if (!De_Db_Firestore.Is_Empty(objs))
     {
       res = [];
@@ -321,7 +321,7 @@ class De_Db_Firestore
   {
     let res = data;
 
-    if (!De_Db_Firestore.Is_Empty(order_bys))
+    if (!De_Db_Firestore.Is_Empty(data) && !De_Db_Firestore.Is_Empty(order_bys))
     {
       res = data.sort((a, b) => Compare(a, b, 0));
 
@@ -357,6 +357,24 @@ class De_Db_Firestore
     }
 
     return query;
+  }
+
+  Where(data, wheres)
+  {
+    let res = data;
+
+    if (!De_Db_Firestore.Is_Empty(data) && !De_Db_Firestore.Is_Empty(wheres))
+    {
+      for (const where of wheres)
+      {
+        if (where.op == "contains")
+        {
+          res = res.filter(o => o[where.field] && o[where.field].includes(where.value));
+        }
+      }
+    }
+
+    return res;
   }
 
   Add_Where(table, where_filters)
@@ -408,13 +426,16 @@ class De_Db_Firestore
       for (const value_name in values)
       {
         const condition = conditions.find(c => c.code == value_name);
-        let value = values[value_name];
-        if (value || (condition.use_null && value == null))
+        if (condition)
         {
-          value = condition.map_fn ? condition.map_fn(value): value;
+          let value = values[value_name];
+          if (value || (condition.use_null && value == null))
+          {
+            value = condition.map_fn ? condition.map_fn(value): value;
 
-          const filter = {field: condition.field, op: condition.op, value};
-          db_where.push(filter);
+            const filter = {field: condition.field, op: condition.op, value};
+            db_where.push(filter);
+          }
         }
       }
     }

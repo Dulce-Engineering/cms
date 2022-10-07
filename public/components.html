@@ -21,12 +21,14 @@
       import Menu_Buddy_Btn from './node_modules/menu-buddy/Menu_Buddy_Btn.mjs';
       import Select_Sort from "./components_admin/Select_Sort.js"
       import Select_Columns from "./components_admin/Select_Columns.js"
+      import Filter_Buddy from './node_modules/filter-buddy/Filter_Buddy.mjs';
       customElements.define(Header_Buddy.tname, Header_Buddy);
       customElements.define(Table_Buddy.tname, Table_Buddy);
       customElements.define(Menu_Buddy.tname, Menu_Buddy);
       customElements.define(Menu_Buddy_Btn.tname, Menu_Buddy_Btn);
       customElements.define(Select_Sort.tname, Select_Sort);
       customElements.define(Select_Columns.tname, Select_Columns);
+      customElements.define(Filter_Buddy.tname, Filter_Buddy);
 
       const align_left = "text-align: left;";
 
@@ -216,8 +218,52 @@
         new Context(Header_Signed_In, Header_Signed_Out);
       }
       
-      function Header_Signed_In(ctx)
+      async function Header_Signed_In(ctx)
       {
+        const filters =
+        [
+          {
+            id: "WHERE_ID",
+            label: "Id",
+            filter_class: Filter_Buddy.Text, 
+          },
+          {
+            id: "WHERE_TITLE",
+            label: "Title",
+            filter_class: Filter_Buddy.Text, 
+          },
+          {
+            id: "WHERE_KEY",
+            label: "Key",
+            filter_class: Filter_Buddy.Text, 
+          },
+          {
+            id: "WHERE_TYPE",
+            label: "Type",
+            filter_class: Filter_Buddy.Select, 
+            options:
+            [
+              {value: "text", text: "Text"},
+              {value: "html", text: "HTML"},
+              {value: "image", text: "Image"},
+              {value: "link", text: "Link"},
+            ],
+          },
+          {
+            id: "WHERE_CONTENT",
+            label: "Content",
+            filter_class: Filter_Buddy.Text, 
+          },
+          {
+            id: "WHERE_PROJECT",
+            label: "Project",
+            filter_class: Filter_Buddy.Select, 
+            options: await De_Project.Select_As_Options(ctx.db),
+          },
+        ];
+        components_filter.filters = filters;
+        components_filter.addEventListener("search", OnSearch_Filter);
+
         components_sort.addEventListener("sort", On_Sort);
         components_sort.Load();
 
@@ -255,6 +301,11 @@
       {
         components_elem.Update_Render(false);
       }
+
+      function OnSearch_Filter(event)
+      {
+        components_elem.where = event.detail;
+      }
     </script>
   </head>
 
@@ -277,6 +328,7 @@
       <li col-id="content">Content</li>
       <li col-id="project">Project</li>
     </select-columns>
+    Filtered By: <filter-buddy id="components_filter" view="min"></filter-buddy>
     <table-buddy id="components_elem" style-src="/styles/table.css"></table-buddy>
   </body>
 </html>

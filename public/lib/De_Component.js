@@ -56,13 +56,21 @@ class De_Component
 
   static async Select_All(db, sorts, filters)
   {
+    const db_where = db.To_Db_Where(filters,
+    [
+      {code: "WHERE_TYPE",    field: "content_type", op: "=="},
+      {code: "WHERE_PROJECT", field: "project_id",   op: "=="},
+      {code: "WHERE_PARENT",  field: "parent_id",    op: "==", use_null: true}
+    ]);
+    let objs = await db.Select_Objs(De_Component.table_name, this.prototype.constructor, db_where);
     const where = db.To_Db_Where(filters,
     [
-      {code: "WHERE_PROJECT", field: "project_id", op: "=="},
-      {code: "WHERE_PARENT", field: "parent_id", op: "==", use_null: true}
+      {code: "WHERE_CONTENT", field: "content", op: "contains"},
+      {code: "WHERE_ID",      field: "id",      op: "contains"},
+      {code: "WHERE_KEY",     field: "key",     op: "contains"},
+      {code: "WHERE_TITLE",   field: "title",   op: "contains"},
     ]);
-    //const objs = await db.Select_Objs("component", De_Component, where);
-    const objs = await db.Select_Objs("component", this.prototype.constructor, where);
+    objs = db.Where(objs, where);
 
     const order_by = db.To_Db_Order_By(sorts, 
     [
@@ -113,14 +121,19 @@ class De_Component
     return (query_res && !query_res.empty);
   }
 
-  static Get_Children(db, id, project_id)
+  static async Get_Children(db, id, project_id)
   {
     const where = [{field: "parent_id", op: "==", value: id}];
     if (project_id)
     {
       where.push({field: "project_id", op: "==", value: project_id});
     }
-    return db.Select_Values("id", "component", where);
+
+    const order_by = [{field: "title", dir: "asc"}];
+
+    const comps = await db.Select_Values("id", De_Component.table_name, where, order_by);
+
+    return comps;
   }
 
   static async Get_Title(db, id)
