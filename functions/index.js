@@ -23,6 +23,8 @@ const rpc_buddy = new RPC_Buddy
   [De_Project, De_Component, De_Component_Link, De_Component_Image],
   [
     {name: "De_Project.Select_By_Key", inject: [db]},
+    {name: "De_Project.Select_All_By_User", inject: [db]},
+    {name: "De_Project.Delete", inject: [db]},
     {name: "De_Component.Select_Contents", inject: [db]},
     {name: "De_Component_Link.Select_Contents", inject: [db]},
     {name: "De_Component_Image.Select_Contents", inject: [db]},

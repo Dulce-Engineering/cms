@@ -8,10 +8,12 @@ import '/__/firebase/9.4.0/firebase-storage-compat.js';
 import '/__/firebase/init.js';
 import Db from "./De_Db_Firestore.js";
 //import Client_Cache_Local from "../node_modules/cache-buddy/Client_Cache_Local.js";
+import Utils from "./Utils.js";
+import config from "./config.js";
 
 class Context
 {
-  constructor(Header_Signed_In, Header_Signed_Out)
+  constructor()
   {
     this.fb_app = firebase.app();
     this.fb_anl = firebase.analytics();
@@ -21,12 +23,12 @@ class Context
     this.fb_strg = firebase.storage();
     this.db = new Db(this.fb_db);
     //this.cache = new Client_Cache_Local();
-
-    this.Init(Header_Signed_In, Header_Signed_Out)
   }
 
-  Init(Header_Signed_In, Header_Signed_Out)
+  async Init(Header_Signed_In, Header_Signed_Out)
   {
+    await Utils.import_api(config);
+
     Context.Set_Id_Shortcuts(document, window);
 
     const m =

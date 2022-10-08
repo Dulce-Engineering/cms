@@ -12,7 +12,6 @@
     <script type="module">
       import Context from "./lib/Context.js";
       import Datasource from "./node_modules/table-buddy/Datasource.mjs";
-      import De_Project from "./lib/De_Project.js"
       import Header_Buddy from './node_modules/header-buddy/Header_Buddy.js';
       import Table_Buddy from './node_modules/table-buddy/Table_Buddy.mjs';
       import Menu_Buddy from './node_modules/menu-buddy/Menu_Buddy.mjs';
@@ -57,7 +56,7 @@
 
         async Update_Data(filter_by, sort_by)
         {
-          this.data = await De_Project.Select_All_By_User(this.ctx.db, this.ctx.user.uid, sort_by, filter_by);
+          this.data = await De_Project.Select_All_By_User(this.ctx.user.uid);
         }
 
         // colum options ==========================================================================
@@ -148,10 +147,11 @@
         }
       }
 
-      window.onload = Main;
+      Main();
       function Main()
       {
-        new Context(Header_Signed_In, Header_Signed_Out);
+        const ctx = new Context();
+        ctx.Init(Header_Signed_In, Header_Signed_Out);
       }
       
       function Header_Signed_In(ctx)

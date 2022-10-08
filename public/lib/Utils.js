@@ -8,6 +8,19 @@ class Utils
   static MILLIS_MONTH = Utils.MILLIS_WEEK * 4;
   static MILLIS_YEAR = Utils.MILLIS_MONTH * 12;
 
+  static async import_api(config)
+  {
+    const config_env = config.get();
+    const api = await import(config_env.api_client_url);
+    for (const comp_class in api.default)
+    {
+      api.default[comp_class].server_host = config_env.api_server_host;
+      window[comp_class] = api.default[comp_class];
+    }
+    
+    return api.default;
+  }
+
   static appendParam(params, paramName, paramValue)
   {
     return Utils.appendStr(params, paramName + "=" + paramValue, "&");
