@@ -36,10 +36,11 @@
       customElements.define(Menu_Buddy_Btn.tname, Menu_Buddy_Btn);
       customElements.define(Header_Buddy.tname, Header_Buddy);
 
-      window.onload = Main;
+      Main();
       function Main()
       {
-        new Context(Header_Signed_In, Header_Signed_Out);
+        const ctx = new Context();
+        ctx.Init(Header_Signed_In, Header_Signed_Out);
       }
       
       function Header_Signed_In(ctx)

@@ -7,7 +7,7 @@
     <title>deCMS - Project</title>
 
     <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.css"/>
-    <link type="text/css" rel="stylesheet" href="/styles/styles.css"  />
+    <link type="text/css" rel="stylesheet" href="/styles/styles2.css"  />
     
     <script type="module">
       import Context from "./lib/Context.js";
@@ -19,8 +19,10 @@
       customElements.define(Menu_Buddy.tname, Menu_Buddy);
       customElements.define(Menu_Buddy_Btn.tname, Menu_Buddy_Btn);
 
-      window.onload = Main;
+      Main();
       let project;
+
+      // init and auth ============================================================================
 
       function Main()
       {
@@ -65,6 +67,8 @@
         Context.Toast_Show("You must sign in.", "warning");
       }
 
+      // fields ===================================================================================
+
       async function Prepare_Fields(db)
       {
       }
@@ -92,13 +96,18 @@
         project.url = url_value.value;
       }
 
+      // button footer ============================================================================
+
       function Return_To_Page()
       {
-        window.history.back();
+        //window.history.back();
+        window.close();
+        window.opener.Page_Refresh();
       }
 
       async function On_Click_Save(ctx)
       {
+        event.preventDefault();
         Fields_To_Obj(project);
         const is_saved = await De_Project.Save(project, ctx.user.uid);
         if (is_saved)
@@ -111,8 +120,9 @@
         }
       }
 
-      function On_Click_Cancel()
+      function On_Click_Cancel(event)
       {
+        event.preventDefault();
         Return_To_Page();
       }
     </script>
@@ -121,7 +131,7 @@
   <body>
     <header-buddy id="header_elem" title="CMS - Project" style-src="styles/Header_Buddy.css"></header-buddy>
 
-    <div id="form">
+    <form id="form">
       <label id="id_label">Id.</label><span id="id_value" class="field_value"></span>
       <label>Title</label><input id="title_value" class="field_value">
       <label>Key</label><input id="key_value" class="field_value">
@@ -129,10 +139,9 @@
 
       <label></label>
       <span>
-        <button id="ok_btn">OK</button>
-        <button id="cancel_btn">Cancel</button>
+        <button id="ok_btn" class="button">OK</button>
+        <button id="cancel_btn" class="button">Cancel</button>
       </span>
-    </div>
-
+    </form>
   </body>
 </html>

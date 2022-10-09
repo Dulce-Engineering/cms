@@ -23,12 +23,13 @@
       customElements.define(Menu_Buddy_Btn.tname, Menu_Buddy_Btn);
       customElements.define(MB_Select.tname, MB_Select);
 
-      window.onload = Main;
+      Main();
       let component;
 
       function Main()
       {
-        new Context(Header_Signed_In, Header_Signed_Out);
+        const ctx = new Context();
+        ctx.Init(Header_Signed_In, Header_Signed_Out);
       }
 
       async function Header_Signed_In(ctx)

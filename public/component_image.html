@@ -25,14 +25,15 @@
       customElements.define(MB_Select.tname, MB_Select);
       customElements.define(Single_Image.tname, Single_Image);
 
-      window.onload = Main;
+      Main();
       let component;
 
       // init and auth ============================================================================
 
       function Main()
       {
-        new Context(Header_Signed_In, Header_Signed_Out);
+        const ctx = new Context();
+        ctx.Init(Header_Signed_In, Header_Signed_Out);
       }
 
       async function Header_Signed_In(ctx)

@@ -215,7 +215,8 @@
       function Main()
       {
         window.Page_Refresh = Page_Refresh;
-        new Context(Header_Signed_In, Header_Signed_Out);
+        const ctx = new Context();
+        ctx.Init(Header_Signed_In, Header_Signed_Out);
       }
       
       async function Header_Signed_In(ctx)
