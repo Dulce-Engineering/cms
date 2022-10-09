@@ -11,6 +11,7 @@
 
     <script type="module">
       import Context from "./lib/Context.js";
+      import Utils from "./lib/Utils.js";
       import Datasource from "./node_modules/table-buddy/Datasource.mjs";
       import Header_Buddy from './node_modules/header-buddy/Header_Buddy.js';
       import Table_Buddy from './node_modules/table-buddy/Table_Buddy.mjs';
@@ -134,7 +135,7 @@
           const confirmed = window.confirm("Are you sure?");
           if (confirmed)
           {
-            const is_deleted = await De_Project.Delete(this.ctx.db, id);
+            const is_deleted = await De_Project.Delete(id);
             if (is_deleted)
             {
               this.table_elem.Update_Render();

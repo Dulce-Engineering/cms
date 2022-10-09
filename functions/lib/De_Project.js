@@ -2,6 +2,8 @@ import Utils from "./Utils.js";
 
 class De_Project
 {
+  static table_name = "project";
+
   constructor(data)
   {
     this.id = null;
@@ -15,7 +17,7 @@ class De_Project
 
   static Select_All(db)
   {
-    return db.Select_Objs("project", De_Project);
+    return db.Select_Objs(De_Project.table_name, De_Project);
   }
 
   static Select_All_By_User(db, uid)
@@ -25,7 +27,7 @@ class De_Project
     if (uid)
     {
       const where = [{field: "uids", op: "array-contains", value: uid}];
-      res = db.Select_Objs("project", De_Project, where);  
+      res = db.Select_Objs(De_Project.table_name, De_Project, where);  
     }
 
     return res;
@@ -33,12 +35,12 @@ class De_Project
 
   static Select_By_Id(db, id)
   {
-    return db.Select_Obj_By_Id(id, "project", De_Project);
+    return db.Select_Obj_By_Id(id, De_Project.table_name, De_Project);
   }
 
   static Select_By_Key(db, key)
   {
-    return db.Select_Obj("project", De_Project, [{field: "key", op: "==", value: key}]);
+    return db.Select_Obj(De_Project.table_name, De_Project, [{field: "key", op: "==", value: key}]);
   }
 
   Save(db, uid)
@@ -48,15 +50,21 @@ class De_Project
     if (uid)
     {
       this.uids = [uid];
-      res = db.Save(this, "project");
+      res = db.Save(this, De_Project.table_name);
     }
 
     return res;
   }
 
+  static Save(db, obj, uid)
+  {
+    const project = new De_Project(obj);
+    return project.Save(db, uid);
+  }
+
   static Delete(db, id)
   {
-    return db.Delete("project", id);
+    return db.Delete(De_Project.table_name, id);
   }
 }
 

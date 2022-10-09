@@ -11,7 +11,6 @@
     
     <script type="module">
       import Context from "./lib/Context.js";
-      import De_Project from "./lib/De_Project.js"
       import Utils from "./lib/Utils.js";
       import Header_Buddy from './node_modules/header-buddy/Header_Buddy.js';
       import Menu_Buddy from './node_modules/menu-buddy/Menu_Buddy.mjs';
@@ -25,7 +24,8 @@
 
       function Main()
       {
-        new Context(Header_Signed_In, Header_Signed_Out);
+        const ctx = new Context();
+        ctx.Init(Header_Signed_In, Header_Signed_Out);
       }
 
       async function Header_Signed_In(ctx)
@@ -37,13 +37,19 @@
         const id = urlParams.get('id');
         if (id)
         {
-          project = await De_Project.Select_By_Id(ctx.db, id);
+          project = await De_Project.Select_By_Id(id);
         }
         else
         {
-          project = new De_Project();
-          Utils.Hide("id_label");
-          Utils.Hide("id_value");
+          project = 
+          {
+            id: null,
+            title: null,
+            key: null,
+            url: null
+          };
+          //Utils.Hide("id_label");
+          //Utils.Hide("id_value");
         }
 
         // populate fields
@@ -94,7 +100,7 @@
       async function On_Click_Save(ctx)
       {
         Fields_To_Obj(project);
-        const is_saved = await project.Save(ctx.db, ctx.user.uid);
+        const is_saved = await De_Project.Save(project, ctx.user.uid);
         if (is_saved)
         {
           Return_To_Page();
