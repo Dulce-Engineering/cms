@@ -1,13 +1,19 @@
 # deCMS
-## Setup
-- npm i
+
+## Backend
+
+## Frontend
+
+## Setup & Run
+Use "npm i" 
 ## Run
 - npm start
 ## Deploy
 - npm run deploy
 ## Dev Site
 - [deCMS](https://decms-6dc54.firebaseapp.com/)
-## Usage
+
+## CMS Usage
 - Add the following scripts:
 ```
   <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>

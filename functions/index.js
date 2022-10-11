@@ -8,6 +8,9 @@ import De_Project from './lib/De_Project.js';
 import De_Component from './lib/De_Component.js';
 import De_Component_Link from './lib/De_Component_Link.js';
 import De_Component_Image from './lib/De_Component_Image.js';
+import De_Product from './lib/De_Product.js';
+import De_Tag from './lib/De_Tag.js';
+import De_Brand from './lib/De_Brand.js';
 
 const app = express();
 app.use(cors({ origin: true }));
@@ -15,12 +18,23 @@ app.use(cors({ origin: true }));
 admin.initializeApp();
 const db = new De_Db_Firestore(admin.firestore());
 
+const firebaseConfig = JSON.parse(process.env.FIREBASE_CONFIG);
+//const db_strg = admin.storage().bucket(firebaseConfig.storageBucket);
+
 const rpc_buddy = new RPC_Buddy
 (
   app, 
   '/rpc-server', 
   '/rpc-client',
-  [De_Project, De_Component, De_Component_Link, De_Component_Image],
+  [
+    De_Project, 
+    De_Component, 
+    De_Component_Link, 
+    De_Component_Image, 
+    De_Product,
+    De_Tag,
+    De_Brand
+  ],
   [
     {name: "De_Project.Select_By_Id", inject: [db]},
     {name: "De_Project.Select_By_Key", inject: [db]},
@@ -30,6 +44,12 @@ const rpc_buddy = new RPC_Buddy
     {name: "De_Component.Select_Contents", inject: [db]},
     {name: "De_Component_Link.Select_Contents", inject: [db]},
     {name: "De_Component_Image.Select_Contents", inject: [db]},
+    {name: "De_Product.Select_All", inject: [db]},
+    {name: "De_Product.Select_By_Id_With_Details", inject: [db]},
+    {name: "De_Product.Delete", inject: [db]},
+    {name: "De_Product.Save", inject: [db]},
+    {name: "De_Tag.Select_All", inject: [db]},
+    {name: "De_Brand.Select_All", inject: [db]},
   ],
   RPC_Buddy.Express
 );

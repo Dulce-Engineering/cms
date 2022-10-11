@@ -4,3 +4,5 @@ firebase-debug.log
 public/components/config.js
 notes.txt
 functions/ui-debug.log
+ui-debug.log
+firestore-debug.log

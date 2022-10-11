@@ -10,10 +10,6 @@
     
     <script type="module">
       import Context from "./lib/Context.js";
-      import De_Project from "./lib/De_Project.js";
-      import De_Product from "./lib/De_Product.js";
-      import De_Tag from "./lib/De_Tag.js";
-      import De_Brand from "./lib/De_Brand.js";
       import Utils from "./lib/Utils.js";
 
       import Header_Buddy from './node_modules/header-buddy/Header_Buddy.js';
@@ -29,12 +25,13 @@
       Tag_Buddy.Define();
       Select_Image.Define();
 
-      window.onload = Main;
+      Main();
       let product;
 
       function Main()
       {
-        new Context(Header_Signed_In, Header_Signed_Out);
+        const ctx = new Context();
+        ctx.Init(Header_Signed_In, Header_Signed_Out);
       }
 
       async function Header_Signed_In(ctx)
@@ -43,15 +40,13 @@
         const urlParams = new URLSearchParams(window.location.search);
         const id = urlParams.get('id');
         const project_id = urlParams.get('project_id');
-        if (id) // edit form
+        if (id)
         {
-          product = await De_Product.Select_By_Id_With_Images(ctx.db, ctx.fb_strg, id);
+          product = await Load_Obj(id);
         }
-        else // add form
+        else
         {
-          product = new De_Product();
-          Utils.Hide("id_label");
-          Utils.Hide("id_value");
+          product = New_Obj();
         }
         if (project_id)
         {
@@ -59,10 +54,10 @@
           Utils.Disable("project_value");
         }
 
-        await Prepare_Fields(ctx.db, product);
+        await Prepare_Fields(ctx);
 
         // populate fields
-        Obj_To_Fields(product);
+        Obj_To_Fields();
 
         ok_btn.addEventListener("click", () => On_Click_Save(ctx));
         cancel_btn.addEventListener("click", On_Click_Cancel);
@@ -70,58 +65,23 @@
 
       function Header_Signed_Out(ctx)
       {
-        Clear_Fields();
+        product = this.New_Obj();
+        Obj_To_Fields();
         Context.Toast_Show("You must sign in.", "warning");
       }
 
-      async function Prepare_Fields(db, product)
+      function Set_Options(elem, objs, value_field, label_field)
       {
-        const projects = await De_Project.Select_All(db);
-        for (const project of projects)
+        if (!Utils.isEmpty(objs))
         {
-          const option_elem = document.createElement("option");
-          option_elem.value = project.id;
-          option_elem.innerText = project.title;
-          project_value.append(option_elem);
+          for (const obj of objs)
+          {
+            const option_elem = document.createElement("option");
+            option_elem.value = obj[value_field];
+            option_elem.innerText = obj[label_field];
+            elem.append(option_elem);
+          }
         }
-
-        const brands = await De_Brand.Select_All(db);
-        for (const brand of brands)
-        {
-          const option_elem = document.createElement("option");
-          option_elem.value = brand.id;
-          option_elem.innerText = brand.name;
-          brand_value.append(option_elem);
-        }
-
-        main_image_value.images = product.images;
-        images_value.addEventListener("change", On_Change_Images);
-
-        const tags = await De_Tag.Select_All(db);
-        tags_value.tags = tags;
-      }
-
-      function Obj_To_Fields(product)
-      {
-        id_value.innerText = product.id;
-        name_value.value = product.name;
-        price_value.value = product.price;
-        project_value.value = product.project_id;
-        images_value.value = product.images;
-        tags_value.value = product.tags;
-        brand_value.value = product.brand_id;
-        main_image_value.value = product.main_image;
-      }
-
-      function Fields_To_Obj(product)
-      {
-        product.name = name_value.value;
-        product.price = price_value.value;
-        product.project_id = project_value.value;
-        product.images = images_value.value;
-        product.tags = tags_value.value;
-        product.brand_id = brand_value.value;
-        product.main_image = main_image_value.value;
       }
 
       function Return_To_Page()
@@ -131,8 +91,9 @@
 
       async function On_Click_Save(ctx)
       {
-        Fields_To_Obj(product);
-        const details_saved = await product.Save(ctx.db, ctx.fb_strg);
+        event.preventDefault();
+        Fields_To_Obj();
+        const details_saved = await Save_Obj(ctx);
         if (details_saved)
         {
           Return_To_Page();
@@ -148,9 +109,111 @@
         Return_To_Page();
       }
 
+      // page specific logic ======================================================================
+
       function On_Change_Images()
       {
-        main_image_value.images = images_value.value;
+        main_image_value.images = images_value.files;
+      }
+
+      function New_Obj()
+      {
+        return {
+            id: null,
+            name: null,
+            price: null,
+            project_id: null,
+            tags: null,
+            brand_id: null,
+            image_ids: null,
+            main_image_id: null,
+          };
+      }
+
+      function Load_Obj(id)
+      {
+        return De_Product.Select_By_Id_With_Details(id);
+      }
+
+      async function Prepare_Fields(ctx)
+      {
+        const projects = await De_Project.Select_All_By_User(ctx.user.uid);
+        Set_Options(project_value, projects, "id", "title");
+
+        const brands = await De_Brand.Select_All();
+        Set_Options(brand_value, brands, "id", "name");
+
+        images_value.addEventListener("change", On_Change_Images);
+        images_value.id_prefix = "product/" + ctx.user.uid;
+        images_value.files = await Load_Images(ctx);
+
+        const tags = await De_Tag.Select_All();
+        tags_value.tags = tags;
+      }
+
+      function Obj_To_Fields()
+      {
+        id_value.innerText = product.id;
+        name_value.value = product.name;
+        price_value.value = product.price;
+        project_value.value = product.project_id;
+        tags_value.value = product.tags;
+        brand_value.value = product.brand_id;
+        images_value.value = product.image_ids;
+        main_image_value.value = product.main_image_id;
+      }
+
+      function Fields_To_Obj()
+      {
+        product.name = name_value.value;
+        product.price = price_value.value;
+        product.project_id = project_value.value;
+        product.tags = tags_value.value;
+        product.brand_id = brand_value.value;
+        product.main_image_id = main_image_value.value;
+        product.image_ids = images_value.value;
+      }
+
+      async function Save_Obj(ctx)
+      {
+        await Delete_Images(ctx);
+        await Save_Images(ctx);
+        return De_Product.Save(product);
+      }
+
+      async function Delete_Images(ctx)
+      {
+        for (const id of images_value.deleted_ids)
+        {
+          const ref = ctx.fb_strg.ref().child(id);
+          const res = await ref.delete();
+        }
+      }
+
+      async function Save_Images(ctx)
+      {
+        for (const file of images_value.files)
+        {
+          if (file.is_new)
+          {
+            const ref = ctx.fb_strg.ref().child(file.id);
+            const res = await ref.put(file);
+          }
+        }
+      }
+
+      async function Load_Images(ctx)
+      {
+        const files = [];
+        for (const id of product.image_ids)
+        {
+          const ref = ctx.fb_strg.ref().child(id);
+          const url = await ref.getDownloadURL();
+          const file = {id, url};
+          files.push(file);
+        }
+
+        return files;
       }
 </script>
   </head>
@@ -174,6 +237,12 @@
       <label>Project</label>
       <select id="project_value" class="field_value"><option>None</option></select>
 
+      <label>Images</label>
+      <image-buddy 
+        id="images_value" 
+        style-src="/styles/Image_Buddy.css">
+      </image-buddy>
+
       <label>Main Image</label>
       <select-image 
         id="main_image_value" 
@@ -182,12 +251,6 @@
         style-src-menu-btn="/styles/Select_Image_Menu_Btn.css"
         style-src-menu="/styles/Select_Image_Menu.css">
       </select-image>
-
-      <label>Images</label>
-      <image-buddy 
-        id="images_value" 
-        style-src="/styles/Image_Buddy.css">
-      </image-buddy>
 
       <label>Additional Details</label>
       <tag-buddy 

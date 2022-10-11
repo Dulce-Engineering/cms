@@ -13,8 +13,6 @@
       import Context from "./lib/Context.js";
       import Utils from "./lib/Utils.js";
       import Datasource from "./node_modules/table-buddy/Datasource.mjs";
-      import De_Product from "../lib/De_Product.js"
-      import De_Project from "./lib/De_Project.js"
       import Header_Buddy from './node_modules/header-buddy/Header_Buddy.js';
       import Table_Buddy from './node_modules/table-buddy/Table_Buddy.mjs';
       import Menu_Buddy from './node_modules/menu-buddy/Menu_Buddy.mjs';
@@ -46,7 +44,7 @@
 
         async Update_Data(filter_by, sort_by)
         {
-          this.data = await De_Product.Select_All(this.ctx.db, sort_by, filter_by);
+          this.data = await De_Product.Select_All(sort_by, filter_by);
         }
 
         // rendering ==============================================================================
@@ -70,7 +68,7 @@
 
         async Render_Project_Field(product)
         {
-          const project = await De_Project.Select_By_Id(this.ctx.db, product.project_id);
+          const project = await De_Project.Select_By_Id(product.project_id);
           return project.title;
         }
 
@@ -110,7 +108,7 @@
           {
             for (const id of this.sel_col.selected_ids)
             {
-              const is_deleted = await De_Product.Delete(this.ctx.db, this.ctx.fb_strg, id);
+              const is_deleted = await De_Product.Delete(id);
               if (!is_deleted)
               {
                 Utils.Handle_Errors(this.ctx.db);
@@ -157,7 +155,7 @@
           const confirmed = window.confirm("Are you sure?");
           if (confirmed)
           {
-            const is_deleted = await De_Product.Delete(this.ctx.db, this.ctx.fb_strg, option.component_id);
+            const is_deleted = await De_Product.Delete(option.component_id);
             if (is_deleted)
             {
               this.table_elem.Update_Render();
@@ -170,10 +168,11 @@
         }
       }
 
-      window.onload = Main;
+      Main();
       function Main()
       {
-        new Context(Header_Signed_In, Header_Signed_Out);
+        const ctx = new Context();
+        ctx.Init(Header_Signed_In, Header_Signed_Out);
       }
       
       function Header_Signed_In(ctx)

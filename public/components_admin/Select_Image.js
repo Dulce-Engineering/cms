@@ -12,8 +12,10 @@ class Select_Image extends HTMLElement
   {
     super();
     this.image_value = null;
+    this.image_files = null;
     this.image_placeholder = this.Render_Image_Placeholder();
     Utils.Bind(this, "On_");
+    this.Get_Image_URL_By_Id = this.Get_Image_URL_By_Id.bind(this);
     this.attachShadow({mode: 'open'});
   }
 
@@ -22,9 +24,9 @@ class Select_Image extends HTMLElement
     this.Render();
   }
 
-  set value(file)
+  set value(id)
   {
-    this.image_value = file;
+    this.image_value = id;
     this.Render_Image();
   }
 
@@ -38,12 +40,28 @@ class Select_Image extends HTMLElement
     this.image_files = files;
     this.Render_Menu();
 
-    if (!this.image_files.includes(this.value))
+    if (!this.Has_Image_By_Id())
     {
       this.value = null;
     }
+    else
+    {
+      this.Render_Image();
+    }
   }
 
+  Has_Image_By_Id()
+  {
+    const image = this.image_files?.find(i => i.id == this.image_value);
+    return image != undefined;
+  }
+
+  Get_Image_URL_By_Id()
+  {
+    const image = this.image_files?.find(i => i.id == this.image_value);
+    return image ? image.url: null;
+  }
+  
   // events =======================================================================================
 
   On_Option_Click(event, option)
@@ -54,7 +72,7 @@ class Select_Image extends HTMLElement
     }
     else
     {
-      this.value = event.target.image_file;
+      this.value = event.target.image_file.id;
     }
     this.menu_elem.menu_buddy.Hide();
   }
@@ -65,7 +83,7 @@ class Select_Image extends HTMLElement
   {
     if (this.image_value)
     {
-      this.image_elem.src = this.image_value.obj_url;
+      this.image_elem.src = this.Get_Image_URL_By_Id();
     }
     else
     {
@@ -115,13 +133,8 @@ class Select_Image extends HTMLElement
 
     for (const file of this.image_files)
     {
-      if (!file.obj_url)
-      {
-        file.obj_url = URL.createObjectURL(file);
-      }
-        
       const img_elem = document.createElement("img");
-      img_elem.src = file.obj_url;
+      img_elem.src = file.url;
       img_elem.image_file = file;
       img_elem.addEventListener("click", this.On_Option_Click);
 

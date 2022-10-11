@@ -11,7 +11,10 @@ class Image_Buddy extends HTMLElement
   constructor() 
   {
     super();
-    this.images_value = [];
+    this.image_ids = [];
+    this.deleted_ids = [];
+    this.image_files = [];
+    this.id_prefix = "";
     Utils.Bind(this, "On_");
     this.attachShadow({mode: 'open'});
   }
@@ -21,15 +24,43 @@ class Image_Buddy extends HTMLElement
     this.Render();
   }
 
-  set value(files)
+  set files(image_files)
   {
-    this.images_value = files || [];
+    this.image_files = image_files || [];
     this.Render_Images();
+
+    const change = new Event("change");
+    this.dispatchEvent(change);
+  }
+
+  get files()
+  {
+    return this.image_files;
+  }
+
+  set value(ids)
+  {
+    this.image_ids = ids || [];
+    // get related images from storage bucket
+    //this.Render_Images();
   }
 
   get value()
   {
-    return this.images_value;
+    return this.image_files ? this.image_files.map(f => f.id): this.image_ids;
+  }
+
+  Add_Ids(input_images)
+  {
+    const prefix = Date.now();
+    let idx = 0;
+    for (const input_image of input_images)
+    {
+      input_image.id = this.id_prefix + "-" + prefix + "-" + idx;
+      input_image.url = URL.createObjectURL(input_image);
+      input_image.is_new = true;
+      idx++;
+    }
   }
 
   // events =======================================================================================
@@ -46,7 +77,8 @@ class Image_Buddy extends HTMLElement
   On_Change_Input_Image(event)
   {
     const input_images = event.target;
-    this.images_value = [...this.images_value, ...input_images.files];
+    this.Add_Ids(input_images.files);
+    this.image_files = [...this.image_files, ...input_images.files];
     this.Render_Images();
 
     const change = new Event("change");
@@ -55,8 +87,13 @@ class Image_Buddy extends HTMLElement
 
   On_Click_Del_Btn(event)
   {
-    const del_btn = event.target;
-    this.images_value = this.images_value.filter(i => i != del_btn.file);
+    const file = event.target.file;
+
+    if (!file.is_new)
+    {
+      this.deleted_ids.push(file.id);
+    }
+    this.image_files = this.image_files.filter(i => i != file);
     this.Render_Images();
     
     const change = new Event("change");
@@ -68,7 +105,7 @@ class Image_Buddy extends HTMLElement
   Render_Images()
   {
     this.image_list.replaceChildren();
-    for (let file of this.images_value)
+    for (let file of this.image_files)
     {
       this.Render_Image(file);
     }
@@ -76,11 +113,6 @@ class Image_Buddy extends HTMLElement
 
   Render_Image(file)
   {
-    if (!file.obj_url)
-    {
-      file.obj_url = URL.createObjectURL(file);
-    }
-
     const image_item = document.createElement('li');
     this.image_list.appendChild(image_item);
 
@@ -91,7 +123,7 @@ class Image_Buddy extends HTMLElement
     image_item.appendChild(del_btn);
 
     const img = document.createElement('img');
-    img.src = file.obj_url;
+    img.src = file.url;
     img.height = 100;
     image_item.appendChild(img);
   }
