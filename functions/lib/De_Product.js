@@ -172,12 +172,15 @@ class De_Product
   {
     let res = true;
 
+    if (product_id && tags)
+    {
     const where = [{field: "product_id", op: "==", value: product_id}];
     const prev_tags = await db.Select("product_tag", where);
     res = res && await db.Delete_Objs("product_tag", prev_tags);
 
     const new_tags = tags.map(t => ({data: t.data, product_id, tag_id: t.id}));
     res = res && await db.Insert_Rows(new_tags, "product_tag");
+    }
 
     return res;
   }

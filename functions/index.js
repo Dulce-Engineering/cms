@@ -18,7 +18,7 @@ app.use(cors({ origin: true }));
 admin.initializeApp();
 const db = new De_Db_Firestore(admin.firestore());
 
-const firebaseConfig = JSON.parse(process.env.FIREBASE_CONFIG);
+//const firebaseConfig = JSON.parse(process.env.FIREBASE_CONFIG);
 //const db_strg = admin.storage().bucket(firebaseConfig.storageBucket);
 
 const rpc_buddy = new RPC_Buddy

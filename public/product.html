@@ -204,18 +204,23 @@
 
       async function Load_Images(ctx)
       {
-        const files = [];
+        let files = null;
+
+        if (!Utils.isEmpty(product.image_ids))
+        {
+          files = [];
         for (const id of product.image_ids)
         {
           const ref = ctx.fb_strg.ref().child(id);
           const url = await ref.getDownloadURL();
           const file = {id, url};
           files.push(file);
+          }
         }
 
         return files;
       }
-</script>
+    </script>
   </head>
 
   <body>
