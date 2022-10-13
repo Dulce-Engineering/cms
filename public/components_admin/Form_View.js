@@ -70,6 +70,29 @@ class Form_View extends HTMLElement
     this.cancel_btn.addEventListener("click", this.On_Click_Cancel);
   }
 
+  static Set_Options(elem, objs, value_field, label_field)
+  {
+    if (!Utils.isEmpty(objs))
+    {
+      for (const obj of objs)
+      {
+        const option_elem = document.createElement("option");
+        option_elem.value = obj[value_field];
+        option_elem.innerText = obj[label_field];
+        elem.append(option_elem);
+      }
+    }
+  }
+
+  static Disable(id)
+  {
+    const elem = document.getElementById(id);
+    if (elem)
+    {
+      elem.disabled = true;
+    }
+  }
+
   On_Header_Signed_Out()
   {
     this.obj = this.New_Obj();

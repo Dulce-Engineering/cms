@@ -11,6 +11,11 @@ class De_Component
     Utils.To_Class_Obj(data, this);
   }
 
+  static New(data)
+  {
+    return new De_Component(data);
+  }
+
   Init()
   {
     this.content = null;
