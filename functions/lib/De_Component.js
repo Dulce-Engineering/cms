@@ -85,9 +85,13 @@ class De_Component
     return objs;
   }
 
-  static Select_By_Id(db, id)
+  static Select_By_Id(db, id, class_type)
   {
-    return db.Select_Obj_By_Id(id, "component", this);
+    if (!class_type)
+    {
+      class_type = De_Component;
+    }
+    return db.Select_Obj_By_Id(id, "component", class_type);
   }
 
   get key_numeric()
@@ -144,7 +148,17 @@ class De_Component
 
   Save(db)
   {
-    return db.Save(this, "component");
+    return db.Save(this, De_Component.table_name);
+  }
+
+  static Save(db, obj, class_type)
+  {
+    if (!class_type)
+    {
+      class_type = De_Component;
+    }
+    const component = new class_type(obj);
+    return component.Save(db);
   }
 
   Delete(db)

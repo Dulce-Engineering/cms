@@ -89,7 +89,6 @@ class De_Db_Firestore
     const obj = await this.Select_Row_By_Id(id, table_name);
     if (obj)
     {
-      //res = new class_type(obj);
       res = this.To_Class(obj, class_type);
     }
 
@@ -102,14 +101,14 @@ class De_Db_Firestore
 
     if (id)
     {
-    const table = this.db.collection(table_name);
-    const query = table.doc(id);
-    const query_res = await query.get();
-    if (query_res.exists)
-    {
-      obj = query_res.data();
-      obj.id = query_res.id;
-    }
+      const table = this.db.collection(table_name);
+      const query = table.doc(id);
+      const query_res = await query.get();
+      if (query_res.exists)
+      {
+        obj = query_res.data();
+        obj.id = query_res.id;
+      }
     }
 
     return obj;

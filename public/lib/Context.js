@@ -25,11 +25,12 @@ class Context
     //this.cache = new Client_Cache_Local();
   }
 
-  async Init(Header_Signed_In, Header_Signed_Out)
+  async Init(Header_Signed_In, Header_Signed_Out, id_dest)
   {
     await Utils.import_api(config);
 
-    Context.Set_Id_Shortcuts(document, window);
+    id_dest = id_dest || window;
+    Context.Set_Id_Shortcuts(document, id_dest);
 
     const m =
     {
@@ -42,7 +43,7 @@ class Context
         {title: "Products", on_click_fn: () => window.open("products.html", "_self")}, 
       ]
     };
-    header_elem.Init(this, Header_Signed_In, Header_Signed_Out, null, m);
+    id_dest.header_elem.Init(this, Header_Signed_In, Header_Signed_Out, null, m);
   }
 
   static Set_Id_Shortcuts(src_elem, dest_elem)

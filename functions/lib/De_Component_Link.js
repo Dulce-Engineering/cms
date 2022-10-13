@@ -12,6 +12,16 @@ class De_Component_Link extends De_Component
     this.content_type = "link";
   }
 
+  static New()
+  {
+    return new De_Component_Link();
+  }
+
+  static Select_By_Id(db, id)
+  {
+    return super.Select_By_Id(db, id, De_Component_Link);
+  }
+  
   static async Select_Contents(db, project_id, key)
   {
     let res = null;
@@ -28,6 +38,11 @@ class De_Component_Link extends De_Component
 
     //console.log("De_Component_Link.Select_Contents(): res =", res);
     return res;
+  }
+
+  static Save(db, obj)
+  {
+    return super.Save(db, obj, De_Component_Link);
   }
 }
 

@@ -41,14 +41,26 @@ const rpc_buddy = new RPC_Buddy
     {name: "De_Project.Select_All_By_User", inject: [db]},
     {name: "De_Project.Save", inject: [db]},
     {name: "De_Project.Delete", inject: [db]},
+
     {name: "De_Component.Select_Contents", inject: [db]},
+
     {name: "De_Component_Link.Select_Contents", inject: [db]},
+    {name: "De_Component_Link.Select_By_Id", inject: [db]},
+    {name: "De_Component_Link.Get_Children", inject: [db]},
+    {name: "De_Component_Link.Has_Children", inject: [db]},
+    {name: "De_Component_Link.Get_Title", inject: [db]},
+    {name: "De_Component_Link.Save", inject: [db]},
+    {name: "De_Component_Link.New"},
+
     {name: "De_Component_Image.Select_Contents", inject: [db]},
+
     {name: "De_Product.Select_All", inject: [db]},
     {name: "De_Product.Select_By_Id_With_Details", inject: [db]},
     {name: "De_Product.Delete", inject: [db]},
     {name: "De_Product.Save", inject: [db]},
+
     {name: "De_Tag.Select_All", inject: [db]},
+    
     {name: "De_Brand.Select_All", inject: [db]},
   ],
   RPC_Buddy.Express

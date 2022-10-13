@@ -8,7 +8,7 @@
     "deploy": "firebase deploy",
     "deployh": "firebase deploy --only hosting",
     "deployf": "firebase deploy --only functions",
-    "start": "firebase serve",
+    "start": "firebase serve --port 80",
     "startf": "firebase serve --only functions",
     "starth": "firebase serve --only hosting"
   },

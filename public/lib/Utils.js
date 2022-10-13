@@ -478,7 +478,7 @@ class Utils
 
   static Bind(obj, fn_prefix)
   {
-    const members = Object.getOwnPropertyNames(Object.getPrototypeOf(obj));
+    const members = Utils.getMethods(obj);
     for (const member of members)
     {
       if (typeof obj[member] == "function" && member.startsWith(fn_prefix))
@@ -486,6 +486,18 @@ class Utils
         obj[member] = obj[member].bind(obj);
       }
     }
+  }
+
+  static getMethods(obj)
+  {
+    let properties = new Set();
+    let currentObj = obj;
+    do 
+    {
+      Object.getOwnPropertyNames(currentObj).map(item => properties.add(item));
+    } 
+    while ((currentObj = Object.getPrototypeOf(currentObj)));
+    return [...properties.keys()].filter(item => typeof obj[item] === 'function');
   }
 
   static Get_Attr_Def(elem, name, def)
