@@ -54,6 +54,12 @@ const rpc_buddy = new RPC_Buddy
     {name: "De_Component_Link.New"},
 
     {name: "De_Component_Image.Select_Contents", inject: [db]},
+    {name: "De_Component_Image.Select_By_Id", inject: [db]},
+    {name: "De_Component_Image.Get_Children", inject: [db]},
+    {name: "De_Component_Image.Has_Children", inject: [db]},
+    {name: "De_Component_Image.Get_Title", inject: [db]},
+    {name: "De_Component_Image.Save", inject: [db]},
+    {name: "De_Component_Image.New"},
 
     {name: "De_Product.Select_All", inject: [db]},
     {name: "De_Product.Select_By_Id_With_Details", inject: [db]},

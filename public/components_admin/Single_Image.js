@@ -48,6 +48,7 @@ class Single_Image extends HTMLElement
   {
     const input_image = event.target;
     this.image_value = input_image.files[0];
+    this.image_value.is_new = true;
     this.Render_Image();
 
     const change = new Event("change");
@@ -118,7 +119,7 @@ class Single_Image extends HTMLElement
     `;
     const doc = Utils.toDocument(html);
 
-    this.shadowRoot.append(doc);
+    this.shadowRoot.replaceChildren(doc);
     Utils.Set_Id_Shortcuts(this.shadowRoot, this);
 
     this.add_image_btn.addEventListener("click", this.On_Click_Add_Image);

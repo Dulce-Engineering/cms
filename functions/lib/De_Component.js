@@ -27,19 +27,6 @@ class De_Component
     this.parent_id = null;
   }
 
-  To_Db_Obj()
-  {
-    return {
-      content: this.content,
-      content_type: this.content_type,
-      id: this.id,
-      key: this.key,
-      project_id: this.project_id,
-      title: this.title,
-      parent_id: this.parent_id,
-    };
-  }
-
   static async To_Class_Obj(db_obj)
   {
     let class_obj = null;
@@ -50,6 +37,13 @@ class De_Component
       const De_Component_Image = imprt.default;
 
       class_obj = new De_Component_Image(db_obj);
+    }
+    else if (db_obj.content_type == "link")
+    {
+      const imprt = await import("./De_Component_Link.js");
+      const De_Component_Link = imprt.default;
+
+      class_obj = new De_Component_Link(db_obj);
     }
     else
     {
