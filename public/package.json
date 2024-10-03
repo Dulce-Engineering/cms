@@ -1,0 +1,24 @@
+{
+  "name": "de-cms",
+  "version": "1.0.0",
+  "description": "Headless CMS",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "firebase deploy --only hosting",
+    "start": "firebase serve --only hosting"
+  },
+  "author": "Dulce Engineering",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Dulce-Engineering/cms/issues"
+  },
+  "homepage": "https://github.com/Dulce-Engineering/cms",
+  "dependencies": {
+    "cache-buddy": "^1.1.1",
+    "filter-buddy": "^1.1.2",
+    "header-buddy": "^1.0.0",
+    "menu-buddy": "^1.3.91",
+    "table-buddy": "^1.1.3"
+  }
+}

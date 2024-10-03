@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>CMS Test</title>
+    <style>
+      #h_p1
+      {
+        border: 1px solid red;
+        display: inline-block;
+      }
+      #hp
+      {
+        border: 1px solid blue;
+        display: inline-block;
+      }
+    </style>
+    <script src="/components/index.js" type="module"></script>
+  </head>
+
+  <body>
+    <de-project id="p1" key="plantimator"></de-project>
+    <de-project id="p2" key="job_woper"></de-project>
+    <de-project id="p3" key="catwalk"></de-project>
+    <de-project id="p4" key="brandkind"></de-project>
+
+    <de-text id="h_p1" key="h_p1" project-id="p1"></de-text>
+    <de-text id="h_p1" key="h_p1" project-id="p1" renderType="text"></de-text>
+    <de-html id="hp" key="hp" project-id="p2"></de-html>
+    <de-html id="demo_html" key="demo" project-id="p3"></de-html>
+    <de-link id="l1" key="s11_email" project-id="p4"></de-link>
+    <de-image id="i1" key="s3_i" project-id="p4"></de-image>
+  </body>
+</html>

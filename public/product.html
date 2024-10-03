@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>deCMS - Edit Product</title>
+
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.css"/>
+    <link type="text/css" rel="stylesheet" href="/styles/styles.css"  />
+    
+    <script type="module">
+      //import Context from "./lib/Context.js";
+      import Utils from "./lib/Utils.js";
+      import Header_Buddy from './node_modules/header-buddy/Header_Buddy.js';
+      import Menu_Buddy from './node_modules/menu-buddy/Menu_Buddy.mjs';
+      import Menu_Buddy_Btn from './node_modules/menu-buddy/Menu_Buddy_Btn.mjs';
+      import Image_Buddy from './components_admin/Image_Buddy.js';
+      import Tag_Buddy from './components_admin/Tag_Buddy.js';
+      import Select_Image from './components_admin/Select_Image.js';
+      import Form_View from './components_admin/Form_View.js';
+      customElements.define(Header_Buddy.tname, Header_Buddy);
+      customElements.define(Menu_Buddy.tname, Menu_Buddy);
+      customElements.define(Menu_Buddy_Btn.tname, Menu_Buddy_Btn);
+      customElements.define(Image_Buddy.tname, Image_Buddy);
+      Tag_Buddy.Define();
+      Select_Image.Define();
+
+      class Product_Form extends Form_View
+      {
+        static tname = "product-form";
+
+        Load_Obj(id)
+        {
+          return De_Product.Select_By_Id_With_Details(id);
+        }
+
+        async New_Obj()
+        {
+          const product = await De_Product.New();
+
+          const project_id = this.urlParams.get('project_id');
+          if (project_id)
+          {
+            product.project_id = project_id;
+            project_value.disabled = true;
+          }
+
+          return product;
+        }
+
+        async Save_Obj(product)
+        {
+          await this.Delete_Images();
+          await this.Save_Images();
+          const res = await De_Product.Save(product);
+
+          this.ctx.Toast_Show("Product saved!");
+
+          return res;
+        }
+
+        async Prepare_Fields(product)
+        {
+          const projects = await De_Project.Select_All_By_User(this.ctx.user.uid);
+          Form_View.Set_Options(project_value, projects, "id", "title");
+
+          const brands = await De_Brand.Select_All();
+          Form_View.Set_Options(brand_value, brands, "id", "name");
+
+          images_value.addEventListener("change", this.On_Change_Images);
+          images_value.id_prefix = "product/" + this.ctx.user.uid;
+          images_value.files = await this.Load_Images(product);
+
+          const tags = await De_Tag.Select_All();
+          tags_value.tags = tags;
+        }
+
+        Obj_To_Fields(product)
+        {
+          id_value.innerText = product.id;
+          name_value.value = product.name;
+          price_value.value = product.price;
+          project_value.value = product.project_id;
+          tags_value.value = product.tags;
+          brand_value.value = product.brand_id;
+          images_value.value = product.image_ids;
+          main_image_value.value = product.main_image_id;
+        }
+
+        Fields_To_Obj(product)
+        {
+          product.name = name_value.value;
+          product.price = price_value.value;
+          product.project_id = project_value.value;
+          product.tags = tags_value.value;
+          product.brand_id = brand_value.value;
+          product.main_image_id = main_image_value.value;
+          product.image_ids = images_value.value;
+        }
+
+        On_Change_Images()
+        {
+          main_image_value.images = images_value.files;
+        }
+
+        async Delete_Images()
+        {
+          for (const id of images_value.deleted_ids)
+          {
+            const ref = this.ctx.fb_strg.ref().child(id);
+            const res = await ref.delete();
+          }
+        }
+
+        async Save_Images()
+        {
+          for (const file of images_value.files)
+          {
+            if (file.is_new)
+            {
+              const ref = this.ctx.fb_strg.ref().child(file.id);
+              const res = await ref.put(file);
+            }
+          }
+        }
+
+        async Load_Images(product) 
+        {
+          let files = null;
+
+          if (!Utils.isEmpty(product.image_ids))
+          {
+            files = [];
+            for (const id of product.image_ids)
+            {
+              const ref = this.ctx.fb_strg.ref().child(id);
+              const url = await ref.getDownloadURL();
+              const file = {id, url};
+              files.push(file);
+            }
+          }
+
+          return files;
+        }
+      }
+      customElements.define(Product_Form.tname, Product_Form);
+    </script>
+  </head>
+
+  <body>
+    <product-form hidden>
+      <label id="id_label">Id.</label>
+      <span id="id_value" class="field_value"></span>
+
+      <label>Name</label>
+      <input id="name_value" class="field_value">
+
+      <label>Brand</label>
+      <select id="brand_value" class="field_value"><option>None</option></select>
+
+      <label>Price</label>
+      <input id="price_value" class="field_value">
+
+      <label>Project</label>
+      <select id="project_value" class="field_value"><option>None</option></select>
+
+      <label>Images</label>
+      <image-buddy 
+        id="images_value" 
+        style-src="/styles/Image_Buddy.css">
+      </image-buddy>
+
+      <label>Main Image</label>
+      <select-image 
+        id="main_image_value" 
+        class="field_value" 
+        style-src="/styles/Select_Image.css"
+        style-src-menu-btn="/styles/Select_Image_Menu_Btn.css"
+        style-src-menu="/styles/Select_Image_Menu.css">
+      </select-image>
+
+      <label>Additional Details</label>
+      <tag-buddy 
+        id="tags_value" 
+        style-src="/styles/Tag_Buddy.css" 
+        style-src-add-btn="/styles/Tag_Buddy_Add_Btn.css">
+      </tag-buddy>
+    </product-form>
+  </body>
+</html>

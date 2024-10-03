@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>CMS Demo - Payments</title>
+
+    <link type="text/css" rel="stylesheet" href="styles/payment.css"/>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+      body
+      {
+        font-family: 'Roboto';
+        font-size: 16px;
+        padding: 0;
+        margin: 0px 20px;
+        color: #000;
+        background-color: #ddd;
+      }
+
+      main
+      {
+        margin: 20px 0px;
+        padding: 20px;
+        background-color: #fff;
+      }
+    </style>
+
+    <script type="module">
+      //import 'https://www.gstatic.com/firebasejs/9.4.0/firebase-app-compat.js';
+      //import 'https://www.gstatic.com/firebasejs/9.4.0/firebase-auth-compat.js';
+      //import 'https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore-compat.js';
+      import '/__/firebase/9.4.0/firebase-app-compat.js';
+      import '/__/firebase/9.4.0/firebase-auth-compat.js';
+      import '/__/firebase/9.4.0/firebase-firestore-compat.js';
+      import "../components/index_ext.js";
+
+      Main();
+      async function Main()
+      {
+        document.getElementById("prod_gallery").addEventListener("addproduct", On_Click_Add_Product);
+        document.getElementById("payment").addEventListener("pay", On_Click_Pay);
+      }
+
+      function On_Click_Add_Product(event)
+      {
+        const product = event.detail;
+        document.getElementById("cart").Add_Product(product, 1);
+      }
+
+      async function On_Click_Pay(event)
+      {
+        const products = document.getElementById("cart").products;
+        const pay_res = await document.getElementById("payment").Pay(products);
+        if (pay_res?.success)
+        {
+          alert("Payment succeeded. You have been charged $" + pay_res.amount);
+        }
+        else
+        {
+          alert("Payment failed: " + pay_res.errors[0].detail);
+        }
+      }
+    </script>
+  </head>
+
+  <body>
+    <main>
+      <de-project id="cw" key="catwalk"></de-project>
+
+      <h1>Product Gallery</h1>
+      <de-product-gallery id="prod_gallery" project-id="cw" style-src="styles/prod_gallery.css"></de-product-gallery>
+
+      <h1>Shopping Cart</h1>
+      <de-cart id="cart" project-id="cw" style-src="styles/cart.css"></de-cart>
+
+      <h1>Payment</h1>
+      <de-payment id="payment" project-id="cw"></de-payment>
+    </main>
+  </body>
+</html>

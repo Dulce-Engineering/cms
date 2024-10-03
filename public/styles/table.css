@@ -1,0 +1,116 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+
+table
+{
+  background-color: #fff;
+  width: 100%;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  color: #131314bb;
+  border-left: 3rem solid #131314;
+  border-right: 3rem solid #131314;
+  border-collapse: collapse;
+  --p: 0.5rem;
+  --op: 3rem;
+}
+
+th
+{
+  background-color: #131314aa;
+  padding: var(--op) var(--p) var(--p) var(--p);
+  font-weight: 600;
+  font-size: 80%;
+  color: #fff;
+  text-transform: uppercase;
+}
+th:first-child
+{
+  padding: var(--op) var(--p) var(--p) var(--op);
+}
+th:last-child
+{
+  padding: var(--op) var(--op) var(--p) var(--p);
+}
+
+tbody td
+{
+  padding: var(--p) var(--p) var(--p) var(--p);
+}
+tbody td:first-child
+{
+  padding: var(--p) var(--p) var(--p) var(--op);
+}
+tbody td:last-child
+{
+  padding: var(--p) var(--op) var(--p) var(--p);
+}
+
+tbody tr
+{
+  border-bottom: 1px solid #eee;
+}
+tbody tr:last-child td
+{
+  padding-bottom: var(--op);
+}
+
+.group_item
+{
+  margin-left: 4px;
+  font-size: 30px; 
+}
+.group_toggle
+{
+  display: inline-block;
+  width: 20px;
+  height: 20px;  
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+.group_toggle::before
+{
+  display: inline-block;
+  content: "🢒";
+  padding: 2px 8px 7px 12px;
+  font-size: 30px;
+  line-height: 19px;
+  background-color: #fff;
+  color: #f00;
+  border-radius: 50%;
+  top: -5px;
+  position: relative;
+  left: -5px;
+  border: 1px solid #f00;
+}
+.group_toggle:checked::before
+{
+  transform: rotateZ(90deg);
+}
+
+#menu
+{
+  width: 25px;
+}
+#select
+{
+  width: 25px;
+}
+#row_idx
+{
+  width: 25px;
+}
+#children
+{
+  width: 0;
+}
+#title
+{
+  max-width: 200px;
+  min-width: 80px;
+}
+menu-buddy-btn
+{
+  position: relative;
+  top: -3px;
+}

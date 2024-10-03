@@ -1,0 +1,20 @@
+
+button
+{
+  border: none;
+  padding: 6px 12px;
+  margin: 0;
+  background-color: #faac;
+  border-radius: 5px;
+  font-family: 'Roboto';
+  font-size: 12px;
+  cursor: pointer;
+}
+button:focus-visible
+{
+  background-color: #faaf;
+}
+button:hover
+{
+  background-color: #faaf;
+}

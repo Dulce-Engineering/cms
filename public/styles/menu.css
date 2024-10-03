@@ -1,0 +1,114 @@
+menu-buddy
+{
+  box-shadow: 3px 3px 5px 0px #0006;
+  margin-left: 4px;
+  position: fixed;
+  z-index: 1;
+}
+
+#btn
+{
+  background-color: #f00;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  font-size: 22px;
+  width: 28px;
+  height: 28px;
+}
+
+.menu 
+{
+  display: none;
+  vertical-align: top;
+  overflow: hidden;
+  transition: width 0.25s;
+  box-sizing: border-box;
+  background-color: #f00;
+  font-family: "Fjalla One";
+  font-size: 1rem;
+  color: #fff;
+  padding: 10px;
+  margin: 0;
+  border: none;
+}
+.menu_open
+{
+  display: inline-block;
+}
+
+.menu_title
+{
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0;
+  border: none;
+  margin: 0;
+  background-color: transparent;
+  cursor: pointer;
+  height: 30px;
+  font-weight: bold;
+  white-space: nowrap;
+}
+.menu_title span
+{
+  line-height: 30px;
+}
+.menu_title svg
+{
+  vertical-align: middle;
+  margin: 0px 5px 0px 5px;
+}
+.menu_title:hover
+{
+  background-color: #c00;
+}
+
+.menu_option
+{
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+  text-align: left;
+  padding: 0;
+  border: none;
+  margin: 0;
+  background-color: transparent;
+  cursor: pointer;
+  height: 30px;
+  white-space: nowrap;
+  font-weight: 400;
+}
+.menu_option span
+{
+  padding-left: 30px;
+  line-height: 30px;
+}
+.menu_option svg
+{
+  vertical-align: middle;
+  margin: 0px 10px 0px 5px;
+}
+.menu_option:hover
+{
+  background-color: #c00;
+}
+.title_only
+{
+  padding-right: 20px;
+}
+
+.sort_btn
+{
+  border: none;
+  padding: 0;
+  margin: 0 5px 0 0;
+  background-color: #f002;
+  border-radius: 20px;
+  font-family: 'Roboto';
+  cursor: pointer;
+  width: 22px;
+  height: 22px;
+}

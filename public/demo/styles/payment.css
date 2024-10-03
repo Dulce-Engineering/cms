@@ -1,0 +1,42 @@
+de-payment ul
+{
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+de-payment ul li
+{
+  list-style-type: none;
+  margin: 20px 0;
+  padding: 0;
+}
+
+#det_cc
+{
+  margin: 10px 25px 0px 25px;
+}
+
+#cc_div
+{
+  margin-bottom: 10px;
+}
+
+de-payment button
+{
+  font-weight: 700;
+  height: 40px;
+  padding: 0 50px;
+  text-align: center;
+  color: #fff;
+  background-color: #f00;
+  border: none;
+  font-family: 'Roboto';
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+#det_paypal
+{
+  margin: 10px 25px 0px 25px;
+}

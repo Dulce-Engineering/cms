@@ -1,0 +1,67 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Template</title>
+
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.css"/>
+    <link type="text/css" rel="stylesheet" href="styles/styles.css"  />
+
+    <style>
+      body
+      {
+        text-align: center;
+      }
+      #signin_div
+      {
+        padding: 20px 30px;;
+        background-color: #f002;
+        margin: 0px 5px;
+      }
+      #welcome_div
+      {
+        padding: 20px 30px;;
+        margin: 0px 5px;
+      }
+    </style>
+
+    <script type="module">
+      import Context from "./lib/Context.js";
+      import Menu_Buddy from './node_modules/menu-buddy/Menu_Buddy.mjs';
+      import Menu_Buddy_Btn from './node_modules/menu-buddy/Menu_Buddy_Btn.mjs';
+      import Header_Buddy from './node_modules/header-buddy/Header_Buddy.js';
+      customElements.define(Menu_Buddy.tname, Menu_Buddy);
+      customElements.define(Menu_Buddy_Btn.tname, Menu_Buddy_Btn);
+      customElements.define(Header_Buddy.tname, Header_Buddy);
+
+      Main();
+      function Main()
+      {
+        const ctx = new Context();
+        ctx.Init(Header_Signed_In, Header_Signed_Out);
+      }
+      
+      function Header_Signed_In(ctx)
+      {
+        // code to run when user signed in goes here
+        welcome_div.hidden = false;
+        signin_div.hidden = true;
+      }
+
+      async function Header_Signed_Out(ctx)
+      {
+        // code to run when user not signed in goes here
+        welcome_div.hidden = true;
+        signin_div.hidden = false;
+      }
+    </script>
+  </head>
+
+  <body>
+    <header-buddy id="header_elem" title="Template" style-src="styles/Header_Buddy.css"></header-buddy>
+    <div id="signin_div" hidden=true>You are not signed in</div>
+    <div id="welcome_div" hidden=true>Welcome</div>
+  </body>
+</html>

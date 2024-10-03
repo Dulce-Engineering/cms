@@ -1,0 +1,123 @@
+header-buddy
+{
+  padding: 2rem 3rem 1rem 4rem;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  align-items: flex-end;
+  background-image: linear-gradient(#13131488, #131314ff), url("/images/hero2.jpg");
+}
+
+header-buddy .title_bar
+{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+header-buddy .logo img
+{
+  width: 2rem;
+  vertical-align: text-top;
+  margin: 0 1rem 0 0;
+}
+
+header-buddy .title
+{
+  line-height: 32px;
+  font-family: "Fjalla One";
+  text-decoration: none;
+  color: #fff;
+}
+header-buddy .title:visited
+{
+  color: #fff;
+}
+
+header-buddy .bk-header-user
+{
+  --def-display: inline;
+  display: none;
+  text-align: right;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.2;
+  font-family: 'Poppins', sans-serif;
+  text-transform: uppercase;
+}
+
+header-buddy .bk-header-user:before
+{
+  content: "";
+  width: 4px;
+  height: 10px;
+  float: left;
+  background: #f50c1a;
+  margin-left: -10px;
+  margin-top: 2px;
+}
+
+.bk-header-title
+{
+  font-size: 2em;
+  margin-left: 10px;
+}
+
+.bk-header-action
+{
+  text-align: right;
+}
+.bk-header-signin
+{
+  --def-display: inline-block;
+  display: none;
+}
+#user_name
+{
+  margin-right: 10px;
+}
+
+button
+{
+  border: none;
+  padding: 10px 16px;
+  margin: 8px 8px 0px 0px;
+  background-color: #f002;
+  border-radius: 5px;
+  font-family: 'Roboto';
+  font-size: 16px;
+  cursor: pointer;
+}
+button:focus-visible
+{
+  background-color: #f004;
+}
+button:hover
+{
+  background-color: #f004;
+}
+
+#sign_in_btn
+{
+}
+#sign_out_btn
+{
+}
+#acc_btn
+{
+}
+
+.toast_warning
+{
+  position: fixed;
+  left: 30%;
+  top: 2.1rem;
+  text-align: center;
+  padding: 1rem;
+  background-color: #f00;
+  right: 30%;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.9rem;
+  font-weight: bold;
+}

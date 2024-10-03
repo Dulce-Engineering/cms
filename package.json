@@ -1,0 +1,24 @@
+{
+  "name": "nexcms",
+  "version": "1.0.0",
+  "description": "deCMS",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "firebase deploy",
+    "deployh": "firebase deploy --only hosting",
+    "deployf": "firebase deploy --only functions",
+    "start": "firebase serve --port 80",
+    "startf": "firebase serve --only functions",
+    "starth": "firebase serve --only hosting --port 81"
+  },
+  "author": "Steven Ramirez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Dulce-Engineering/cms/issues"
+  },
+  "homepage": "https://github.com/Dulce-Engineering/cms",
+  "devDependencies": {
+    "firebase-tools": "^9.12.1"
+  }
+}

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>deCMS - Edit Link Component</title>
+
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.css"/>
+    <link type="text/css" rel="stylesheet" href="/styles/styles2.css"  />
+    <link type="text/css" rel="stylesheet" href="/node_modules/menu-buddy/MB_Select.css"  />
+    
+    <script type="module">
+      //import Context from "./lib/Context.js";
+      //import Utils from "./lib/Utils.js";
+      import Header_Buddy from './node_modules/header-buddy/Header_Buddy.js';
+      import Menu_Buddy from './node_modules/menu-buddy/Menu_Buddy.mjs';
+      import Menu_Buddy_Btn from './node_modules/menu-buddy/Menu_Buddy_Btn.mjs';
+      import MB_Select from './node_modules/menu-buddy/MB_Select.mjs';
+      import Form_View from './components_admin/Form_View.js';
+      customElements.define(Header_Buddy.tname, Header_Buddy);
+      customElements.define(Menu_Buddy.tname, Menu_Buddy);
+      customElements.define(Menu_Buddy_Btn.tname, Menu_Buddy_Btn);
+      customElements.define(MB_Select.tname, MB_Select);
+
+      class Link_Form extends Form_View
+      {
+        static tname = "link-form";
+
+        Load_Obj(id)
+        {
+          return De_Component_Link.Select_By_Id(id);
+        }
+
+        New_Obj()
+        {
+          return De_Component_Link.New();
+        }
+
+        Save_Obj(component)
+        {
+          return De_Component_Link.Save(component);
+        }
+
+        async Prepare_Fields(component)
+        {
+          const project_id = this.urlParams.get('project_id');
+          if (project_id)
+          {
+            component.project_id = project_id;
+            project_value.disabled = true;
+          }
+
+          const projects = await De_Project.Select_All_By_User(this.ctx.user.uid);
+          Form_View.Set_Options(project_value, projects, "id", "title");
+
+          parent_value.Get_Children = 
+            id => De_Component_Link.Get_Children(id, component.project_id);
+          parent_value.Has_Children = 
+            id => De_Component_Link.Has_Children(id, component.project_id);
+          parent_value.Get_Label = 
+            id => De_Component_Link.Get_Title(id);
+        }
+
+        Obj_To_Fields(component)
+        {
+          id_value.innerText = component.id;
+          title_value.value = component.title;
+          key_value.value = component.key;
+          type_value.innerText = component.content_type;
+          url_value.value = component.url;
+          content_value.innerHTML = component.content;
+          project_value.value = component.project_id;
+          parent_value.value = component.parent_id;
+        }
+
+        Fields_To_Obj(component)
+        {
+          component.title = title_value.value;
+          component.key = key_value.value;
+          component.url = url_value.value;
+          component.content = content_value.value;
+          component.project_id = project_value.value;
+          component.parent_id = parent_value.value;
+        }
+      }
+      customElements.define(Link_Form.tname, Link_Form);
+    </script>
+  </head>
+
+  <body>
+    <link-form>
+      <label id="id_label">Id.</label><span id="id_value" class="field_value"></span>
+      <label>Title</label><input id="title_value" class="field_value">
+      <label>Key</label><input id="key_value" class="field_value">
+      <label>Type</label><span id="type_value" class="field_value"></span>
+      <label>URL</label><input id="url_value" class="field_value">
+      <label>Content</label><textarea id="content_value" rows="5" cols="60" class="field_value"></textarea>
+      <label>Project</label><select id="project_value" class="field_value"><option>None</option></select>
+      <label>Parent</label><mb-select id="parent_value" root-title="Components" class="field_value"></mb-select>
+    </link-form>
+  </body>
+</html>

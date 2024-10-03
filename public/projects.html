@@ -1,0 +1,187 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>deCMS - Projects</title>
+
+    <link type="text/css" rel="stylesheet" href="styles/styles.css" />
+    <link type="text/css" rel="stylesheet" href="styles/hamburger-menu.css">
+    <link type="text/css" rel="stylesheet" href="styles/Header_Buddy.css">
+
+    <script type="module">
+      import Utils from "./lib/Utils.js";
+      import Datasource from "./node_modules/table-buddy/Datasource.mjs";
+      import Menu_Header from './components_admin/Menu_Header.js';
+      import Table_Buddy from './node_modules/table-buddy/Table_Buddy.mjs';
+      import Menu_Buddy_Btn from './node_modules/menu-buddy/Menu_Buddy_Btn.mjs';
+      
+      const align_left = "text-align: left;";
+      window.Page_Refresh = Page_Refresh;
+
+      class Projects_Ds extends Datasource.Memory
+      {
+        constructor(user, table_elem)
+        {
+          super();
+
+          this.user = user;
+          this.table_elem = table_elem;
+
+          this.Render_Header_Row_Actions = this.Render_Header_Row_Actions.bind(this);
+          this.Render_Row_Actions = this.Render_Row_Actions.bind(this);
+          this.Del_Option_On_Click = this.Del_Option_On_Click.bind(this);
+          
+          this.table_elem.datasource = this;
+        }
+
+        Get_Columns()
+        {
+          const cols =
+          [
+            {title_fn: this.Render_Header_Row_Actions, field_fn: this.Render_Row_Actions, style: align_left}, 
+            new Table_Buddy.Column_No(align_left), 
+            {title: "Id", field_name: "id", style: align_left}, 
+            {title: "Title", field_name: "title", style: align_left}, 
+            {title: "Key", field_name: "key", style: align_left},
+            {title: "URL", field_name: "url", render_as: "url", style: align_left},
+          ];
+
+          return cols;
+        }
+
+        async Update_Data(filter_by, sort_by)
+        {
+          this.data = await De_Project.Select_All_By_User(this.user.uid);
+        }
+
+        // colum options ==========================================================================
+        
+        Render_Header_Row_Actions()
+        {
+          const m =
+          {
+            title: "Projects Actions",
+            class_name: "menu",
+            options: 
+            [
+              {title: "Add", on_click_fn: this.Add_Option_On_Click}, 
+              //{title: "Columns"}, 
+              //{title: "Filter"}, 
+              //{title: "Sort"}
+            ]
+          };
+
+          const main_menu = new Menu_Buddy_Btn();
+          main_menu.innerHTML = "&equiv;";
+          main_menu.menu = m;
+          main_menu.setAttribute("btn-style-src", "/styles/menu.css");
+          main_menu.setAttribute("menu-style-src", "/styles/menu.css");
+
+          return main_menu; 
+        }
+
+        Add_Option_On_Click(event)
+        {
+          window.open("project.html", "_self");
+        }
+
+        // row options ============================================================================
+
+        Render_Row_Actions(project)
+        {
+          const m =
+          {
+            title: "Project Actions",
+            class_name: "menu",
+            options: 
+            [
+              {title: "Components", on_click_fn: this.Components_Option_On_Click, project_id: project.id, type: "components"}, 
+              {title: "Components Tree", on_click_fn: this.Components_Option_On_Click, project_id: project.id, type: "components_tree"}, 
+              {title: "Edit", on_click_fn: this.Edit_Option_On_Click, project_id: project.id}, 
+              {title: "Delete", on_click_fn: this.Del_Option_On_Click, project_id: project.id}
+            ]
+          };
+
+          const main_menu = new Menu_Buddy_Btn();
+          main_menu.innerHTML = "&equiv;";
+          main_menu.menu = m;
+          main_menu.setAttribute("btn-style-src", "/styles/menu.css");
+          main_menu.setAttribute("menu-style-src", "/styles/menu.css");
+
+          return main_menu; 
+        }
+
+        async Edit_Option_On_Click(event, option)
+        {
+          const id = option.project_id;
+          window.open("project.html?id=" + id, "_blank");
+        }
+
+        async Components_Option_On_Click(event, option)
+        {
+          const id = option.project_id;
+          const option_type = option.type;
+          window.open(option_type + ".html?project_id=" + id, "_self");
+        }
+
+        async Del_Option_On_Click(event, option)
+        {
+          const id = option.project_id;
+
+          const confirmed = window.confirm("Are you sure?");
+          if (confirmed)
+          {
+            const is_deleted = await De_Project.Delete(id);
+            if (is_deleted)
+            {
+              this.table_elem.Update_Render();
+            }
+            else
+            {
+              //Utils.Handle_Errors(this.ctx.db);
+            }
+          }
+        }
+      }
+
+      Main();
+      function Main()
+      {
+        Utils.Set_Id_Shortcuts(document, window);
+        header.addEventListener("signedin", Header_Signed_In);
+        header.addEventListener("signedout", Header_Signed_Out);
+        header.Start();
+      }
+      
+      function Header_Signed_In()
+      {
+        const user = header.header_elem.user;
+        const ds = new Projects_Ds(user, projects_elem);
+
+        main_content.hidden = false;
+      }
+
+      async function Header_Signed_Out()
+      {
+        await projects_elem.Set_Datasource(null);
+        header_elem.Toast_Show("You must sign in.", "warning");
+
+        main_content.hidden = true;
+      }
+    
+      function Page_Refresh(result)
+      {
+        projects_elem.Update_Render(false);
+      }
+    </script>
+  </head>
+
+  <body>
+    <menu-header id="header" title="deCMS - Projects"></menu-header>
+    <section id="main_content" hidden>
+      <table-buddy id="projects_elem" style-src="/styles/table.css"></table-buddy>
+    </section>
+  </body>
+</html>

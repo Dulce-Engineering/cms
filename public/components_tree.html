@@ -1,0 +1,376 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>deCMS - Content</title>
+
+    <link type="text/css" rel="stylesheet" href="styles/styles.css" />
+    <link type="text/css" rel="stylesheet" href="styles/hamburger-menu.css">
+    <link type="text/css" rel="stylesheet" href="styles/Header_Buddy.css">
+    <link type="text/css" rel="stylesheet" href="styles/Select_Sort.css">
+    <link type="text/css" rel="stylesheet" href="styles/Select_Columns.css">
+    
+    <script type="module">
+      import Utils from "./lib/Utils.js";
+      import Datasource from "./node_modules/table-buddy/Datasource.mjs";
+      import Menu_Header from './components_admin/Menu_Header.js';
+      import Table_Buddy from './node_modules/table-buddy/Table_Buddy.mjs';
+      import Menu_Buddy_Btn from './node_modules/menu-buddy/Menu_Buddy_Btn.mjs';
+      import Select_Sort from "./components_admin/Select_Sort.js"
+      import Select_Columns from "./components_admin/Select_Columns.js"
+      
+      const align_left = "text-align: left;";
+
+      class Projects_Ds extends Datasource.Memory
+      {
+        constructor(user, table_elem)
+        {
+          super();
+
+          this.user = user;
+          this.table_elem = table_elem;
+          this.table_elem.filters["WHERE_PARENT"] = null;
+
+          this.Render_Col_Menu = this.Render_Col_Menu.bind(this);
+          this.Render_Row_Menu = this.Render_Row_Menu.bind(this);
+          this.Render_Project_Field = this.Render_Project_Field.bind(this);
+          this.Del_Sel_On_Click = this.Del_Sel_On_Click.bind(this);
+          this.Del_On_Click = this.Del_On_Click.bind(this);
+          this.Get_Columns = this.Get_Columns.bind(this);
+          this.Render_Children_Btn = this.Render_Children_Btn.bind(this);
+          this.Subcomps_On_Click = this.Subcomps_On_Click.bind(this);
+          
+          this.table_elem.datasource = this;
+        }
+
+        async Update_Data(filter_by, sort_by)
+        {
+          this.data = await De_Component.Select_All(sort_by, filter_by);
+          //De_Component.Add_Children(this.data, this.open_ids, sort_by, filter_by);
+        }
+
+        // rendering ==============================================================================
+
+        Get_Columns()
+        {
+          const cols = [];
+
+          /*this.sel_col = new Table_Buddy.Column_Select("id", align_left);
+          this.sel_col.id = "select";
+
+          this.idx_col = new Table_Buddy.Column_No(align_left);
+          this.idx_col.id = "row_idx";*/
+
+          cols.push({id: "menu", title_fn: this.Render_Col_Menu, field_fn: this.Render_Row_Menu, style: align_left});
+          //cols.push(this.sel_col);
+          //cols.push(this.idx_col);
+          cols.push({id: "children", title: "", field_fn: this.Render_Children_Btn, style: align_left});
+          cols.push({id: "id", title: "Id", field_name: "id", style: align_left});
+          cols.push({id: "title", title: "Title", field_name: "title", style: align_left});
+          cols.push({id: "key", title: "Key", field_name: "key", style: align_left});
+          cols.push({id: "type", title: "Type", field_name: "content_type", style: align_left});
+          cols.push({id: "content", title: "Content", field_fn: this.Render_Content_Field, style: align_left, render_as: "html"});
+          cols.push({id: "project", title: "Project", field_fn: this.Render_Project_Field, style: align_left});
+
+          return cols;
+        }
+
+        async Render_Children_Btn(component, row_idx, cell_elem)
+        {
+          let elem = "";
+
+          cell_elem.style.paddingLeft = component.level*32 + "px";
+          if (await De_Component.Has_Children(component.id))
+          {
+            elem = document.createElement("input");
+            elem.type = "checkbox";
+            elem.addEventListener("click", this.Subcomps_On_Click);
+            elem.component = component;
+            elem.classList.add("group_toggle");
+          }
+          else
+          {
+            elem = document.createElement("span");
+            elem.innerText = "•";
+            elem.classList.add("group_item");
+          }
+
+          return elem;
+        }
+
+        async Subcomps_On_Click(event)
+        {
+          const btn = event.target;
+          const row_elem = btn.closest("tr");
+
+          if (btn.checked)
+          {
+            await this.Append_Children(row_elem);
+          }
+          else
+          {
+            row_elem.Delete_Children();
+          }
+        }
+
+        async Append_Children(parent_row_elem)
+        {
+          const parent = parent_row_elem.row_data;
+          const filter_by = {"WHERE_PARENT": parent.id};
+          const sort_by = null;
+          const components = await De_Component.Select_All(sort_by, filter_by);
+          if (components)
+          {
+            parent_row_elem.sub_row_elems = [];
+            parent_row_elem.Delete_Children = this.Delete_Children;
+            let prev_row_elem = parent_row_elem;
+            for (const component of components)
+            {
+              component.level = parent.level ? parent.level+1: 1;
+              const row_elem = this.table_elem.Render_Row(this.table_elem.columns, component);
+              parent_row_elem.sub_row_elems.push(row_elem);
+              prev_row_elem.after(row_elem);
+              prev_row_elem = row_elem;
+            }
+          }
+        }
+
+        Delete_Children()
+        {
+          if (this.sub_row_elems)
+          {
+            for (let sub_row_elem of this.sub_row_elems)
+            {
+              if (sub_row_elem.Delete_Children)
+                sub_row_elem.Delete_Children();
+              sub_row_elem.remove();
+            }
+          }
+        }
+
+        Render_Content_Field(component)
+        {
+          let html = null;
+
+          if (component.content_type == "image")
+          {
+            html = 
+              "<img height=\"100px\" " +
+              "src=\"" + component.url + "\" "+
+              "title=\"" + component.description + "\" "+
+              "alt=\"" + component.description + "\"></img>";
+          }
+          else
+          {
+            html = Utils.Abbreviate(component.content);
+          }
+
+          return html;
+        }
+
+        async Render_Project_Field(component)
+        {
+          const project = await De_Project.Select_By_Id(component.project_id);
+          return project.title;
+        }
+
+        Render_Col_Menu()
+        {
+          const m =
+          {
+            title: "Please choose...",
+            class_name: "menu",
+            options: 
+            [
+              {title: 'Manage Columns', on_click_fn: () => components_tree_columns.showModal()},
+              {title: "Sort", on_click_fn: components_tree_sort.On_Toggle_Display},
+              {title: 'New Text Component', on_click_fn: this.Add_Component_On_Click, content_type: "text"},
+              {title: 'New HTML Component', on_click_fn: this.Add_Component_On_Click, content_type: "html"},
+              {title: 'New Link Component', on_click_fn: this.Add_Component_On_Click, content_type: "link"},
+              {title: 'New Image Component', on_click_fn: this.Add_Component_On_Click, content_type: "image"},
+              //{title: 'Delete Selected', on_click_fn: this.Del_Sel_On_Click},
+            ]
+          };
+
+          const main_menu = new Menu_Buddy_Btn();
+          main_menu.innerHTML = "&equiv;";
+          main_menu.menu = m;
+          main_menu.setAttribute("btn-style-src", "/styles/menu.css");
+          main_menu.setAttribute("menu-style-src", "/styles/menu.css");
+          //main_menu.menu_style_src = "/styles/menu.css";
+          //main_menu.menu_buddy.style.width = "200px";
+
+          return main_menu; 
+        }
+
+        Render_Row_Menu(component)
+        {
+          const m =
+          {
+            title: "Please choose...",
+            class_name: "menu",
+            options: 
+            [
+              {title: "Edit", on_click_fn: this.Edit_On_Click, component}, 
+              {title: "Delete", on_click_fn: this.Del_On_Click, component}
+            ]
+          };
+
+          const main_menu = new Menu_Buddy_Btn();
+          main_menu.innerHTML = "&equiv;";
+          main_menu.menu = m;
+          //main_menu.menu_style_src = "/styles/menu.css";
+          main_menu.setAttribute("btn-style-src", "/styles/menu.css");
+          main_menu.setAttribute("menu-style-src", "/styles/menu.css");
+
+          return main_menu; 
+        }
+
+        // col actions ============================================================================
+
+        async Add_Component_On_Click(event, option)
+        {
+          let url = "component_" + option.content_type + ".html";
+          url = Utils.Add_Param(url, "project_id", Utils.Get_Param("project_id"));
+          window.open(url, "_blank");
+        }
+
+        async Del_Sel_On_Click(event)
+        {
+          const msg = "Are you sure?";
+          if (window.confirm(msg))
+          {
+            for (const id of this.sel_col.selected_ids)
+            {
+              const component = this.data.find(c => c.id == id);
+              //const is_deleted = await component.Delete(this.ctx.db, this.ctx.fb_strg);
+              if (!is_deleted)
+              {
+                //Utils.Handle_Errors(this.ctx.db);
+                break;
+              }
+            }
+            this.table_elem.Update_Render();
+          }
+        }
+
+        // row actions ============================================================================
+
+        Edit_On_Click(event, option)
+        {
+          let url = "component_" + option.component.content_type + ".html";
+          url = Utils.Add_Param(url, "project_id", Utils.Get_Param("project_id"));
+          url = Utils.Add_Param(url, "id", option.component.id);
+          Page_Refresh.edit_window = window.open(url, "_blank");
+        }
+
+        async Del_On_Click(event, option)
+        {
+          const confirmed = window.confirm("Are you sure?");
+          if (confirmed)
+          {
+            //const is_deleted = await option.component.Delete(this.ctx.db, this.ctx.fb_strg);
+            if (is_deleted)
+            {
+              this.table_elem.Update_Render();
+            }
+            else
+            {
+              //Utils.Handle_Errors(this.ctx.db);
+            }
+          }
+        }
+      }
+
+      Main();
+      function Main()
+      {
+        Utils.Set_Id_Shortcuts(document, window);
+        header.addEventListener("signedin", Header_Signed_In);
+        header.addEventListener("signedout", Header_Signed_Out);
+        header.Start();
+      }
+      
+      function Header_Signed_In()
+      {
+        components_tree_sort.addEventListener("sort", On_Sort);
+        components_tree_sort.Load();
+
+        components_tree_columns.addEventListener("update", On_Update_Columns);
+        components_tree_columns.Load();
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const project_id = urlParams.get('project_id');
+        if (project_id)
+        {
+          components_table.where = {"WHERE_PROJECT": project_id};
+        }
+        const user = header.header_elem.user;
+        const ds = new Projects_Ds(user, components_table);
+
+        main_content.hidden = false;
+      }
+
+      async function Header_Signed_Out()
+      {
+        await components_table.Set_Datasource(null);
+        header_elem.Toast_Show("You must sign in.", "warning");
+
+        main_content.hidden = true;
+      }
+
+      function On_Sort(event)
+      {
+        components_table.order_by = components_tree_sort.value;
+      }
+
+      function On_Update_Columns(event)
+      {
+        components_table.columns_status = components_tree_columns.value;
+      }
+
+      function Page_Refresh(result)
+      {
+        if (result != "cancel")
+        {
+          components_table.Update_Render(false);
+        }
+        Page_Refresh.edit_window.close();
+      }
+    </script>
+  </head>
+
+  <body>
+
+    <menu-header id="header" title="Content"></menu-header>
+
+    <section id="main_content" hidden>
+      <select-sort id="components_tree_sort">
+        <li sort-code="ORDERBY_ID">Id</li>
+        <li sort-code="ORDERBY_TITLE">Title</li>
+        <li sort-code="ORDERBY_TITLE#">Title (Numeric)</li>
+        <li sort-code="ORDERBY_KEY">Key</li>
+        <li sort-code="ORDERBY_KEY#">Key (Numeric)</li>
+        <li sort-code="ORDERBY_TYPE">Type</li>
+        <li sort-code="ORDERBY_CONTENT">Content</li>
+        <li sort-code="ORDERBY_PROJECT">Project</li>
+      </select-sort>
+
+      <search-filters id="components_filter" view="min" style-src="/styles/Filter_Buddy.css"></search-filters>
+      <table-buddy id="components_table" style-src="/styles/table.css"></table-buddy>
+      <paging-bar id="components_paging_bar" table-id="components_table"></paging-bar>
+
+      <select-columns id="components_tree_columns">
+        <li col-id="id">Id</li>
+        <li col-id="title">Title</li>
+        <li col-id="key">Key</li>
+        <li col-id="type">Type</li>
+        <li col-id="content">Content</li>
+        <li col-id="project">Project</li>
+      </select-columns>
+    </section>
+    
+  </body>
+</html>

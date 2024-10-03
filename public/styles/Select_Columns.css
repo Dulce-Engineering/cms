@@ -1,0 +1,64 @@
+
+select-columns dialog
+{
+  border: none;
+  padding: 0;
+}
+select-columns dialog::backdrop
+{
+  background: #0008;
+}
+
+select-columns .dialog_header
+{
+  padding: 10px 10px;
+  background-color: #f00;
+  display: flex;
+  align-items: center;
+  font-family: "Fjalla One";
+  font-size: 1rem;
+  color: #fff;
+  font-weight: bold;
+}
+select-columns .close_btn
+{
+  padding: 0;
+  margin: 0 5px 0 0;
+  line-height: 0;
+  cursor: pointer;
+}
+
+xselect-columns .dialog_body
+{
+  padding: 0;
+  font-weight: initial;
+  font-size: initial;
+  line-height: initial;
+}
+
+select-columns .column_list
+{
+  padding: 0;
+}
+select-columns .column_item:first-child
+{
+  padding: 0px 15px 0px 15px;
+}
+select-columns .column_item
+{
+  padding: 0 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  color: #131314bb;
+}
+select-columns .column_item:last-child
+{
+  padding: 0px 15px 0px 15px;
+}
+
+select-columns .col_btn
+{
+}

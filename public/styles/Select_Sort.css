@@ -1,0 +1,147 @@
+.icon_font-plus{
+  font-size: 16px;
+  color: white;
+}
+select-sort
+{
+  --def-display: flex;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  gap: 4px;
+}
+
+xselect-sort .dialog_body
+{
+  padding: 0;
+  font-weight: initial;
+  font-size: initial;
+  line-height: initial;
+}
+
+select-sort .sort_list
+{
+  display: inline-flex;
+  list-style-type: none;
+  margin-block-start: 0;
+  margin-block-end: 0;
+  padding-inline-start: 0;
+}
+
+/* =============================================== */
+
+
+select-sort .remove_btn
+{
+  margin: 0 0 0 8px;
+  padding: 0;
+  border: none;
+  line-height: 0;
+  background: transparent;
+}
+
+select-sort .sort_item
+{
+  background-color: transparent;
+  padding: 4px 4px 4px 10px;
+  border: 1px solid #fff6;
+  display: flex;
+  align-items: center;
+  margin: 0 2px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+select-sort .field_list
+{
+  padding: 0;
+}
+select-sort .field_item:first-child
+{
+  padding: 0px 15px 0px 15px;
+}
+select-sort .field_item
+{
+  padding: 0 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  color: #131314bb;
+}
+select-sort .field_item:last-child
+{
+  padding: 0px 15px 0px 15px;
+}
+
+select-sort .field_btns
+{
+  margin: 0 0 0 10px;
+}
+select-sort .sort_btn
+{
+  color: #f00;
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: none;
+  width: 20px;
+  height: 20px;
+}
+select-sort .sort_btn:disabled
+{
+  color: #ccc;
+}
+
+select-sort .dialog_header
+{
+  padding: 10px 10px;
+  background-color: #f00;
+  display: flex;
+  align-items: center;
+  font-family: "Fjalla One";
+  font-size: 1rem;
+  color: #fff;
+  font-weight: bold;
+}
+select-sort .close_btn
+{
+  padding: 0;
+  margin: 0 5px 0 0;
+  line-height: 0;
+  cursor: pointer;
+}
+
+select-sort .add_btn
+{
+  color: #fff;
+  background-color: transparent;
+  padding: 0 0 0 38px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.2;
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  align-items: center;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+select-sort .add_btn img
+{
+  height: 16px;
+  margin: 0 0 0 5px;
+}
+
+select-sort dialog
+{
+  border: none;
+  padding: 0;
+}
+select-sort dialog::backdrop
+{
+  background: #0008;
+}

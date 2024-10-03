@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>deCMS - Project</title>
+
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.css"/>
+    <link type="text/css" rel="stylesheet" href="/styles/styles2.css"  />
+    
+    <script type="module">
+      //import Context from "./lib/Context.js";
+      import Utils from "./lib/Utils.js";
+      import Header_Buddy from './node_modules/header-buddy/Header_Buddy.js';
+      import Menu_Buddy from './node_modules/menu-buddy/Menu_Buddy.mjs';
+      import Menu_Buddy_Btn from './node_modules/menu-buddy/Menu_Buddy_Btn.mjs';
+      import Form_View from './components_admin/Form_View.js';
+      customElements.define(Header_Buddy.tname, Header_Buddy);
+      customElements.define(Menu_Buddy.tname, Menu_Buddy);
+      customElements.define(Menu_Buddy_Btn.tname, Menu_Buddy_Btn);
+
+      class Project_Form extends Form_View
+      {
+        static tname = "project-form";
+
+        Load_Obj(id)
+        {
+          return De_Project.Select_By_Id(id);
+        }
+
+        New_Obj()
+        {
+          return De_Project.New();
+        }
+
+        async Save_Obj(product)
+        {
+          const res = await De_Product.Save(product);
+          this.ctx.Toast_Show("Product saved!");
+
+          return res;
+        }
+
+        async Prepare_Fields(product)
+        {
+        }
+
+        Obj_To_Fields(project)
+        {
+          id_value.innerText = project.id;
+          title_value.value = project.title;
+          key_value.value = project.key;
+          url_value.value = project.url;
+        }
+
+        Fields_To_Obj(project)
+        {
+          project.title = title_value.value;
+          project.key = key_value.value;
+          project.url = url_value.value;
+        }
+      }
+      customElements.define(Project_Form.tname, Project_Form);
+    </script>
+  </head>
+
+  <body>
+    <project-form hidden>
+      <label id="id_label">Id.</label><span id="id_value" class="field_value"></span>
+      <label>Title</label><input id="title_value" class="field_value">
+      <label>Key</label><input id="key_value" class="field_value">
+      <label>URL</label><input id="url_value" class="field_value">
+    </project-form>
+  </body>
+</html>

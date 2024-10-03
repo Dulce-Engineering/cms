@@ -1,0 +1,156 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Template - Single Object View</title>
+
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.css"/>
+    <link type="text/css" rel="stylesheet" href="/styles/styles2.css"  />
+    
+    <script type="module">
+      import Context from "./lib/Context.js";
+      import Utils from "./lib/Utils.js";
+      import Header_Buddy from './node_modules/header-buddy/Header_Buddy.js';
+      import Menu_Buddy from './node_modules/menu-buddy/Menu_Buddy.mjs';
+      import Menu_Buddy_Btn from './node_modules/menu-buddy/Menu_Buddy_Btn.mjs';
+      customElements.define(Header_Buddy.tname, Header_Buddy);
+      customElements.define(Menu_Buddy.tname, Menu_Buddy);
+      customElements.define(Menu_Buddy_Btn.tname, Menu_Buddy_Btn);
+
+      let obj; // global object data instance
+      Main();
+
+      // predefined functions not meant to be altered =============================================
+
+      function Main()
+      {
+        const ctx = new Context();
+        ctx.Init(Header_Signed_In, Header_Signed_Out);
+      }
+
+      async function Header_Signed_In(ctx)
+      {
+        await Prepare_Fields(ctx);
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get('id');
+        if (id)
+        {
+          obj = await Load_Obj(id);
+        }
+        else
+        {
+          obj = New_Obj();
+        }
+
+        Obj_To_Fields();
+
+        ok_btn.addEventListener("click", () => On_Click_Save(ctx));
+        cancel_btn.addEventListener("click", On_Click_Cancel);
+      }
+
+      function Header_Signed_Out(ctx)
+      {
+        Clear_Fields();
+        ctx.Toast_Show("You must sign in.", "warning");
+      }
+
+      function Return_To_Page()
+      {
+        window.close();
+        window.opener.Page_Refresh();
+      }
+
+      async function On_Click_Save(ctx)
+      {
+        event.preventDefault();
+        Fields_To_Obj();
+        const is_saved = await Save_Obj();
+        if (is_saved)
+        {
+          Return_To_Page();
+        }
+        else
+        {
+          Utils.Handle_Errors(ctx.db);
+        }
+      }
+
+      function On_Click_Cancel(event)
+      {
+        event.preventDefault();
+        Return_To_Page();
+      }
+
+      // dev defined functionality ================================================================
+
+      function New_Obj()
+      {
+        // replace with code to create empty objecct
+        return {
+            read_only_field: null,
+            read_write_field: null,
+          };
+      }
+
+      function Load_Obj(obj_id)
+      {
+        // replace with code to get object from backend api
+        // api objects and functions are immediately available from global scope
+        return api.Get_Obj_By_Id(id);
+      }
+
+      function Save_Obj()
+      {
+        // replace with code to save object via backend api
+        // api objects and functions are immediately available from global scope
+        return api.Save(obj);
+      }
+
+      async function Prepare_Fields(ctx)
+      {
+        // insert code to initialise ui components
+      }
+
+      function Clear_Fields()
+      {
+        // replace with code to clear page fields
+        // elements are immediately available from global context based on specified id
+        ro_value.innerText = "";
+        rw_value.value = "";
+      }
+
+      function Obj_To_Fields()
+      {
+        // replace with code to set page elements
+        // elements are immediately available from global context based on specified id
+        ro_value.innerText = obj.read_only_field;
+        rw_value.value = obj.read_write_field;
+      }
+
+      function Fields_To_Obj()
+      {
+        // replace with code to update global object
+        // elements are immediately available from global context based on specified id
+        obj.read_write_field = rw_value.value;
+      }
+    </script>
+  </head>
+
+  <body>
+    <header-buddy id="header_elem" title="Template - Single Object View" style-src="styles/Header_Buddy.css"></header-buddy>
+
+    <form id="form">
+      <label>Read-Only Field</label><span id="ro_value" class="field_value"></span>
+      <label>Read-Write Field</label><input id="rw_value" class="field_value">
+
+      <label></label>
+      <span>
+        <button id="ok_btn" class="button">OK</button>
+        <button id="cancel_btn" class="button">Cancel</button>
+      </span>
+    </form>
+  </body>
+</html>

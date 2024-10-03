@@ -1,0 +1,130 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Template - List View</title>
+
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.css"/>
+    <link type="text/css" rel="stylesheet" href="styles/styles.css"  />
+
+    <script type="module">
+      import Context from "./lib/Context.js";
+      import Utils from "./lib/Utils.js";
+      import Datasource from "./node_modules/table-buddy/Datasource.mjs";
+      import Header_Buddy from './node_modules/header-buddy/Header_Buddy.js';
+      import Table_Buddy from './node_modules/table-buddy/Table_Buddy.mjs';
+      import Menu_Buddy from './node_modules/menu-buddy/Menu_Buddy.mjs';
+      import Menu_Buddy_Btn from './node_modules/menu-buddy/Menu_Buddy_Btn.mjs';
+      customElements.define(Table_Buddy.tname, Table_Buddy);
+      customElements.define(Menu_Buddy.tname, Menu_Buddy);
+      customElements.define(Menu_Buddy_Btn.tname, Menu_Buddy_Btn);
+      customElements.define(Header_Buddy.tname, Header_Buddy);
+
+      // define datasource for table element
+      class Projects_Ds extends Datasource.Memory
+      {
+        constructor(ctx, table_elem)
+        {
+          super();
+
+          this.ctx = ctx;
+          this.table_elem = table_elem;
+
+          // bind functions as necessary here
+          
+          this.table_elem.datasource = this;
+        }
+
+        Get_Columns()
+        {
+          // define required columns here
+          const cols =
+          [
+            // optional actions menu
+            {title_fn: this.Render_Header_Actions, field_fn: this.Render_Row_Actions}, 
+            // optional row number
+            new Table_Buddy.Column_No(), 
+            // additional columns
+            {title: "Column A", field_name: "obj_field_a"}, 
+            {title: "Column B", field_name: "obj_field_b"}, 
+          ];
+
+          return cols;
+        }
+
+        async Update_Data(filter_by, sort_by)
+        {
+          // replace with call to get data via api
+          this.data = await api.Get_Data(filter_by, sort_by);
+        }
+        
+        // define optional header menu options
+        Render_Header_Actions()
+        {
+          const m =
+          {
+            title: "Header Actions",
+            class_name: "menu",
+            options: 
+            [
+              {title: "Header Option 1", on_click_fn: Header_Option_1_Click}, 
+              {title: "Header Option 2", on_click_fn: Header_Option_2_Click}, 
+            ]
+          };
+
+          const main_menu = new Menu_Buddy_Btn();
+          main_menu.innerHTML = "&equiv;";
+          main_menu.menu = m;
+
+          return main_menu; 
+        }
+
+        // define optional row menu options
+        Render_Row_Actions(project)
+        {
+          const m =
+          {
+            title: "Row Actions",
+            class_name: "menu",
+            options: 
+            [
+              {title: "Row Option 1", on_click_fn: Row_Option_1_Click}, 
+              {title: "Row Option 2", on_click_fn: Row_Option_2_Click}, 
+            ]
+          };
+
+          const main_menu = new Menu_Buddy_Btn();
+          main_menu.innerHTML = "&equiv;";
+          main_menu.menu = m;
+
+          return main_menu; 
+        }
+      }
+
+      Main();
+      function Main()
+      {
+        const ctx = new Context();
+        ctx.Init(Header_Signed_In, Header_Signed_Out);
+      }
+      
+      function Header_Signed_In(ctx)
+      {
+        const ds = new Projects_Ds(ctx, objs_elem);
+      }
+
+      async function Header_Signed_Out(ctx)
+      {
+        await objs_elem.Set_Datasource(null);
+        ctx.Toast_Show("You must sign in.", "warning");
+      }
+    </script>
+  </head>
+
+  <body>
+    <header-buddy id="header_elem" title="Template - List View" style-src="styles/Header_Buddy.css"></header-buddy>
+    <table-buddy id="objs_elem" style-src="/styles/table.css"></table-buddy>
+  </body>
+</html>

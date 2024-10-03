@@ -1,0 +1,209 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>deCMS - Products</title>
+
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.css"/>
+    <link type="text/css" rel="stylesheet" href="styles/styles.css"  />
+    
+    <script type="module">
+      import Context from "./lib/Context.js";
+      import Utils from "./lib/Utils.js";
+      import Datasource from "./node_modules/table-buddy/Datasource.mjs";
+      import Header_Buddy from './node_modules/header-buddy/Header_Buddy.js';
+      import Table_Buddy from './node_modules/table-buddy/Table_Buddy.mjs';
+      import Menu_Buddy from './node_modules/menu-buddy/Menu_Buddy.mjs';
+      import Menu_Buddy_Btn from './node_modules/menu-buddy/Menu_Buddy_Btn.mjs';
+      customElements.define(Header_Buddy.tname, Header_Buddy);
+      customElements.define(Table_Buddy.tname, Table_Buddy);
+      customElements.define(Menu_Buddy.tname, Menu_Buddy);
+      customElements.define(Menu_Buddy_Btn.tname, Menu_Buddy_Btn);
+      
+      const align_left = "text-align: left;";
+      window.Page_Refresh = Page_Refresh;
+
+      class Products_Ds extends Datasource.Memory
+      {
+        constructor(ctx, table_elem)
+        {
+          super();
+
+          this.ctx = ctx;
+          this.table_elem = table_elem;
+
+          this.Render_Col_Menu = this.Render_Col_Menu.bind(this);
+          this.Render_Row_Menu = this.Render_Row_Menu.bind(this);
+          this.Render_Project_Field = this.Render_Project_Field.bind(this);
+          this.Del_Sel_On_Click = this.Del_Sel_On_Click.bind(this);
+          this.Del_On_Click = this.Del_On_Click.bind(this);
+          
+          this.table_elem.datasource = this;
+        }
+
+        async Update_Data(filter_by, sort_by)
+        {
+          this.data = await De_Product.Select_All(sort_by, filter_by);
+        }
+
+        // rendering ==============================================================================
+
+        Get_Columns()
+        {
+          this.sel_col = new Table_Buddy.Column_Select("id", align_left);
+          const cols =
+          [
+            {title_fn: this.Render_Col_Menu, field_fn: this.Render_Row_Menu, style: align_left}, 
+            this.sel_col, 
+            new Table_Buddy.Column_No(align_left), 
+            {title: "Id", field_name: "id", style: align_left}, 
+            {title: "Name", field_name: "name", style: align_left}, 
+            {title: "Price", field_name: "price", style: align_left},
+            {title: "Project", field_fn: this.Render_Project_Field, style: align_left},
+          ];
+
+          return cols;
+        }
+
+        async Render_Project_Field(product)
+        {
+          const project = await De_Project.Select_By_Id(product.project_id);
+          return project.title;
+        }
+
+        // col actions ============================================================================
+
+        Render_Col_Menu()
+        {
+          const m =
+          {
+            title: "Products Actions",
+            class_name: "menu",
+            options: 
+            [
+              {title: 'Add Product', on_click_fn: this.Add_Prod_On_Click},
+              {title: 'Delete Selected', on_click_fn: this.Del_Sel_On_Click},
+            ]
+          };
+
+          const main_menu = new Menu_Buddy_Btn();
+          main_menu.innerHTML = "&equiv;";
+          main_menu.menu = m;
+          //main_menu.menu_buddy.style.width = "200px";
+
+          return main_menu; 
+        }
+
+        async Add_Prod_On_Click(event)
+        {
+          const url = Utils.Add_Param("product.html", "project_id", Utils.Get_Param("project_id"));
+          window.open(url, "_self");
+        }
+
+        async Del_Sel_On_Click(event)
+        {
+          const msg = "Are you sure?";
+          if (window.confirm(msg))
+          {
+            for (const id of this.sel_col.selected_ids)
+            {
+              const is_deleted = await De_Product.Delete(id);
+              if (!is_deleted)
+              {
+                Utils.Handle_Errors(this.ctx.db);
+                break;
+              }
+            }
+            this.table_elem.Update_Render();
+          }
+        }
+
+        // row actions ============================================================================
+
+        Render_Row_Menu(component)
+        {
+          const m =
+          {
+            title: "Component Actions",
+            class_name: "menu",
+            options: 
+            [
+              {title: "Edit", on_click_fn: this.Edit_On_Click, component_id: component.id}, 
+              {title: "Delete", on_click_fn: this.Del_On_Click, component_id: component.id}
+            ]
+          };
+
+          const main_menu = new Menu_Buddy_Btn();
+          main_menu.innerHTML = "&equiv;";
+          main_menu.menu = m;
+          //main_menu.menu_buddy.style.width = "200px";
+
+          return main_menu; 
+        }
+
+        Edit_On_Click(event, option)
+        {
+          let url = "product.html";
+          url = Utils.Add_Param(url, "project_id", Utils.Get_Param("project_id"));
+          url = Utils.Add_Param(url, "id", option.component_id);
+          window.open(url, "_blank");
+        }
+
+        async Del_On_Click(event, option)
+        {
+          const confirmed = window.confirm("Are you sure?");
+          if (confirmed)
+          {
+            const is_deleted = await De_Product.Delete(option.component_id);
+            if (is_deleted)
+            {
+              this.table_elem.Update_Render();
+            }
+            else
+            {
+              Utils.Handle_Errors(this.ctx.db);
+            }
+          }
+        }
+      }
+
+      Main();
+      function Main()
+      {
+        const ctx = new Context();
+        ctx.Init(Header_Signed_In, Header_Signed_Out);
+      }
+      
+      function Header_Signed_In(ctx)
+      {
+        const urlParams = new URLSearchParams(window.location.search);
+        const project_id = urlParams.get('project_id');
+        if (project_id)
+        {
+          products_elem.where = {"WHERE_PROJECT": project_id};
+        }
+        const ds = new Products_Ds(ctx, products_elem);
+      }
+
+      async function Header_Signed_Out(ctx)
+      {
+        await products_elem.Set_Datasource(null);
+        //projects_elem.removeEventListener("clickrow", Reg_Forms_Click_Row);
+        //projects_elem.Render_Msg("You must sign in.");
+        ctx.Toast_Show("You must sign in.", "warning");
+      }
+    
+      function Page_Refresh(result)
+      {
+        products_elem.Update_Render(false);
+      }
+    </script>
+  </head>
+
+  <body>
+    <header-buddy id="header_elem" title="CMS - Products" style-src="styles/Header_Buddy.css"></header-buddy>
+    <table-buddy id="products_elem" style-src="/styles/table.css"></table-buddy>
+  </body>
+</html>

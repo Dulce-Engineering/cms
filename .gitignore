@@ -1,0 +1,8 @@
+node_modules
+firebase-debug.log
+.firebase/hosting.cHVibGlj.cache
+public/components/config.js
+notes.txt
+functions/ui-debug.log
+ui-debug.log
+firestore-debug.log

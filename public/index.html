@@ -1,0 +1,217 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>deCMS - Home</title>
+
+    <link type="text/css" rel="stylesheet" href="styles/styles.css" />
+    <link type="text/css" rel="stylesheet" href="styles/hamburger-menu.css">
+    <link type="text/css" rel="stylesheet" href="styles/Header_Buddy.css">
+    <style>
+      #welcome_div
+      {
+        margin: 0 0 600px 0;
+      }
+      h1
+      {
+        max-width: 60%;
+        font-size: 4rem;
+        padding: 1rem 6rem 6rem 6rem;
+        font-family: 'Poppins', sans-serif;
+        font-weight: 500;
+        line-height: 1.2;
+      }
+      h2
+      {
+        font-size: 3em;
+        font-family: "Playfair Display";
+        line-height: 1;
+        font-weight: 500;
+        margin: 0 0 2rem 0;
+      }
+      h3
+      {
+        line-height: 32px;
+        font-size: 1.25rem;
+        font-weight: 300;
+        font-family: 'Poppins', sans-serif;
+        color: #131314;
+        margin: 0 0 2rem 0;
+      }
+      article
+      {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        background-color: #fff;
+        margin: 0 5%;
+        padding: 6rem 2rem;
+        gap: 1rem;
+      }
+      section
+      {
+        background-color: #fff;
+        color: #131314;
+      }
+      section p
+      {
+        line-height: 24px;
+        opacity: 0.8;
+        font-family: 'Poppins', sans-serif;
+        font-size: 14px;
+        color: #131314;
+        font-weight: 400;
+      }
+      #main_img
+      {
+        width: 90%;
+        margin: 0px 5%;
+      }
+      footer
+      {
+        width: calc(100% - 120px);
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        margin: 0 60px;
+        padding-top: 50px;
+        background: url(/images/anchor-line-bg.png) center no-repeat #131314;
+        background-size: auto 150%;
+        z-index: -1;
+        text-align: center;
+        color: #fff;
+      }
+      footer .logo
+      {
+        width: 2rem;
+        margin: 0 0 1rem 0;
+      }
+      footer h4
+      {
+        font-family: 'Poppins', sans-serif;
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        line-height: 1.2;
+        margin-top: 0;
+      }
+      footer h2
+      {
+        font-family: "Fjalla One";
+        text-transform: uppercase;
+        font-size: 4em;
+        margin-bottom: 30px;
+        padding: 0 10%;
+        font-weight: 500;
+        line-height: 1.2;
+        margin-top: 0;
+      }
+      footer .btn-contact
+      {
+        height: 60px;
+        line-height: 58px;
+        display: inline-block;
+        border: 1px solid rgba(255,255,255,0.2);
+        padding: 0 40px;
+        font-size: 11px;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 30px;
+        overflow: hidden;
+        font-family: 'Poppins', sans-serif;
+        text-decoration: none;
+      }
+      footer .footer-bar
+      {
+        width: 100%;
+        float: left;
+        border-top: 1px solid rgba(255,255,255,0.05);
+        margin-top: 50px;
+        padding: 20px 0;
+      }
+      footer .pull-left 
+      {
+        float: left;
+        font-size: 12px;
+        font-family: 'Poppins', sans-serif;
+      }
+    </style>
+
+    <script type="module">
+      import Utils from "./lib/Utils.js";
+      import Header_Buddy from './components_admin/Menu_Header.js';
+
+      Main();
+      function Main()
+      {
+        Utils.Set_Id_Shortcuts(document, window);
+        header.addEventListener("signedin", Header_Signed_In);
+        header.addEventListener("signedout", Header_Signed_Out);
+        header.Start();
+      }
+      
+      function Header_Signed_In()
+      {
+        welcome_div.hidden = false;
+        signin_div.hidden = true;
+      }
+
+      async function Header_Signed_Out()
+      {
+        welcome_div.hidden = true;
+        signin_div.hidden = false;
+      }
+    </script>
+  </head>
+
+  <body>
+
+    <menu-header id="header" title="Home"></menu-header>
+
+    <div id="signin_div" hidden=true>Please sign in.</div>
+    <div id="welcome_div" hidden=true>
+      <h1>A CMS designed to make devs and users productive</h1>
+      <img id="main_img" src="images/hero2.jpg">
+      <article>
+        <section>
+          <h2>CMS</h2>
+          <h3>Diera él, por dar una mano de coces al traidor de Galalón, al ama que tenía, 
+            y aun a su sobrina de añadidura.</h3>
+        </section>
+        <section>
+          <h3>
+            Tenía en su casa una ama que pasaba de los cuarenta, y una sobrina que no 
+            llegaba a los veinte, y un mozo de campo y plaza, que así ensillaba el rocín 
+            como tomaba la podadera. 
+          </h3>
+          <p>
+            En un lugar de la Mancha, de cuyo nombre no quiero acordarme, no ha mucho 
+            tiempo que vivía un hidalgo de los de lanza en astillero, adarga antigua, 
+            rocín flaco y galgo corredor. Una olla de algo más vaca que carnero, salpicón 
+            las más noches, duelos y quebrantos los sábados, lantejas los viernes, algún 
+            palomino de añadidura los domingos, consumían las tres partes de su hacienda. 
+          <p>
+            El resto della concluían sayo de velarte, calzas de velludo para las fiestas, 
+            con sus pantuflos de lo mesmo, y los días de entresemana se honraba con su 
+            vellorí de lo más fino. 
+          </p>
+        </section>
+      </article>
+    </div>
+
+    <footer class="footer"> 
+      <img src="images/logo.svg" class="logo">
+      <h4>Creativity is Everywhere</h4>
+      <h2>Have an idea or project? Let's talk</h2>
+      <a href="#" class="btn-contact">
+        <span data-hover="LET'S BE IN TOUCH">GET IN TOUCH</span>
+      </a>
+      <div class="footer-bar"> 
+        <span class="pull-left">© 2023 Dulce Engineering - All rights reserved.</span> 
+      </div>
+    </footer>
+
+  </body>
+</html>
